@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+  Brand tokens. Swap these when the real name and brand land.
+  Palette: Oklahoma flag blue + wheat on a cool paper white.
+*/
+@theme {
+  --color-paper: #f6f8fa;
+  --color-sky: #ddebf6;
+  --color-sky-deep: #b9d4ea;
+  --color-flag: #2c68b0;
+  --color-flag-dark: #1f4f8a;
+  --color-ink: #16263b;
+  --color-muted: #55667b;
+  --color-wheat: #e3a83e;
+  --color-wheat-soft: #f6e3bd;
+  --color-line: #d3dde7;
+
+  --font-display: var(--font-bitter), "Rockwell", Georgia, serif;
+  --font-sans: var(--font-public-sans), system-ui, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 22px;
+}
+
+@layer base {
+  html {
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-wheat);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--color-wheat-soft);
+  }
+}
+
+/* Infinite services ribbon. The track holds the list twice, so -50% loops seamlessly. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@utility animate-marquee {
+  animation: marquee 38s linear infinite;
+}
+@utility animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+/* Faint blueprint grid for dark sections */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@keyframes acc-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes acc-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

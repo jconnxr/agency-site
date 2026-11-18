@@ -2,7 +2,7 @@
 // or changing prices is a one-file edit. Packages mirror the Offer Sheet (v2).
 
 export const site = {
-  name: "[Agency Name]",
+  name: "Axiom Media Group",
   shortName: "Agency",
   city: "Oklahoma City",
   serviceArea: ["Oklahoma City", "Edmond", "Norman", "Moore", "Midwest City", "Yukon"],

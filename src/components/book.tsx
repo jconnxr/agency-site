@@ -25,7 +25,13 @@ export function Book() {
             Book a free <span className="whitespace-nowrap">30-minute</span> call
           </h2>
           <p className="mt-4 text-lg text-white/75">
-            Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
+            {site.axiomFormKey || site.formspreeId ? (
+              <>
+                Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
+              </>
+            ) : (
+              <>Pick a time below and choose a phone call or Zoom. Want the free Online Presence Check first? Mention it when you book and we&rsquo;ll send it within 24 hours.</>
+            )}
           </p>
         </div>
 

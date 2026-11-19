@@ -1,4 +1,4 @@
-# [Agency Name] landing page
+# Axiom Media Group landing page
 
 A one-page site for the agency: hero, who it's for, the three packages, how it works, booking (an inline Calendly embed plus a contact form), FAQ.
 
@@ -19,7 +19,7 @@ Not included yet: an MDX blog (add Velite once there's content to post) and Reac
 
 ## Edit the content
 
-Everything a non-developer would change lives in `src/lib/site.ts`: the name, email, Calendly link, package prices and FAQ. Replace `[Agency Name]` there, and the logo in `src/components/header.tsx`.
+Everything a non-developer would change lives in `src/lib/site.ts`: the name, email, Calendly link, package prices and FAQ. Change it there, and the logo in `src/components/header.tsx`.
 
 ## Run locally
 

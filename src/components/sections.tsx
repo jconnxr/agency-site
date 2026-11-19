@@ -511,10 +511,15 @@ export function Faq() {
           Questions we get a lot
         </h2>
         <p data-reveal className="mt-5 text-muted">
-          Something else on your mind? Ask on the call, or email{" "}
-          <a href={`mailto:${site.email}`} className="font-semibold text-flag underline underline-offset-4">
-            {site.email}
-          </a>
+          Something else on your mind? Ask on the call
+          {site.email ? (
+            <>
+              , or email{" "}
+              <a href={`mailto:${site.email}`} className="font-semibold text-flag underline underline-offset-4">
+                {site.email}
+              </a>
+            </>
+          ) : null}
           .
         </p>
       </div>
@@ -561,9 +566,11 @@ export function Footer() {
             <p className="mt-3 max-w-[40ch] text-[0.95rem]">
               Websites, Google profiles, booking, social and ads for local businesses in {site.city}.
             </p>
-            <a href={`mailto:${site.email}`} className="mt-5 inline-block font-semibold text-wheat hover:text-white">
-              {site.email}
-            </a>
+            {site.email ? (
+              <a href={`mailto:${site.email}`} className="mt-5 inline-block font-semibold text-wheat hover:text-white">
+                {site.email}
+              </a>
+            ) : null}
           </div>
           <nav aria-label="Footer">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/45">Explore</p>

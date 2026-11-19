@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +44,7 @@ export function Book() {
               </a>
             </p>
           </div>
-          <ContactForm />
+          {site.axiomFormKey || site.formspreeId ? <ContactForm /> : <NoFormCard />}
         </div>
       </div>
     </section>
@@ -61,8 +61,31 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
+// Shown instead of the form until a CRM form key (or Formspree ID) is set,
+// so visitors never fill in a form that can't send.
+function NoFormCard() {
+  return (
+    <div className="flex flex-col justify-center gap-4 rounded-lg border border-white/15 bg-white/[0.03] p-6 md:p-8">
+      <h3 className="text-2xl font-bold">Rather we call you?</h3>
+      <p className="text-white/75">
+        Pick any open time and choose &ldquo;phone call&rdquo;. We&rsquo;ll call the number you leave, look over your Google listing and website with you, and tell you plainly what would bring in more calls.
+      </p>
+      <p className="text-white/75">
+        Want the free Online Presence Check? Mention it in the booking notes and we&rsquo;ll send it within 24 hours.
+      </p>
+    </div>
+  );
+}
+
 function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
+  const [errorText, setErrorText] = useState<string | null>(null);
+  // When the form appeared: the CRM uses it as spam protection.
+  const started = useRef(0);
+  const [trap, setTrap] = useState("");
+  useEffect(() => {
+    started.current = Date.now();
+  }, []);
   const {
     register,
     handleSubmit,
@@ -72,6 +95,38 @@ function ContactForm() {
 
   async function onSubmit(values: FormValues) {
     setStatus("idle");
+    setErrorText(null);
+    if (site.axiomFormKey) {
+      // Axiom CRM: creates the lead, logs it and adds a "call back" task for today.
+      const message = [`Interested in: ${values.interest}`, values.message].filter(Boolean).join("\n\n");
+      try {
+        const res = await fetch(`${site.crmUrl}/api/forms/${site.axiomFormKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name: values.name,
+            business: values.business,
+            email: values.email,
+            phone: values.phone ?? "",
+            message,
+            website: trap,
+            _t: String(started.current),
+            _page: window.location.href,
+          }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (!res.ok || !data.ok) {
+          setErrorText(data.error ?? null);
+          setStatus("error");
+          return;
+        }
+        reset();
+        setStatus("sent");
+      } catch {
+        setStatus("error");
+      }
+      return;
+    }
     if (!site.formspreeId) {
       setStatus("error");
       return;
@@ -144,13 +199,24 @@ function ContactForm() {
             <Field label="Anything we should know? (optional)" error={errors.message?.message}>
               <textarea {...register("message")} rows={3} className={`${inputCls} h-auto py-3`} />
             </Field>
+            {/* Spam trap: hidden from people, bots fill it in. */}
+            <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
+              <input name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+            </div>
             {status === "error" && (
               <p role="alert" className="rounded-sm bg-wheat-soft px-4 py-3 text-[0.95rem] text-ink">
-                The message didn&rsquo;t go through. Email us at{" "}
-                <a href={`mailto:${site.email}`} className="font-semibold underline">
-                  {site.email}
-                </a>{" "}
-                or book a time instead.
+                {errorText ?? "The message didn’t go through."}{" "}
+                {site.email ? (
+                  <>
+                    Email us at{" "}
+                    <a href={`mailto:${site.email}`} className="font-semibold underline">
+                      {site.email}
+                    </a>{" "}
+                    or book a time instead.
+                  </>
+                ) : (
+                  <>Please book a time instead.</>
+                )}
               </p>
             )}
             <Button type="submit" size="lg" disabled={isSubmitting}>

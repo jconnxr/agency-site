@@ -6,10 +6,18 @@ export const site = {
   shortName: "Agency",
   city: "Oklahoma City",
   serviceArea: ["Oklahoma City", "Edmond", "Norman", "Moore", "Midwest City", "Yukon"],
-  email: "hello@youragency.com",
-  calendlyUrl: "https://calendly.com/jnjsystems/working-conversation",
-  // Create a free form at formspree.io and paste its ID (the part after /f/)
-  formspreeId: process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "",
+  // Leave empty until the real business email exists; every email link on
+  // the page hides itself while this is empty.
+  email: "",
+  calendlyUrl: "https://calendly.com/jnjsystems/free-website-google-profile-call",
+  // The contact form sends leads straight into the Axiom CRM. Paste the form
+  // key from the CRM (Settings -> Forms, starts with fk_) here, or set
+  // NEXT_PUBLIC_AXIOM_FORM_KEY in Vercel. It's public and safe to commit.
+  crmUrl: "https://app.axiommediagroupokc.com",
+  axiomFormKey: process.env.NEXT_PUBLIC_AXIOM_FORM_KEY || "",
+  // Older option: a free Formspree form ID (the part after /f/). Used only
+  // when no CRM form key is set.
+  formspreeId: process.env.NEXT_PUBLIC_FORMSPREE_ID || "",
 };
 
 // Runs along the services ribbon under the hero.
@@ -201,6 +209,9 @@ export const addons = [
 export const interests = [
   "Not sure yet",
   "Free Online Presence Check",
+  "A website",
+  "Google Business Profile setup or cleanup",
+  "Online booking on my site",
   "Launch",
   "Get Found",
   "Get Leads",
@@ -221,6 +232,10 @@ export const faqs = [
   {
     q: "What's the free Online Presence Check?",
     a: "A one-page look at your Google listing, your website on a phone, your reviews against 3 competitors, and your social profiles. We send it within 24 hours, free, and it shows exactly where you're losing customers.",
+  },
+  {
+    q: "Can you just fix my Google profile or add booking to my site?",
+    a: "Yes. You don't need a package. Google Business Profile setup or cleanup is $300, and adding online booking to the site you already have is $350. One-time, no monthly fee required.",
   },
   {
     q: "Do I own my website?",

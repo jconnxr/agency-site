@@ -80,7 +80,7 @@ export function Story() {
                   animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
                   exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
                 >
-                  <Caption index={active} live />
+                  <Caption index={active} />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -95,7 +95,10 @@ export function Story() {
               ))}
             </ol>
 
-            <Phone screen={step.screen} maxScale={1.17} className="order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full" />
+            <div className="relative order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full">
+              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" />
+              <MobileAlert active={active} />
+            </div>
 
             {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
             <aside aria-hidden className="order-3 hidden md:block md:max-h-full md:self-center">
@@ -131,7 +134,7 @@ export function Story() {
   );
 }
 
-function Caption({ index, live }: { index: number; live?: boolean }) {
+function Caption({ index }: { index: number }) {
   const s = steps[index];
   return (
     <>
@@ -145,12 +148,57 @@ function Caption({ index, live }: { index: number; live?: boolean }) {
       <p className="mt-2.5 font-wide text-[1.4rem] font-extrabold leading-[1.05] tracking-[-0.02em] md:mt-4 md:text-[2.2rem]">
         {s.title}
       </p>
-      <p className="mt-2 max-w-[44ch] text-[0.95rem] leading-relaxed text-white/70 md:mt-4 md:text-[1.06rem]">{s.body}</p>
-      <div className="mt-3 md:hidden">
-        <p className="mb-1.5 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-white/45">Your phone &middot; example</p>
-        <OwnerRow event={s.owner} live={!!live} compact />
-      </div>
+      <p className="mt-4 hidden max-w-[44ch] text-[1.06rem] leading-relaxed text-white/70 md:block">{s.body}</p>
+      <p className="mt-1.5 text-[0.95rem] leading-snug text-white/70 md:hidden">{s.short}</p>
     </>
+  );
+}
+
+// Mobile: the owner's alert arrives as a notification banner over the bottom of
+// the phone, after the screen has slid in, instead of taking space below it.
+function MobileAlert({ active }: { active: number }) {
+  const reduce = useReducedMotion();
+  const ev = steps[active].owner;
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center md:hidden">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={active}
+          className="w-[min(19rem,100%)] rounded-[18px] border border-white/40 bg-white/90 p-2.5 text-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-md"
+          initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1, transition: reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 30, delay: 0.5 } }}
+          exit={{ opacity: 0, y: 12, transition: { duration: reduce ? 0 : 0.15 } }}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="grid size-8 shrink-0 place-items-center rounded-[8px] bg-night">
+              {ev.kind === "alert" && ev.success ? (
+                <Check className="size-4 text-go-glow" strokeWidth={3} />
+              ) : (
+                <span className="size-2 rounded-full bg-clay-glow" />
+              )}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">
+                <span>Your phone &middot; example</span>
+                <span>now</span>
+              </p>
+              <p className="flex items-center justify-between gap-2 text-[0.85rem] font-semibold leading-tight">
+                <span className="truncate">{ev.label}</span>
+                {ev.kind === "count" ? (
+                  <span className="font-mono text-[0.85rem] tabular-nums">{ev.to}</span>
+                ) : ev.stars ? (
+                  <span className="flex shrink-0">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="size-3 fill-clay text-clay" />
+                    ))}
+                  </span>
+                ) : null}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -199,7 +247,7 @@ function Progress({ active }: { active: number }) {
   );
 }
 
-function OwnerRow({ event, live, compact }: { event: OwnerEvent; live: boolean; compact?: boolean }) {
+function OwnerRow({ event, live }: { event: OwnerEvent; live: boolean }) {
   const success = event.kind === "alert" && event.success;
   return (
     <div
@@ -224,7 +272,7 @@ function OwnerRow({ event, live, compact }: { event: OwnerEvent; live: boolean; 
               <span className="text-white/85">{event.label}</span>
               <CountUp to={event.to} run={live} />
             </p>
-            {event.detail && !compact && <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>}
+            {event.detail && <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>}
           </>
         ) : (
           <>
@@ -238,7 +286,7 @@ function OwnerRow({ event, live, compact }: { event: OwnerEvent; live: boolean; 
                 </span>
               )}
             </p>
-            {!compact && <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>}
+            <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>
           </>
         )}
       </div>

@@ -16,6 +16,9 @@ export type Step = {
   short: string;
   screen: Screen;
   owner: OwnerEvent;
+  /** True when the top of this screen holds nothing important, so the mobile
+      notification banner can stay. Otherwise it auto-dismisses after ~2s. */
+  bannerCanStay?: boolean;
 };
 
 export const demoBusiness = {
@@ -43,6 +46,7 @@ export const steps: Step[] = [
     body: "After every job, your customer gets a text asking for a review. More 5-star reviews move you up the list and make you the safe choice.",
     short: "Every job ends with a text asking for a review.",
     screen: "listing",
+    bannerCanStay: true,
     owner: { kind: "alert", label: "New 5-star review", detail: "Requested by text after the job", stars: true },
   },
   {
@@ -51,6 +55,7 @@ export const steps: Step[] = [
     body: "They tap through to a fast, clean website that answers their questions and keeps the call and book buttons right under their thumb.",
     short: "A fast site with call and book buttons up front.",
     screen: "website",
+    bannerCanStay: true,
     owner: { kind: "count", label: "Website visits today", to: 46 },
   },
   {
@@ -99,6 +104,7 @@ export const steps: Step[] = [
     body: "A monthly shoot of your crew and jobs, cut into 8 to 12 short clips, plus quarterly drone footage that shows the work from above.",
     short: "Monthly clips plus quarterly drone footage.",
     screen: "reel",
+    bannerCanStay: true,
     owner: { kind: "alert", label: "New clips ready", detail: "From this month's shoot" },
   },
 ];

@@ -19,6 +19,8 @@ const n = steps.length;
 export function Story() {
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  // True while the stage is pinned on screen; mobile banners only run then.
+  const [engaged, setEngaged] = useState(false);
 
   useEffect(() => {
     if (!track.current) return;
@@ -26,6 +28,7 @@ export function Story() {
       trigger: track.current,
       start: "top 64px",
       end: "bottom bottom",
+      onToggle: (self) => setEngaged(self.isActive),
       onUpdate: (self) => {
         const i = Math.min(n - 1, Math.floor(self.progress * n));
         setActive((prev) => (prev === i ? prev : i));
@@ -96,8 +99,7 @@ export function Story() {
             </ol>
 
             <div className="relative order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full">
-              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" />
-              <MobileAlert active={active} />
+              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" overlay={<MobileAlert active={active} engaged={engaged} />} />
             </div>
 
             {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
@@ -154,23 +156,45 @@ function Caption({ index }: { index: number }) {
   );
 }
 
-// Mobile: the owner's alert arrives as a notification banner over the bottom of
-// the phone, after the screen has slid in, instead of taking space below it.
-function MobileAlert({ active }: { active: number }) {
+// Mobile: the owner's alert drops down from just under the Dynamic Island like an
+// iOS notification, 0.5s after the screen slides in. On screens where the top
+// holds something important (search bar, booking title, sender, profile...) it
+// dismisses itself after 2 seconds; elsewhere it stays.
+const BANNER_DELAY = 500;
+const BANNER_HOLD = 2000;
+
+function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) {
   const reduce = useReducedMotion();
-  const ev = steps[active].owner;
+  const step = steps[active];
+  const ev = step.owner;
+  const [visible, setVisible] = useState(false);
+
+  // Each time a step becomes current (while the story is on screen) the banner
+  // shows again; the dismiss timer starts then, not at page load.
+  useEffect(() => {
+    if (!engaged) {
+      setVisible(false);
+      return;
+    }
+    setVisible(true);
+    if (step.bannerCanStay) return;
+    const t = window.setTimeout(() => setVisible(false), BANNER_DELAY + BANNER_HOLD);
+    return () => window.clearTimeout(t);
+  }, [active, engaged, step.bannerCanStay]);
+
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center md:hidden">
+    <div aria-hidden className="pointer-events-none md:hidden">
       <AnimatePresence mode="wait" initial={false}>
+        {visible && (
         <motion.div
           key={active}
-          className="w-[min(19rem,100%)] rounded-[18px] border border-white/40 bg-white/90 p-2.5 text-ink shadow-[0_18px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-md"
-          initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1, transition: reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 30, delay: 0.5 } }}
-          exit={{ opacity: 0, y: 12, transition: { duration: reduce ? 0 : 0.15 } }}
+          className="rounded-[16px] border border-white/40 bg-white/90 p-2 text-ink shadow-[0_14px_32px_-10px_rgba(0,0,0,0.6)] backdrop-blur-md"
+          initial={reduce ? false : { opacity: 0, y: -22, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1, transition: reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 30, delay: BANNER_DELAY / 1000 } }}
+          exit={{ opacity: 0, y: -14, scale: 0.98, transition: { duration: reduce ? 0 : 0.2, ease: "easeIn" } }}
         >
           <div className="flex items-center gap-2.5">
-            <span className="grid size-8 shrink-0 place-items-center rounded-[8px] bg-night">
+            <span className="grid size-7 shrink-0 place-items-center rounded-[7px] bg-night">
               {ev.kind === "alert" && ev.success ? (
                 <Check className="size-4 text-go-glow" strokeWidth={3} />
               ) : (
@@ -178,11 +202,11 @@ function MobileAlert({ active }: { active: number }) {
               )}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">
+              <p className="flex items-center justify-between gap-2 font-mono text-[0.56rem] uppercase tracking-[0.05em] text-muted">
                 <span>Your phone &middot; example</span>
                 <span>now</span>
               </p>
-              <p className="flex items-center justify-between gap-2 text-[0.85rem] font-semibold leading-tight">
+              <p className="flex items-center justify-between gap-2 text-[0.8rem] font-semibold leading-tight">
                 <span className="truncate">{ev.label}</span>
                 {ev.kind === "count" ? (
                   <span className="font-mono text-[0.85rem] tabular-nums">{ev.to}</span>
@@ -197,6 +221,7 @@ function MobileAlert({ active }: { active: number }) {
             </div>
           </div>
         </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

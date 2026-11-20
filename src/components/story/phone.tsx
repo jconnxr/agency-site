@@ -14,7 +14,18 @@ const W = 290;
 const H = 600;
 const order: Screen[] = ["search", "listing", "website", "booking", "messages", "missed", "ad", "social", "reel"];
 
-export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; className?: string; maxScale?: number }) {
+export function Phone({
+  screen,
+  className,
+  maxScale = 1,
+  overlay,
+}: {
+  screen: Screen;
+  className?: string;
+  maxScale?: number;
+  /** Rendered over the top of the screen, just under the Dynamic Island, at real (unscaled) size. */
+  overlay?: React.ReactNode;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
@@ -43,7 +54,7 @@ export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; cla
 
   return (
     <div ref={box} aria-hidden className={cn("relative grid place-items-center", className)}>
-      <div style={{ width: W * scale, height: H * scale }}>
+      <div className="relative" style={{ width: W * scale, height: H * scale }}>
         <div
           style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: "top left" }}
           className="relative rounded-[46px] bg-[#1a2233] p-[9px] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.12)]"
@@ -73,6 +84,12 @@ export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; cla
             <span className="absolute left-1/2 top-2.5 z-20 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-black" />
           </div>
         </div>
+        {/* Island bottom sits at 45 design px (9 bezel + 10 + 26); the overlay starts just below it. */}
+        {overlay && (
+          <div className="absolute inset-x-0 z-30" style={{ top: 48 * scale, paddingInline: 9 * scale + 5 }}>
+            {overlay}
+          </div>
+        )}
       </div>
     </div>
   );

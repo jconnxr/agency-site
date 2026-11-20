@@ -1,47 +1,124 @@
 "use client";
 
-// "Watch a customer find you": a tall scroll track with a sticky stage inside.
-// Scroll position picks the active step; the phone, the caption and the owner's
-// feed all follow it. Every caption stays in the DOM so screen readers get each step.
+// "Watch a customer find you": a normal-height section (no scroll pinning). The
+// story moves by the arrows, the progress dashes, a sideways swipe on the phone,
+// left/right keys while the section is in view, and a 5-second autoplay that runs
+// while the section is on screen. Autoplay has a Pause/Play button, pauses when the
+// visitor takes over, and stops at the last step.
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AUTOPLAY_MS, FollowHint, NextButton, PlayToggle, PrevButton, StepProgress } from "./controls";
 import { Phone } from "./phone";
 import { steps, type OwnerEvent } from "./steps";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const n = steps.length;
 
 export function Story() {
-  const track = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  // True while the stage is pinned on screen; mobile banners only run then.
-  const [engaged, setEngaged] = useState(false);
+  const reduce = useReducedMotion();
+  // Mostly on screen? Drives autoplay, the arrow keys and the mobile banners.
+  const [inView, setInView] = useState(false);
+  // Autoplay runs until the first interaction or the last step; never with reduced motion.
+  // null = never touched: autoplay on, unless reduced motion. The Pause/Play button
+  // sets it explicitly; arrows, dashes, swipes and keys pause it.
+  const [playChoice, setPlayChoice] = useState<boolean | null>(null);
+  const playing = playChoice ?? !reduce;
+  // First interaction of any kind hides the "follow along" hint.
+  const [interacted, setInteracted] = useState(false);
+  // Announced to screen readers only for changes the visitor makes, not autoplay.
+  const [announce, setAnnounce] = useState("");
 
   useEffect(() => {
-    if (!track.current) return;
-    const st = ScrollTrigger.create({
-      trigger: track.current,
-      start: "top 64px",
-      end: "bottom bottom",
-      onToggle: (self) => setEngaged(self.isActive),
-      onUpdate: (self) => {
-        const i = Math.min(n - 1, Math.floor(self.progress * n));
-        setActive((prev) => (prev === i ? prev : i));
-      },
-    });
-    return () => st.kill();
+    const el = stage.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
+  const autoplay = playing && inView && active < n - 1;
+  useEffect(() => {
+    if (!autoplay) return;
+    const t = window.setTimeout(() => setActive((a) => Math.min(n - 1, a + 1)), AUTOPLAY_MS);
+    return () => window.clearTimeout(t);
+  }, [autoplay, active]);
+
+  const goTo = (i: number) => {
+    const target = Math.max(0, Math.min(n - 1, i));
+    setInteracted(true);
+    setPlayChoice(false);
+    setActive(target);
+    setAnnounce(`Step ${target + 1} of ${n}: ${steps[target].title}`);
+  };
+  // Pause stops autoplay; Play resumes it (from step 1 if the story has finished).
+  const showingPause = playing && active < n - 1;
+  const togglePlay = () => {
+    setInteracted(true);
+    if (showingPause) {
+      setPlayChoice(false);
+      setAnnounce("Story paused");
+    } else {
+      if (active === n - 1) setActive(0);
+      setPlayChoice(true);
+      setAnnounce("Story playing");
+    }
+  };
+  const next = () => goTo(active + 1);
+  const prev = () => goTo(active - 1);
+
+  // Left/right arrow keys while the section is in view
+  useEffect(() => {
+    if (!inView) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  // Sideways swipe on the phone (touch). Only a clearly horizontal swipe counts,
+  // and the phone allows vertical panning, so page scrolling is untouched.
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touch.current;
+    touch.current = null;
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? next : prev)();
+  };
+
   const step = steps[active];
-  const reduce = useReducedMotion();
+  const progress = (
+    <StepProgress
+      active={active}
+      onJump={goTo}
+      filling={autoplay}
+      fillKey={`${active}-${inView}`}
+      after={<PlayToggle playing={showingPause} onToggle={togglePlay} />}
+    />
+  );
 
   return (
-    <section id="story" aria-labelledby="story-title" className="relative bg-night text-white">
+    <section id="story" aria-labelledby="story-title" className="relative scroll-mt-16 bg-night text-white">
       <div className="mx-auto max-w-6xl border-t border-night-line px-5 pt-14 md:px-8 md:pt-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <h2 id="story-title" className="text-[1.9rem] md:text-[2.8rem]">
@@ -52,77 +129,108 @@ export function Story() {
           </p>
         </div>
         <p className="sr-only">
-          An animated example of a customer finding a local business on their phone, step by step, alongside what the
-          business owner sees.
+          An example of a customer finding a local business on their phone, in {n} steps, alongside what the business
+          owner sees. Use the previous and next buttons or the step list to move through it.
         </p>
       </div>
 
-      {/* Scroll track: the stage's height plus a stretch of scrolling for each step */}
       <div
-        ref={track}
-        className="relative h-[calc(100svh-4rem+var(--n)*72svh)] md:h-[calc(100svh-4rem+var(--n)*80svh)]"
-        style={{ "--n": n } as React.CSSProperties}
+        ref={stage}
+        className="mx-auto grid max-w-6xl grid-rows-[auto_auto_auto] px-5 pb-4 pt-3 md:h-[min(780px,calc(100svh-5rem))] md:min-h-[620px] md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14"
       >
-        <div className="sticky top-16 h-[calc(100svh-4rem)] overflow-hidden">
-          <div className="mx-auto grid h-full max-w-6xl grid-rows-[1fr_auto] px-5 pb-5 pt-4 md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14">
-            {/* Captions. Desktop: left column. Mobile: under the phone.
-                Every caption is rendered invisibly in the same grid cell to reserve the
-                tallest one's height; the visible one swaps with a short timed fade
-                (out 160ms, then in 260ms) that always completes. */}
-            <div aria-hidden className="relative order-2 mt-4 grid items-center md:order-1 md:mt-0">
-              {steps.map((s, i) => (
-                <div key={s.title} className="invisible col-start-1 row-start-1">
-                  <Caption index={i} />
-                </div>
-              ))}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={active}
-                  className="col-start-1 row-start-1"
-                  initial={reduce ? false : { opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
-                  exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
-                >
-                  <Caption index={active} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <ol className="sr-only">
-              {steps.map((s, i) => (
-                <li key={s.title} aria-current={i === active ? "step" : undefined}>
-                  <h3>
-                    {s.service}: {s.title}
-                  </h3>
-                  <p>{s.body}</p>
-                </li>
-              ))}
-            </ol>
-
-            <div className="relative order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full">
-              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" overlay={<MobileAlert active={active} engaged={engaged} />}
-                overlayTop={step.banner?.top}
-                overlayInset={step.banner?.inset} />
-            </div>
-
-            {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
-            <aside aria-hidden className="order-3 hidden md:block md:max-h-full md:self-center">
-              <div className="rounded-lg border border-night-line bg-night-2 p-3.5">
-                <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
-                  <span>Your phone</span>
-                  <span>Example</span>
-                </p>
-                <OwnerFeed active={active} />
+        {/* Captions. Desktop: left column. Mobile: under the phone. Every caption is
+            rendered invisibly in the same cell to reserve the tallest one's height.
+            On phones the phone is sized so phone + controls + caption fit on one screen. */}
+        <div className="relative order-3 mt-3 md:order-1 md:mt-0 md:self-center">
+          <div aria-hidden className="grid items-center">
+            {steps.map((s, i) => (
+              <div key={s.title} className="invisible col-start-1 row-start-1">
+                <Caption index={i} />
               </div>
-              <Progress active={active} />
-            </aside>
+            ))}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={active}
+                className="col-start-1 row-start-1"
+                initial={reduce ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
+                exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
+              >
+                <Caption index={active} />
+              </motion.div>
+            </AnimatePresence>
           </div>
+          <FollowHint
+            show={!interacted}
+            label="Use the arrows to follow along"
+            className="absolute left-0 top-full mt-7 hidden md:flex"
+          />
         </div>
+        <ol className="sr-only">
+          {steps.map((s, i) => (
+            <li key={s.title} aria-current={i === active ? "step" : undefined}>
+              <h3>
+                {s.service}: {s.title}
+              </h3>
+              <p>{s.body}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="sr-only" aria-live="polite">
+          {announce}
+        </p>
+
+        <div
+          className="relative order-1 h-[min(560px,calc(100svh-17rem))] min-h-[340px] touch-pan-y md:order-2 md:h-[702px] md:max-h-full"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <Phone
+            screen={step.screen}
+            maxScale={1.17}
+            className="h-full w-full"
+            overlay={<MobileAlert active={active} engaged={inView} />}
+            overlayTop={step.banner?.top}
+            overlayInset={step.banner?.inset}
+          />
+          <FollowHint
+            show={!interacted}
+            label="Tap → or swipe to follow along"
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm bg-night/85 px-2.5 py-1.5 backdrop-blur md:hidden"
+          />
+        </div>
+
+        {/* Mobile controls: centered under the phone */}
+        <nav aria-label="Story steps" className="order-2 mt-3 flex items-center gap-3 md:hidden">
+          <PrevButton active={active} onPrev={prev} />
+          <div className="flex-1">{progress}</div>
+          <NextButton active={active} onNext={next} />
+        </nav>
+
+        {/* Owner's side, desktop: the five latest events, with the controls fixed
+            at the bottom of the column, level with the phone's bottom edge */}
+        <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-center">
+          <div aria-hidden className="rounded-lg border border-night-line bg-night-2 p-3.5">
+            <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
+              <span>Your phone</span>
+              <span>Example</span>
+            </p>
+            <OwnerFeed active={active} />
+          </div>
+          <nav aria-label="Story steps" className="mt-auto pt-3">
+            {progress}
+            <div className="mt-2 flex items-center justify-between">
+              <PrevButton active={active} onPrev={prev} />
+              <NextButton active={active} onNext={next} />
+            </div>
+          </nav>
+        </aside>
       </div>
 
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:px-8 md:pb-28">
         <div className="border-t border-night-line pt-12 md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-16 md:pt-16">
           <h2 className="max-w-[20ch] text-[1.9rem] md:text-[3rem]">
-            That&rsquo;s the whole system. <span className="text-clay-glow">We set it up and keep it running.</span>
+            That&rsquo;s the whole system. We set it up and keep it running.
           </h2>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-0">
             <a
@@ -205,8 +313,8 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
               )}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="flex items-center justify-between gap-2 font-mono text-[0.56rem] uppercase tracking-[0.05em] text-muted">
-                <span>Your phone &middot; example</span>
+              <p className="flex items-center justify-between gap-2 whitespace-nowrap font-mono text-[0.56rem] uppercase tracking-[0.05em] text-muted">
+                <span className="truncate">Your phone &middot; example</span>
                 <span>now</span>
               </p>
               <p className="flex items-center justify-between gap-2 text-[0.8rem] font-semibold leading-tight">
@@ -259,19 +367,6 @@ function OwnerFeed({ active }: { active: number }) {
         ))}
       </AnimatePresence>
     </ul>
-  );
-}
-
-function Progress({ active }: { active: number }) {
-  return (
-    <div className="mt-3 flex gap-1">
-      {steps.map((s, i) => (
-        <span
-          key={s.title}
-          className={cn("h-[3px] flex-1 transition-colors duration-500", i <= active ? "bg-clay-glow" : "bg-white/12")}
-        />
-      ))}
-    </div>
   );
 }
 

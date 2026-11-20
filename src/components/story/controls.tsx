@@ -3,9 +3,12 @@
 // Controls for the phone story: previous/next buttons, a clickable progress bar
 // with a step counter, and a one-time "scroll to follow along" hint.
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { steps } from "./steps";
+
+// How long autoplay waits on each step.
+export const AUTOPLAY_MS = 5000;
 
 const n = steps.length;
 
@@ -39,10 +42,16 @@ export function NextButton({ active, onNext }: { active: number; onNext: () => v
 export function StepProgress({
   active,
   onJump,
+  filling,
+  fillKey,
   className,
 }: {
   active: number;
   onJump: (i: number) => void;
+  /** Autoplay is running: the current dash fills over the 5-second wait. */
+  filling?: boolean;
+  /** Changes whenever the fill should restart (new step, back on screen). */
+  fillKey?: string;
   className?: string;
 }) {
   return (
@@ -60,10 +69,18 @@ export function StepProgress({
             >
               <span
                 className={cn(
-                  "block h-[3px] transition-[background-color,transform] duration-300 group-hover:scale-y-[1.8]",
-                  i <= active ? "bg-clay-glow" : "bg-white/15 group-hover:bg-white/45"
+                  "relative block h-[3px] overflow-hidden transition-[background-color,transform] duration-300 group-hover:scale-y-[1.8]",
+                  i < active || (i === active && !filling) ? "bg-clay-glow" : "bg-white/15 group-hover:bg-white/45"
                 )}
-              />
+              >
+                {i === active && filling && (
+                  <span
+                    key={fillKey}
+                    className="absolute inset-y-0 left-0 w-full origin-left bg-clay-glow"
+                    style={{ animation: `dash-fill ${AUTOPLAY_MS}ms linear both` }}
+                  />
+                )}
+              </span>
             </button>
           </li>
         ))}
@@ -75,7 +92,8 @@ export function StepProgress({
   );
 }
 
-export function ScrollHint({ show, className }: { show: boolean; className?: string }) {
+// "Use the arrows / Tap → or swipe to follow along": shown until the first interaction.
+export function FollowHint({ show, label, className }: { show: boolean; label: string; className?: string }) {
   const reduce = useReducedMotion();
   return (
     <AnimatePresence>
@@ -86,8 +104,7 @@ export function ScrollHint({ show, className }: { show: boolean; className?: str
           initial={false}
           exit={{ opacity: 0, transition: { duration: reduce ? 0 : 0.3 } }}
         >
-          Scroll to follow along
-          <ChevronDown className={cn("size-3.5", !reduce && "animate-[hint-bob_1.6s_ease-in-out_infinite]")} />
+          {label}
         </motion.p>
       )}
     </AnimatePresence>

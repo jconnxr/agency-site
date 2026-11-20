@@ -1,134 +1,58 @@
 "use client";
 
-// "Watch a customer find you": a tall scroll track with a sticky stage inside.
-// Scroll position picks the active step; the phone, the caption and the owner's
-// feed all follow it. Every caption stays in the DOM so screen readers get each step.
+// "Watch a customer find you": a normal-height section (no scroll pinning). The
+// story moves by the arrows, the progress dashes, a sideways swipe on the phone,
+// left/right keys while the section is in view, and a 5-second autoplay that runs
+// while the section is on screen until the visitor takes over or the story ends.
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { scrollToY } from "@/lib/scroll";
-import { NextButton, PrevButton, ScrollHint, StepProgress } from "./controls";
+import { AUTOPLAY_MS, FollowHint, NextButton, PrevButton, StepProgress } from "./controls";
 import { Phone } from "./phone";
 import { steps, type OwnerEvent } from "./steps";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const n = steps.length;
 
 export function Story() {
-  const track = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  // True while the stage is pinned on screen; mobile banners only run then.
-  const [engaged, setEngaged] = useState(false);
-
-  const stRef = useRef<ScrollTrigger | null>(null);
-  // Step a button/key/swipe is heading to, so quick repeat presses keep counting
-  // from there instead of from the step still on screen.
-  const pending = useRef<number | null>(null);
-  const pendingTimer = useRef<number>(0);
-  // The scroll hint shows on step 1 until the visitor first reaches step 2.
-  const [movedOn, setMovedOn] = useState(false);
-  useEffect(() => {
-    if (active > 0) setMovedOn(true);
-  }, [active]);
+  const reduce = useReducedMotion();
+  // Mostly on screen? Drives autoplay, the arrow keys and the mobile banners.
+  const [inView, setInView] = useState(false);
+  // Autoplay runs until the first interaction or the last step; never with reduced motion.
+  const [userTookOver, setUserTookOver] = useState(false);
+  // Announced to screen readers only for changes the visitor makes, not autoplay.
+  const [announce, setAnnounce] = useState("");
 
   useEffect(() => {
-    if (!track.current) return;
-    const st = (stRef.current = ScrollTrigger.create({
-      trigger: track.current,
-      start: "top 64px",
-      end: "bottom bottom",
-      onToggle: (self) => setEngaged(self.isActive),
-      onUpdate: (self) => {
-        const i = Math.min(n - 1, Math.floor(self.progress * n));
-        setActive((prev) => (prev === i ? prev : i));
-        if (pending.current === i) pending.current = null;
-      },
-    }));
-    return () => {
-      st.kill();
-      stRef.current = null;
-    };
+    const el = stage.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
-  // Scroll the page to the start of step i. Scroll stays the single source of
-  // truth, so the phone, caption and feed follow exactly as if the visitor scrolled.
+  const autoplay = !reduce && !userTookOver && inView && active < n - 1;
+  useEffect(() => {
+    if (!autoplay) return;
+    const t = window.setTimeout(() => setActive((a) => Math.min(n - 1, a + 1)), AUTOPLAY_MS);
+    return () => window.clearTimeout(t);
+  }, [autoplay, active]);
+
   const goTo = (i: number) => {
-    const st = stRef.current;
-    if (!st) return;
     const target = Math.max(0, Math.min(n - 1, i));
-    pending.current = target;
-    window.clearTimeout(pendingTimer.current);
-    pendingTimer.current = window.setTimeout(() => (pending.current = null), 1400);
-    scrollToY(st.start + (st.end - st.start) * ((target + 0.12) / n));
+    setUserTookOver(true);
+    setActive(target);
+    setAnnounce(`Step ${target + 1} of ${n}: ${steps[target].title}`);
   };
-  const from = () => pending.current ?? active;
-  const next = () => goTo(from() + 1);
-  const prev = () => goTo(from() - 1);
+  const next = () => goTo(active + 1);
+  const prev = () => goTo(active - 1);
 
-  // Wheel/trackpad: while the story is pinned, one gesture moves exactly one step.
-  // The first wheel event of a gesture starts a smooth scroll to the next/previous
-  // step; the rest of that gesture (trackpad momentum included) is absorbed until
-  // the wheel has been quiet for a moment. At the ends (down on the last step, up
-  // on the first) the wheel is left alone so nobody gets trapped in the section.
-  // Runs in the capture phase so it gets the event before Lenis does.
-  const live = useRef({ active: 0, engaged: false, goTo: (_: number) => {} });
-  live.current = { active, engaged, goTo };
+  // Left/right arrow keys while the section is in view
   useEffect(() => {
-    const g = { locked: false, minUntil: 0, quiet: 0, last: 0, wasEngaged: false };
-    const QUIET = 170; // ms of no wheel events that ends a gesture
-    const MIN_LOCK = 520; // a step's scroll is ~900ms; don't take a new gesture too early
-    const release = () => {
-      const wait = g.minUntil - performance.now();
-      if (wait > 0) g.quiet = window.setTimeout(release, wait);
-      else g.locked = false;
-    };
-    const absorb = (e: WheelEvent) => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      window.clearTimeout(g.quiet);
-      g.quiet = window.setTimeout(release, QUIET);
-    };
-    const onWheel = (e: WheelEvent) => {
-      const now = performance.now();
-      const midGesture = now - g.last < QUIET;
-      g.last = now;
-      const { engaged: on, active: act, goTo: jump } = live.current;
-      const entering = on && !g.wasEngaged;
-      g.wasEngaged = on;
-      if (!on || e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-
-      const cur = pending.current ?? act;
-      if (g.locked) return absorb(e);
-      // A flick that carries the visitor into the story settles on the current step
-      // instead of skipping ahead.
-      if (entering && midGesture) {
-        g.locked = true;
-        g.minUntil = now + MIN_LOCK;
-        jump(cur);
-        return absorb(e);
-      }
-      const dir = e.deltaY > 0 ? 1 : -1;
-      if ((dir > 0 && cur >= n - 1) || (dir < 0 && cur <= 0)) return; // let them leave
-      if (Math.abs(e.deltaY) < 2) return;
-      g.locked = true;
-      g.minUntil = now + MIN_LOCK;
-      jump(cur + dir);
-      absorb(e);
-    };
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => {
-      window.removeEventListener("wheel", onWheel, { capture: true });
-      window.clearTimeout(g.quiet);
-    };
-  }, []);
-
-  // Left/right arrow keys while the story is pinned on screen
-  useEffect(() => {
-    if (!engaged) return;
+    if (!inView) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
       const el = e.target as HTMLElement | null;
@@ -145,8 +69,8 @@ export function Story() {
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  // Horizontal swipe on the phone (touch): next/previous step. Vertical scrolling
-  // is untouched: only a clearly sideways swipe counts, and the phone allows pan-y.
+  // Sideways swipe on the phone (touch). Only a clearly horizontal swipe counts,
+  // and the phone allows vertical panning, so page scrolling is untouched.
   const touch = useRef<{ x: number; y: number } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
@@ -163,10 +87,12 @@ export function Story() {
   };
 
   const step = steps[active];
-  const reduce = useReducedMotion();
+  const progress = (
+    <StepProgress active={active} onJump={goTo} filling={autoplay} fillKey={`${active}-${inView}`} />
+  );
 
   return (
-    <section id="story" aria-labelledby="story-title" className="relative bg-night text-white">
+    <section id="story" aria-labelledby="story-title" className="relative scroll-mt-16 bg-night text-white">
       <div className="mx-auto max-w-6xl border-t border-night-line px-5 pt-14 md:px-8 md:pt-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <h2 id="story-title" className="text-[1.9rem] md:text-[2.8rem]">
@@ -177,100 +103,102 @@ export function Story() {
           </p>
         </div>
         <p className="sr-only">
-          An animated example of a customer finding a local business on their phone, step by step, alongside what the
-          business owner sees.
+          An example of a customer finding a local business on their phone, in {n} steps, alongside what the business
+          owner sees. Use the previous and next buttons or the step list to move through it.
         </p>
       </div>
 
-      {/* Scroll track: the stage's height plus a stretch of scrolling for each step */}
       <div
-        ref={track}
-        className="relative h-[calc(100svh-4rem+var(--n)*72svh)] md:h-[calc(100svh-4rem+var(--n)*80svh)]"
-        style={{ "--n": n } as React.CSSProperties}
+        ref={stage}
+        className="mx-auto grid max-w-6xl grid-rows-[auto_auto_auto] px-5 pb-4 pt-3 md:h-[min(780px,calc(100svh-5rem))] md:min-h-[620px] md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14"
       >
-        <div className="sticky top-16 h-[calc(100svh-4rem)] overflow-hidden">
-          <div className="mx-auto grid h-full max-w-6xl grid-rows-[1fr_auto_auto] px-5 pb-4 pt-3 md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14">
-            {/* Captions. Desktop: left column. Mobile: under the phone.
-                Every caption is rendered invisibly in the same grid cell to reserve the
-                tallest one's height; the visible one swaps with a short timed fade
-                (out 160ms, then in 260ms) that always completes. */}
-            <div className="relative order-3 mt-2.5 md:order-1 md:mt-0 md:self-center">
-            <div aria-hidden className="grid items-center">
-              {steps.map((s, i) => (
-                <div key={s.title} className="invisible col-start-1 row-start-1">
-                  <Caption index={i} />
-                </div>
-              ))}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={active}
-                  className="col-start-1 row-start-1"
-                  initial={reduce ? false : { opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
-                  exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
-                >
-                  <Caption index={active} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <ScrollHint show={!movedOn} className="absolute left-0 top-full mt-7 hidden md:flex" />
-            </div>
-            <p className="sr-only" aria-live="polite">
-              Step {active + 1} of {n}: {step.title}
-            </p>
-            <ol className="sr-only">
-              {steps.map((s, i) => (
-                <li key={s.title} aria-current={i === active ? "step" : undefined}>
-                  <h3>
-                    {s.service}: {s.title}
-                  </h3>
-                  <p>{s.body}</p>
-                </li>
-              ))}
-            </ol>
-
-            <div
-              className="relative order-1 min-h-0 touch-pan-y md:order-2 md:h-[702px] md:max-h-full"
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
-            >
-              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" overlay={<MobileAlert active={active} engaged={engaged} />}
-                overlayTop={step.banner?.top}
-                overlayInset={step.banner?.inset} />
-              <ScrollHint
-                show={!movedOn}
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm bg-night/85 px-2.5 py-1.5 backdrop-blur md:hidden"
-              />
-            </div>
-
-            {/* Mobile controls: centered under the phone */}
-            <nav aria-label="Story steps" className="order-2 mt-2 flex items-center gap-3 md:hidden">
-              <PrevButton active={active} onPrev={prev} />
-              <StepProgress active={active} onJump={goTo} className="flex-1" />
-              <NextButton active={active} onNext={next} />
-            </nav>
-
-            {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
-            <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-center">
-              <div aria-hidden className="rounded-lg border border-night-line bg-night-2 p-3.5">
-                <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
-                  <span>Your phone</span>
-                  <span>Example</span>
-                </p>
-                <OwnerFeed active={active} />
+        {/* Captions. Desktop: left column. Mobile: under the phone. Every caption is
+            rendered invisibly in the same cell to reserve the tallest one's height.
+            On phones the phone is sized so phone + controls + caption fit on one screen. */}
+        <div className="relative order-3 mt-3 md:order-1 md:mt-0 md:self-center">
+          <div aria-hidden className="grid items-center">
+            {steps.map((s, i) => (
+              <div key={s.title} className="invisible col-start-1 row-start-1">
+                <Caption index={i} />
               </div>
-              {/* Desktop controls: fixed at the bottom of the column (level with the
-                  phone's bottom edge) so they never move as the feed grows */}
-              <nav aria-label="Story steps" className="mt-auto pt-3">
-                <StepProgress active={active} onJump={goTo} />
-                <div className="mt-2 flex items-center justify-between">
-                  <PrevButton active={active} onPrev={prev} />
-                  <NextButton active={active} onNext={next} />
-                </div>
-              </nav>
-            </aside>
+            ))}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={active}
+                className="col-start-1 row-start-1"
+                initial={reduce ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
+                exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
+              >
+                <Caption index={active} />
+              </motion.div>
+            </AnimatePresence>
           </div>
+          <FollowHint
+            show={!userTookOver}
+            label="Use the arrows to follow along"
+            className="absolute left-0 top-full mt-7 hidden md:flex"
+          />
         </div>
+        <ol className="sr-only">
+          {steps.map((s, i) => (
+            <li key={s.title} aria-current={i === active ? "step" : undefined}>
+              <h3>
+                {s.service}: {s.title}
+              </h3>
+              <p>{s.body}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="sr-only" aria-live="polite">
+          {announce}
+        </p>
+
+        <div
+          className="relative order-1 h-[min(560px,calc(100svh-17rem))] min-h-[340px] touch-pan-y md:order-2 md:h-[702px] md:max-h-full"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <Phone
+            screen={step.screen}
+            maxScale={1.17}
+            className="h-full w-full"
+            overlay={<MobileAlert active={active} engaged={inView} />}
+            overlayTop={step.banner?.top}
+            overlayInset={step.banner?.inset}
+          />
+          <FollowHint
+            show={!userTookOver}
+            label="Tap → or swipe to follow along"
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm bg-night/85 px-2.5 py-1.5 backdrop-blur md:hidden"
+          />
+        </div>
+
+        {/* Mobile controls: centered under the phone */}
+        <nav aria-label="Story steps" className="order-2 mt-3 flex items-center gap-3 md:hidden">
+          <PrevButton active={active} onPrev={prev} />
+          <div className="flex-1">{progress}</div>
+          <NextButton active={active} onNext={next} />
+        </nav>
+
+        {/* Owner's side, desktop: the five latest events, with the controls fixed
+            at the bottom of the column, level with the phone's bottom edge */}
+        <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-center">
+          <div aria-hidden className="rounded-lg border border-night-line bg-night-2 p-3.5">
+            <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
+              <span>Your phone</span>
+              <span>Example</span>
+            </p>
+            <OwnerFeed active={active} />
+          </div>
+          <nav aria-label="Story steps" className="mt-auto pt-3">
+            {progress}
+            <div className="mt-2 flex items-center justify-between">
+              <PrevButton active={active} onPrev={prev} />
+              <NextButton active={active} onNext={next} />
+            </div>
+          </nav>
+        </aside>
       </div>
 
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:px-8 md:pb-28">

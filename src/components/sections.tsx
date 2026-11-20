@@ -133,7 +133,7 @@ export function WhoFor() {
             <p className={cn("mt-8 text-xs font-bold uppercase tracking-[0.16em]", g.dark ? "text-white/50" : "text-muted")}>
               Sound familiar?
             </p>
-            <ul className="mt-4 space-y-3.5">
+            <ul className="mb-10 mt-4 space-y-3.5">
               {g.pains.map((t) => (
                 <li key={t} className="flex gap-3">
                   <span
@@ -152,7 +152,7 @@ export function WhoFor() {
             <a
               href="#packages"
               className={cn(
-                "group mt-auto flex items-center justify-between gap-4 border-t pt-6 [margin-top:max(2.5rem,auto)]",
+                "group mt-auto flex items-center justify-between gap-4 border-t pt-6",
                 g.dark ? "border-white/15" : "border-line"
               )}
             >

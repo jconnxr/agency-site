@@ -19,7 +19,6 @@ const CARD = [480, 960];
 
 // name -> which width set it gets
 const images = {
-  "designer-okc-skyline": WIDE,
   "drone-operator": WIDE,
   "aerial-roof": WIDE,
   "barbershop-meeting": CARD,

@@ -3,7 +3,7 @@
 // Controls for the phone story: previous/next buttons, a clickable progress bar
 // with a step counter, and a one-time "scroll to follow along" hint.
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { steps } from "./steps";
 
@@ -44,6 +44,7 @@ export function StepProgress({
   onJump,
   filling,
   fillKey,
+  after,
   className,
 }: {
   active: number;
@@ -52,6 +53,8 @@ export function StepProgress({
   filling?: boolean;
   /** Changes whenever the fill should restart (new step, back on screen). */
   fillKey?: string;
+  /** Rendered after the counter (the play/pause toggle). */
+  after?: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -88,7 +91,22 @@ export function StepProgress({
       <span className="shrink-0 font-mono text-[0.78rem] tabular-nums text-white/60">
         <span className="text-white">{active + 1}</span> / {n}
       </span>
+      {after}
     </div>
+  );
+}
+
+// Pause/play for the autoplay. Same look as the arrows, a size smaller.
+export function PlayToggle({ playing, onToggle }: { playing: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={playing ? "Pause the story" : "Play the story"}
+      className={cn(btn, "h-9 min-w-9 shrink-0 px-0")}
+    >
+      {playing ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
+    </button>
   );
 }
 

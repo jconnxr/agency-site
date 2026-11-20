@@ -3,13 +3,14 @@
 // "Watch a customer find you": a normal-height section (no scroll pinning). The
 // story moves by the arrows, the progress dashes, a sideways swipe on the phone,
 // left/right keys while the section is in view, and a 5-second autoplay that runs
-// while the section is on screen until the visitor takes over or the story ends.
+// while the section is on screen. Autoplay has a Pause/Play button, pauses when the
+// visitor takes over, and stops at the last step.
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AUTOPLAY_MS, FollowHint, NextButton, PrevButton, StepProgress } from "./controls";
+import { AUTOPLAY_MS, FollowHint, NextButton, PlayToggle, PrevButton, StepProgress } from "./controls";
 import { Phone } from "./phone";
 import { steps, type OwnerEvent } from "./steps";
 
@@ -22,7 +23,12 @@ export function Story() {
   // Mostly on screen? Drives autoplay, the arrow keys and the mobile banners.
   const [inView, setInView] = useState(false);
   // Autoplay runs until the first interaction or the last step; never with reduced motion.
-  const [userTookOver, setUserTookOver] = useState(false);
+  // null = never touched: autoplay on, unless reduced motion. The Pause/Play button
+  // sets it explicitly; arrows, dashes, swipes and keys pause it.
+  const [playChoice, setPlayChoice] = useState<boolean | null>(null);
+  const playing = playChoice ?? !reduce;
+  // First interaction of any kind hides the "follow along" hint.
+  const [interacted, setInteracted] = useState(false);
   // Announced to screen readers only for changes the visitor makes, not autoplay.
   const [announce, setAnnounce] = useState("");
 
@@ -34,7 +40,7 @@ export function Story() {
     return () => io.disconnect();
   }, []);
 
-  const autoplay = !reduce && !userTookOver && inView && active < n - 1;
+  const autoplay = playing && inView && active < n - 1;
   useEffect(() => {
     if (!autoplay) return;
     const t = window.setTimeout(() => setActive((a) => Math.min(n - 1, a + 1)), AUTOPLAY_MS);
@@ -43,9 +49,23 @@ export function Story() {
 
   const goTo = (i: number) => {
     const target = Math.max(0, Math.min(n - 1, i));
-    setUserTookOver(true);
+    setInteracted(true);
+    setPlayChoice(false);
     setActive(target);
     setAnnounce(`Step ${target + 1} of ${n}: ${steps[target].title}`);
+  };
+  // Pause stops autoplay; Play resumes it (from step 1 if the story has finished).
+  const showingPause = playing && active < n - 1;
+  const togglePlay = () => {
+    setInteracted(true);
+    if (showingPause) {
+      setPlayChoice(false);
+      setAnnounce("Story paused");
+    } else {
+      if (active === n - 1) setActive(0);
+      setPlayChoice(true);
+      setAnnounce("Story playing");
+    }
   };
   const next = () => goTo(active + 1);
   const prev = () => goTo(active - 1);
@@ -88,7 +108,13 @@ export function Story() {
 
   const step = steps[active];
   const progress = (
-    <StepProgress active={active} onJump={goTo} filling={autoplay} fillKey={`${active}-${inView}`} />
+    <StepProgress
+      active={active}
+      onJump={goTo}
+      filling={autoplay}
+      fillKey={`${active}-${inView}`}
+      after={<PlayToggle playing={showingPause} onToggle={togglePlay} />}
+    />
   );
 
   return (
@@ -135,7 +161,7 @@ export function Story() {
             </AnimatePresence>
           </div>
           <FollowHint
-            show={!userTookOver}
+            show={!interacted}
             label="Use the arrows to follow along"
             className="absolute left-0 top-full mt-7 hidden md:flex"
           />
@@ -168,7 +194,7 @@ export function Story() {
             overlayInset={step.banner?.inset}
           />
           <FollowHint
-            show={!userTookOver}
+            show={!interacted}
             label="Tap → or swipe to follow along"
             className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm bg-night/85 px-2.5 py-1.5 backdrop-blur md:hidden"
           />

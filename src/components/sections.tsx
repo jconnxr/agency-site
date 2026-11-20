@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -13,8 +14,6 @@ import {
   MapPin,
   Phone,
   Repeat,
-  Search,
-  Star,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -76,6 +75,11 @@ export function WhoFor() {
       fit: "Most start with Launch",
       price: "from $750 one-time, live in 14 days",
       dark: false,
+      photo: {
+        src: "/images/barbershop-meeting.webp",
+        alt: "Two people at a table in a barbershop looking over a website layout on a tablet",
+        position: "object-[50%_62%]",
+      },
     },
     {
       title: "Already up and running",
@@ -88,6 +92,11 @@ export function WhoFor() {
       fit: "Most start with Get Found or Get Leads",
       price: "from $397 a month",
       dark: true,
+      photo: {
+        src: "/images/contractor-truck.webp",
+        alt: "A contractor sitting in his work truck, smiling at a message on his phone",
+        position: "object-[50%_38%]",
+      },
     },
   ];
 
@@ -104,10 +113,21 @@ export function WhoFor() {
             key={g.title}
             data-reveal
             className={cn(
-              "flex flex-col rounded-lg p-8 md:p-10",
+              "flex flex-col overflow-hidden rounded-lg p-8 md:p-10",
               g.dark ? "bg-ink text-white" : "border border-line bg-white"
             )}
           >
+            <div className="relative -mx-8 -mt-8 mb-8 h-48 md:-mx-10 md:-mt-10 md:mb-10 md:h-56">
+              <Image src={g.photo.src} alt={g.photo.alt} fill sizes="(min-width: 768px) 560px, 100vw" className={cn("object-cover", g.photo.position)} />
+              {/* fades the photo into the card so it reads as part of it */}
+              <div
+                aria-hidden
+                className={cn(
+                  "absolute inset-0 bg-gradient-to-b from-transparent from-45%",
+                  g.dark ? "to-ink" : "to-white"
+                )}
+              />
+            </div>
             <h3 className={cn("text-3xl font-bold", g.dark ? "text-wheat" : "text-flag")}>{g.title}</h3>
             <p className={cn("mt-3 text-lg", g.dark ? "text-white/75" : "text-muted")}>{g.lede}</p>
             <p className={cn("mt-8 text-xs font-bold uppercase tracking-[0.16em]", g.dark ? "text-white/50" : "text-muted")}>
@@ -179,22 +199,31 @@ export function Showcase() {
           <Tile className="md:col-span-2" tier="Launch" title="A website that gets calls" body="Fast, mobile-first, and built around one job: getting people to call or book.">
             <SiteArt />
           </Tile>
-          <Tile tier="Get Found" title="Show up on Google Maps" body="Weekly posts, fresh photos, review replies and consistent listings everywhere people search.">
-            <MapsArt />
-          </Tile>
+          <Tile
+            tier="Get Found"
+            title="Show up on Google Maps"
+            body="Weekly posts, fresh photos, review replies and consistent listings everywhere people search."
+            photo={{ src: "/images/local-search-plaza.webp", alt: "A hand holding a phone showing a map and business listing on a brick-storefront street", position: "object-[50%_45%]" }}
+          />
           <Tile tier="Launch Pro" title="Online booking" body="Customers pick a time themselves. No more phone tag.">
             <CalendarArt />
           </Tile>
-          <Tile tier="Get Leads" title="Social, handled" body="Three posts a week on two platforms, planned and designed for you.">
-            <SocialArt />
-          </Tile>
-          <Tile tier="Automate" title="Never miss a lead" body="Missed calls get a text back, leads get an instant reply, and customers get reminders.">
-            <TextBackArt />
-          </Tile>
+          <Tile
+            tier="Get Leads"
+            title="Social, handled"
+            body="Three posts a week on two platforms, planned and designed for you."
+            photo={{ src: "/images/chef-filming.webp", alt: "Someone filming a chef plating a dish with a phone on a handheld gimbal", position: "object-[50%_40%]" }}
+          />
+          <Tile
+            tier="Automate"
+            title="Never miss a lead"
+            body="Missed calls get a text back, leads get an instant reply, and customers get reminders."
+            photo={{ src: "/images/auto-shop-counter.webp", alt: "A phone showing a text conversation, propped against the register on an auto shop counter", position: "object-[45%_55%]" }}
+          />
           <Tile tier="Get Leads" title="Ads you can measure" body="Meta or Google ads with call and form tracking, so you see your cost per lead.">
             <AdsArt />
           </Tile>
-          <Tile className="md:col-span-2" tier="Full Department" title="Photo, video and drone" body="A monthly half-day shoot cut into 8–12 clips, plus quarterly drone footage of your work." dark>
+          <Tile className="md:col-span-2" tier="Full Department" title="Photo, video and drone" body="A monthly half-day shoot cut into 8–12 clips, plus quarterly drone footage of your work." dark exposeArt>
             <ShootArt />
           </Tile>
         </div>
@@ -210,13 +239,17 @@ function Tile({
   dark,
   className,
   children,
+  photo,
+  exposeArt,
 }: {
   title: string;
   body: string;
   tier: string;
   dark?: boolean;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  photo?: { src: string; alt: string; position: string };
+  exposeArt?: boolean;
 }) {
   return (
     <article
@@ -227,9 +260,23 @@ function Tile({
         className
       )}
     >
-      <div className="relative h-52 overflow-hidden" aria-hidden>
-        {children}
-      </div>
+      {photo ? (
+        <div className="relative h-52 overflow-hidden">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            sizes="(min-width: 768px) 380px, 100vw"
+            className={cn("object-cover transition-transform duration-700 group-hover:scale-105", photo.position)}
+          />
+          {/* a light flag-blue wash ties the photos to the drawn tiles around them */}
+          <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,104,176,0.10),rgba(22,38,59,0.22))]" />
+        </div>
+      ) : (
+        <div className="relative h-52 overflow-hidden" aria-hidden={!exposeArt}>
+          {children}
+        </div>
+      )}
       <div className="flex flex-1 flex-col p-6 pt-5">
         <div className="flex items-start justify-between gap-4">
           <h3 className="text-xl font-bold">{title}</h3>
@@ -286,40 +333,6 @@ function SiteArt() {
   );
 }
 
-function MapsArt() {
-  const rows = [
-    { name: "Your business", stars: 5, you: true },
-    { name: "Competitor", stars: 4 },
-    { name: "Competitor", stars: 4 },
-  ];
-  return (
-    <div className="absolute inset-0 bg-[#e6eef5] p-5">
-      <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs text-muted shadow-sm">
-        <Search className="size-3.5" /> foundation repair near me
-      </div>
-      <div className="mt-3 space-y-2">
-        {rows.map((r, i) => (
-          <div
-            key={i}
-            className={cn(
-              "flex items-center gap-2.5 rounded-sm bg-white px-3 py-2 text-xs transition-transform duration-500",
-              r.you ? "shadow-md ring-2 ring-wheat group-hover:scale-[1.03]" : "opacity-60"
-            )}
-          >
-            <MapPin className={cn("size-4", r.you ? "fill-flag text-white" : "fill-muted/40 text-white")} />
-            <span className={cn("flex-1", r.you && "font-semibold text-ink")}>{r.name}</span>
-            <span className="flex">
-              {Array.from({ length: r.stars }).map((_, j) => (
-                <Star key={j} className="size-3 fill-wheat text-wheat" />
-              ))}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function CalendarArt() {
   const booked = new Set([3, 8, 9, 15, 17, 22, 24]);
   return (
@@ -341,38 +354,6 @@ function CalendarArt() {
           ))}
         </div>
         <div className="mt-3 rounded-sm bg-flag py-1.5 text-center text-[10px] font-bold text-white">Confirm booking</div>
-      </div>
-    </div>
-  );
-}
-
-function SocialArt() {
-  const tones = ["bg-flag", "bg-wheat", "bg-sky-deep", "bg-ink", "bg-sky-deep", "bg-flag", "bg-wheat", "bg-ink", "bg-flag"];
-  return (
-    <div className="absolute inset-0 grid place-items-center bg-wheat-soft p-5">
-      <div className="grid w-[170px] grid-cols-3 gap-1.5 transition-transform duration-500 group-hover:rotate-[-3deg] group-hover:scale-105">
-        {tones.map((t, i) => (
-          <span key={i} className={cn("aspect-square rounded-[4px]", t)} />
-        ))}
-      </div>
-      <span className="absolute right-4 top-4 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-ink shadow-sm">
-        3 posts / week
-      </span>
-    </div>
-  );
-}
-
-function TextBackArt() {
-  return (
-    <div className="absolute inset-0 flex flex-col justify-center gap-2 bg-sky px-6 text-[11px]">
-      <div className="flex items-center gap-2 self-start rounded-full bg-white/70 px-2.5 py-1 font-semibold text-muted">
-        <Phone className="size-3" /> Missed call · 2:14 PM
-      </div>
-      <div className="max-w-[85%] self-end rounded-lg rounded-br-sm bg-flag px-3 py-2 text-white shadow-sm">
-        Sorry we missed you! Want us to call back, or book a time here?
-      </div>
-      <div className="max-w-[70%] self-start rounded-lg rounded-bl-sm bg-white px-3 py-2 text-ink shadow-sm transition-transform duration-500 group-hover:-translate-y-1">
-        Booking now, thanks!
       </div>
     </div>
   );
@@ -405,16 +386,17 @@ function AdsArt() {
 
 function ShootArt() {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[linear-gradient(180deg,#2c68b0_0%,#5d8fc9_45%,#e3a83e_100%)]">
-      {/* stylized aerial: fields and a road under a viewfinder */}
-      <svg viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full opacity-90 transition-transform duration-700 group-hover:scale-105">
-        <path d="M0 150 L600 110 L600 220 L0 220 Z" fill="#c98a2a" opacity="0.55" />
-        <path d="M0 175 L600 140 L600 220 L0 220 Z" fill="#9c6a1f" opacity="0.5" />
-        <path d="M250 220 L330 120 L345 120 L300 220 Z" fill="#16263b" opacity="0.55" />
-        <rect x="370" y="104" width="60" height="26" rx="2" fill="#16263b" opacity="0.7" />
-        <rect x="380" y="92" width="40" height="14" fill="#16263b" opacity="0.7" />
-      </svg>
-      <div className="absolute inset-6">
+    <div className="absolute inset-0 overflow-hidden bg-ink">
+      {/* real aerial shot under a drone viewfinder */}
+      <Image
+        src="/images/aerial-roof.webp"
+        alt="Aerial drone photo of a brick home and its roof in an Oklahoma subdivision at golden hour"
+        fill
+        sizes="(min-width: 768px) 760px, 100vw"
+        className="object-cover object-[50%_45%] transition-transform duration-700 group-hover:scale-105"
+      />
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,38,59,0.55)_0%,rgba(22,38,59,0.05)_40%,rgba(22,38,59,0.35)_100%)]" />
+      <div aria-hidden className="absolute inset-6">
         {["left-0 top-0 border-l-2 border-t-2", "right-0 top-0 border-r-2 border-t-2", "bottom-0 left-0 border-b-2 border-l-2", "bottom-0 right-0 border-b-2 border-r-2"].map((c) => (
           <span key={c} className={cn("absolute size-6 border-white/90", c)} />
         ))}
@@ -542,7 +524,18 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-ink text-white/75">
-      <div className="mx-auto max-w-6xl px-5 pt-20 md:px-8">
+      {/* Sunset drone shot behind the closing call to action, fading into the footer */}
+      <div className="absolute inset-x-0 top-0 h-[420px] [mask-image:linear-gradient(to_bottom,black_40%,transparent)] md:h-[400px] md:[mask-image:linear-gradient(to_bottom,black_35%,transparent_95%)]">
+        <Image
+          src="/images/drone-operator.webp"
+          alt="Hands holding a drone controller in an Oklahoma field at sunset, with the drone flying overhead"
+          fill
+          sizes="100vw"
+          className="object-cover object-[62%_20%] md:object-[50%_12%]"
+        />
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,38,59,0.88)_0%,rgba(22,38,59,0.6)_55%,rgba(22,38,59,0.45)_100%)]" />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8">
         <div className="flex flex-col justify-between gap-10 border-b border-white/10 pb-14 md:flex-row md:items-end">
           <h2 className="max-w-[16ch] text-4xl font-extrabold text-white md:text-5xl">
             Ready to be the one they find first?

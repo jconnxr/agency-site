@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import {
   ArrowRight,
@@ -45,6 +46,20 @@ export function Hero() {
 
   return (
     <section ref={root} id="top" className="relative overflow-hidden bg-ink text-white">
+      {/* Skyline photo: on mobile it sits behind the top of the hero at roughly its native
+          size and fades out; on desktop it fills the hero. The navy gradients keep the
+          headline at full contrast while the lit skyline shows through on the right. */}
+      <div className="absolute inset-x-0 top-0 h-[500px] [mask-image:linear-gradient(to_bottom,black_50%,transparent)] md:aspect-[1024/559] md:h-auto md:[mask-image:linear-gradient(to_bottom,black_60%,transparent)]">
+        <Image
+          src="/images/designer-okc-skyline.webp"
+          alt="A web designer working late at a desk, with the Oklahoma City skyline lit up in the window behind them"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[28%_50%] md:object-center"
+        />
+        <div aria-hidden className="absolute inset-0 bg-ink/70 md:bg-[linear-gradient(90deg,rgba(22,38,59,0.93)_0%,rgba(22,38,59,0.85)_30%,rgba(22,38,59,0.5)_46%,rgba(22,38,59,0.45)_56%,rgba(22,38,59,0.75)_72%,rgba(22,38,59,0.85)_100%)]" />
+      </div>
       <div aria-hidden className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_40%,black,transparent_75%)]" />
       <div aria-hidden className="absolute -right-40 top-10 size-[520px] rounded-full bg-flag/40 blur-[120px]" />
 

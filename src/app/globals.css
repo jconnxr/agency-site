@@ -1,27 +1,48 @@
 @import "tailwindcss";
 
 /*
-  Brand tokens. Swap these when the real name and brand land.
-  Palette: Oklahoma flag blue + wheat on a cool paper white.
+  Brand tokens.
+  Dark "night" sections for the phone story, warm paper for everything else.
+  One accent, Oklahoma red clay, in three strengths:
+    clay       #C4502B  fills (white text on it passes AA)
+    clay-ink   #A8401F  clay text on paper (5.4:1)
+    clay-glow  #E8693F  clay on night backgrounds (5.8:1)
+  Green is only for success states ("Booked").
+  The older names (paper, sky, flag, wheat...) map onto the new palette so
+  sections that haven't been redesigned yet still match.
 */
 @theme {
-  --color-paper: #f6f8fa;
-  --color-sky: #ddebf6;
-  --color-sky-deep: #b9d4ea;
-  --color-flag: #2c68b0;
-  --color-flag-dark: #1f4f8a;
-  --color-ink: #16263b;
-  --color-muted: #55667b;
-  --color-wheat: #e3a83e;
-  --color-wheat-soft: #f6e3bd;
-  --color-line: #d3dde7;
+  --color-night: #0b1220;
+  --color-night-2: #111a2b;
+  --color-night-line: rgb(255 255 255 / 0.1);
+  --color-clay: #c4502b;
+  --color-clay-ink: #a8401f;
+  --color-clay-glow: #e8693f;
+  --color-clay-soft: #f3ded3;
+  --color-go: #2f8f5b;
+  --color-go-glow: #4cc38a;
 
-  --font-display: var(--font-bitter), "Rockwell", Georgia, serif;
-  --font-sans: var(--font-public-sans), system-ui, sans-serif;
+  --color-paper: #f4f1ea;
+  --color-card: #fbf9f4;
+  --color-ink: #0f1a2a;
+  --color-muted: #5b6370;
+  --color-line: #dcd4c5;
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 22px;
+  /* legacy names */
+  --color-sky: #eae4d8;
+  --color-sky-deep: #d9d0bf;
+  --color-flag: #1b2a44;
+  --color-flag-dark: #121d31;
+  --color-wheat: var(--color-clay);
+  --color-wheat-soft: var(--color-clay-soft);
+
+  --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
 }
 
 @layer base {
@@ -47,45 +68,29 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
-    line-height: 1.08;
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
     text-wrap: balance;
   }
   p {
     text-wrap: pretty;
   }
   :focus-visible {
-    outline: 3px solid var(--color-wheat);
+    outline: 3px solid var(--color-clay-glow);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 2px;
   }
   ::selection {
     background: var(--color-wheat-soft);
   }
 }
 
-/* Infinite services ribbon. The track holds the list twice, so -50% loops seamlessly. */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@utility animate-marquee {
-  animation: marquee 38s linear infinite;
-}
-@utility animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-/* Faint blueprint grid for dark sections */
-@utility bg-grid {
-  background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
-  background-size: 56px 56px;
+/* Archivo stretched wide: the headline voice. */
+@utility font-wide {
+  font-family: var(--font-display);
+  font-stretch: 125%;
 }
 
 @keyframes acc-down {
@@ -96,6 +101,55 @@
   from { height: var(--radix-accordion-content-height); }
   to { height: 0; }
 }
+
+/* Soft pulse on the hero map pins */
+@keyframes okc-pulse { 0% { transform: scale(0.4); opacity: 0.9; } 80%, 100% { transform: scale(1.6); opacity: 0; } }
+.okc-pulse { transform-box: fill-box; transform-origin: center; animation: okc-pulse 3.6s ease-out infinite; }
+
+/* ---- Phone story screen animations. They run each time a screen becomes active;
+   when a screen isn't active everything sits in its final state. ---- */
+@keyframes story-type { from { max-width: 0; } to { max-width: 210px; } }
+@keyframes story-blink { 50% { opacity: 0; } }
+@keyframes story-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes story-drop { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@keyframes story-tap { 0% { opacity: 0; transform: scale(1.03); } 40% { opacity: 1; transform: scale(1); } 100% { opacity: 0.85; } }
+@keyframes story-grow { from { transform: scaleX(0); } }
+@keyframes story-arrive {
+  from { opacity: 0; transform: translateY(-8px); box-shadow: 0 0 0 0 rgb(196 80 43 / 0); }
+  60% { box-shadow: 0 0 0 5px rgb(196 80 43 / 0.18); }
+  to { opacity: 1; transform: none; box-shadow: 0 0 0 0 rgb(196 80 43 / 0); }
+}
+.story-caret { opacity: 0; }
+.story-tap { opacity: 0; }
+.story-screen[data-active="true"] .story-typed { animation: story-type 1.1s steps(25) 0.35s both; }
+.story-screen[data-active="true"] .story-caret { opacity: 1; animation: story-blink 0.9s steps(1) infinite; }
+.story-screen[data-active="true"] .story-results { animation: story-rise 0.6s cubic-bezier(.2,.8,.2,1) 1.55s both; }
+.story-screen[data-active="true"] .story-pin { animation: story-drop 0.5s cubic-bezier(.3,1.4,.5,1) 1.9s both; }
+.story-screen[data-active="true"] .story-tap { animation: story-tap 0.9s ease-out 2.5s both; }
+.story-screen[data-active="true"] .story-bar { transform-origin: left; animation: story-grow 0.7s cubic-bezier(.2,.8,.2,1) 0.45s both; }
+.story-screen[data-active="true"] .story-new { animation: story-arrive 0.9s cubic-bezier(.2,.8,.2,1) 0.9s both; }
+
+/* Steps 3-9 */
+@keyframes story-scroll { from { transform: translateY(0); } to { transform: translateY(-64px); } }
+@keyframes story-pick { from { background: #fff; color: #1d232c; border-color: #e3e6ea; } to { background: #c4502b; color: #fff; border-color: transparent; } }
+@keyframes story-press { 0%, 100% { transform: none; } 50% { transform: scale(0.96); filter: brightness(1.1); } }
+@keyframes story-banner { from { opacity: 0; transform: translateY(-110%); } to { opacity: 1; transform: none; } }
+@keyframes story-newtile { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+@keyframes story-kenburns { from { transform: scale(1.02); } to { transform: scale(1.14) translateY(-2%); } }
+@keyframes story-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.story-pick { background: #c4502b; }
+.story-screen[data-active="true"] .story-scroll { animation: story-scroll 1s cubic-bezier(.4,0,.2,1) 0.9s both; }
+.story-screen[data-active="true"] .story-pick { animation: story-pick 0.35s ease-out 0.9s both; }
+.story-screen[data-active="true"] .story-press { animation: story-press 0.45s ease-in-out 1.7s both; }
+.story-screen[data-active="true"] .story-msg { animation: story-rise 0.45s cubic-bezier(.2,.8,.2,1) 0.5s both; }
+.story-screen[data-active="true"] .story-d2 { animation-delay: 1.3s; }
+.story-screen[data-active="true"] .story-d3 { animation-delay: 2s; }
+.story-screen[data-active="true"] .story-d4 { animation-delay: 2.7s; }
+.story-screen[data-active="true"] .story-banner { animation: story-banner 0.6s cubic-bezier(.2,.9,.25,1.15) 1.1s both; }
+.story-screen[data-active="true"] .story-rise { animation: story-rise 0.6s cubic-bezier(.2,.8,.2,1) 0.3s both; }
+.story-screen[data-active="true"] .story-newtile { animation: story-newtile 0.55s cubic-bezier(.3,1.4,.5,1) 0.9s both; }
+.story-screen[data-active="true"] .story-kenburns { animation: story-kenburns 9s ease-out both; }
+.story-screen[data-active="true"] .story-progress { animation: story-progress 9s linear both; }
 
 @media (prefers-reduced-motion: reduce) {
   *,

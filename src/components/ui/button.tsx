@@ -3,21 +3,21 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-// shadcn/ui-style button, skinned for the brand.
+// Plain rectangular buttons. primary = clay fill, solid = navy fill.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold transition-colors disabled:pointer-events-none disabled:opacity-60 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-60 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-wheat text-ink hover:bg-[#d4972b]",
-        solid: "bg-flag text-white hover:bg-flag-dark",
-        outline: "border-2 border-ink/80 text-ink hover:bg-ink hover:text-paper",
-        ghost: "text-ink hover:bg-sky",
+        primary: "bg-clay text-white hover:bg-clay-ink",
+        solid: "bg-ink text-white hover:bg-night-2",
+        outline: "border border-ink text-ink hover:bg-ink hover:text-paper",
+        ghost: "text-ink hover:bg-line/40",
       },
       size: {
-        sm: "h-10 px-4 text-[0.95rem] rounded-sm",
-        md: "h-12 px-6 text-base rounded-sm",
-        lg: "h-14 px-7 text-[1.05rem] rounded-sm",
+        sm: "h-10 px-4 text-[0.95rem]",
+        md: "h-12 px-6 text-base",
+        lg: "h-14 px-7 text-[1.05rem]",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// Self-hosted variable fonts (zero layout shift, no Google request at runtime).
-// With network access you can switch to next/font/google with the same families.
-const bitter = localFont({
-  src: "./fonts/bitter-latin-wght-normal.woff2",
-  variable: "--font-bitter",
-  weight: "100 900",
+// One type system: Archivo (variable width) for headlines and body, IBM Plex Mono
+// only for small data labels. Both are self-hosted by next/font at build time.
+const archivo = Archivo({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
-const publicSans = localFont({
-  src: "./fonts/public-sans-latin-wght-normal.woff2",
-  variable: "--font-public-sans",
-  weight: "100 900",
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bitter.variable} ${publicSans.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
       <body>
         <SmoothScroll />
         {children}

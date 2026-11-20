@@ -1,6 +1,7 @@
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { WhoFor, Showcase, HowItWorks, Promises, Faq, Footer, RevealOnScroll } from "@/components/sections";
+import { Story } from "@/components/story/story";
+import { WhoFor, Showcase, HowItWorks, Promises, Faq, Footer } from "@/components/sections";
 import { Packages } from "@/components/packages";
 import { Book } from "@/components/book";
 
@@ -9,13 +10,14 @@ export default function Home() {
     <>
       <a
         href="#main"
-        className="sr-only z-50 bg-wheat px-4 py-2 font-semibold focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        className="sr-only z-50 bg-clay px-4 py-2 text-white font-semibold focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
         Skip to content
       </a>
       <Header />
       <main id="main">
         <Hero />
+        <Story />
         <WhoFor />
         <Showcase />
         <Packages />
@@ -25,7 +27,6 @@ export default function Home() {
         <Faq />
       </main>
       <Footer />
-      <RevealOnScroll />
     </>
   );
 }

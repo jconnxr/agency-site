@@ -12,19 +12,13 @@ import { interests, site } from "@/lib/site";
 
 export function Book() {
   return (
-    <section id="book" className="relative overflow-hidden bg-ink text-white">
-      <div aria-hidden className="bg-grid absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_60%)]" />
-      <div className="relative mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-32">
-        <div className="max-w-[56ch]">
-          <p className="flex items-center gap-3 font-display text-sm font-bold uppercase tracking-[0.18em] text-wheat">
-            <span>05</span>
-            <span aria-hidden className="h-0.5 w-8 bg-wheat/70" />
-            <span>Book a call</span>
-          </p>
-          <h2 className="mt-4 text-[2.4rem] font-extrabold leading-[1.04] md:text-[3.4rem]">
+    <section id="book" className="scroll-mt-16 border-t border-line bg-paper text-ink">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+        <div className="max-w-[60ch]">
+          <h2 className="text-[2.1rem] md:text-[3.2rem]">
             Book a free <span className="whitespace-nowrap">30-minute</span> call
           </h2>
-          <p className="mt-4 text-lg text-white/75">
+          <p className="mt-5 text-[1.06rem] leading-relaxed text-muted">
             {site.axiomFormKey || site.formspreeId ? (
               <>
                 Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
@@ -35,17 +29,17 @@ export function Book() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.45fr_1fr]">
-          <div className="overflow-hidden rounded-lg bg-white">
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1.45fr_1fr] lg:gap-10">
+          <div className="overflow-hidden rounded-md border border-line bg-white">
             {/* Calendly inline widget: scheduling happens right on the page */}
             <div
               className="calendly-inline-widget h-[700px] min-w-[320px]"
-              data-url={`${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=2c68b0`}
+              data-url={`${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=c4502b`}
             />
             <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="lazyOnload" />
             <p className="border-t border-line px-5 py-3 text-sm text-muted">
               Calendar not showing?{" "}
-              <a href={site.calendlyUrl} target="_blank" rel="noopener" className="font-semibold text-flag underline underline-offset-4">
+              <a href={site.calendlyUrl} target="_blank" rel="noopener" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-clay">
                 Open the booking page in a new tab
               </a>
             </p>
@@ -71,12 +65,12 @@ type FormValues = z.infer<typeof schema>;
 // so visitors never fill in a form that can't send.
 function NoFormCard() {
   return (
-    <div className="flex flex-col justify-center gap-4 rounded-lg border border-white/15 bg-white/[0.03] p-6 md:p-8">
-      <h3 className="text-2xl font-bold">Rather we call you?</h3>
-      <p className="text-white/75">
+    <div className="flex flex-col gap-4 self-start border-l-[3px] border-clay bg-card p-6 md:p-8">
+      <h3 className="text-[1.5rem]">Rather we call you?</h3>
+      <p className="text-muted">
         Pick any open time and choose &ldquo;phone call&rdquo;. We&rsquo;ll call the number you leave, look over your Google listing and website with you, and tell you plainly what would bring in more calls.
       </p>
-      <p className="text-white/75">
+      <p className="text-muted">
         Want the free Online Presence Check? Mention it in the booking notes and we&rsquo;ll send it within 24 hours.
       </p>
     </div>
@@ -152,7 +146,7 @@ function ContactForm() {
   }
 
   return (
-    <div className="rounded-lg border border-white/15 bg-white/[0.03] p-6 md:p-8">
+    <div className="rounded-md border border-line bg-card p-6 md:p-8">
       <AnimatePresence mode="wait" initial={false}>
         {status === "sent" ? (
           <motion.div
@@ -163,10 +157,10 @@ function ContactForm() {
             className="flex h-full flex-col items-start justify-center gap-4 py-10"
             role="status"
           >
-            <CheckCircle2 className="size-10 text-wheat" aria-hidden />
-            <h3 className="text-2xl font-bold">Message sent</h3>
-            <p className="text-white/75">We&rsquo;ll reply within one business day.</p>
-            <Button variant="outline" className="border-white/60 text-white hover:bg-white hover:text-ink" onClick={() => setStatus("idle")}>
+            <CheckCircle2 className="size-10 text-go" aria-hidden />
+            <h3 className="text-[1.5rem]">Message sent</h3>
+            <p className="text-muted">We&rsquo;ll reply within one business day.</p>
+            <Button variant="outline" onClick={() => setStatus("idle")}>
               Send another message
             </Button>
           </motion.div>
@@ -180,7 +174,7 @@ function ContactForm() {
             noValidate
             className="grid gap-5"
           >
-            <h3 className="text-2xl font-bold">Send a message</h3>
+            <h3 className="text-[1.5rem]">Send a message</h3>
             <Field label="Your name" error={errors.name?.message}>
               <input {...register("name")} autoComplete="name" className={inputCls} />
             </Field>
@@ -210,7 +204,7 @@ function ContactForm() {
               <input name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
             </div>
             {status === "error" && (
-              <p role="alert" className="rounded-sm bg-wheat-soft px-4 py-3 text-[0.95rem] text-ink">
+              <p role="alert" className="rounded-sm bg-clay-soft px-4 py-3 text-[0.95rem] text-ink">
                 {errorText ?? "The message didn’t go through."}{" "}
                 {site.email ? (
                   <>
@@ -236,14 +230,14 @@ function ContactForm() {
 }
 
 const inputCls =
-  "h-12 w-full rounded-sm border border-white/25 bg-white/5 px-4 text-white placeholder:text-white/40 focus:border-wheat focus:outline-none [&>option]:text-ink";
+  "h-12 w-full rounded-sm border border-line bg-white px-4 text-ink placeholder:text-muted focus:border-ink focus:outline-none";
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="grid gap-2 text-[0.95rem] font-medium">
       {label}
       {children}
-      {error && <span className="text-sm font-normal text-wheat">{error}</span>}
+      {error && <span className="text-sm font-normal text-clay-ink">{error}</span>}
     </label>
   );
 }

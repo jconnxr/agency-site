@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
 
 const links = [
+  { href: "#story", label: "How it works" },
   { href: "#who", label: "Who it's for" },
   { href: "#what", label: "What you get" },
   { href: "#packages", label: "Packages" },
-  { href: "#how", label: "How it works" },
+  { href: "#how", label: "Getting started" },
   { href: "#faq", label: "Questions" },
 ];
 
@@ -19,16 +20,16 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink/90 text-white backdrop-blur">
-      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-5 md:px-8">
-        <a href="#top" className="flex items-center gap-2.5 font-display text-xl font-bold text-white">
+    <header className="sticky top-0 z-40 border-b border-night-line bg-night/95 text-white backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+        <a href="#top" className="flex items-center gap-2.5 font-wide text-lg font-extrabold tracking-tight text-white">
           <Logo />
           {site.name}
         </a>
 
         <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-[0.95rem] font-medium text-white/70 transition-colors hover:text-white">
+            <a key={l.href} href={l.href} className="text-[0.92rem] font-medium text-white/65 transition-colors hover:text-white">
               {l.label}
             </a>
           ))}
@@ -56,14 +57,14 @@ export function Header() {
                 </Dialog.Overlay>
                 <Dialog.Content asChild forceMount>
                   <motion.div
-                    className="fixed inset-x-0 top-0 z-50 rounded-b-lg bg-paper text-ink px-5 pb-8 pt-4 shadow-xl"
+                    className="fixed inset-x-0 top-0 z-50 bg-paper px-5 pb-8 pt-4 text-ink shadow-xl"
                     initial={{ y: "-100%" }}
                     animate={{ y: 0 }}
                     exit={{ y: "-100%" }}
                     transition={{ type: "spring", damping: 30, stiffness: 300 }}
                   >
                     <div className="flex items-center justify-between">
-                      <Dialog.Title className="font-display text-xl font-bold">{site.name}</Dialog.Title>
+                      <Dialog.Title className="font-wide text-lg font-extrabold">{site.name}</Dialog.Title>
                       <Dialog.Close className="grid size-11 place-items-center" aria-label="Close menu">
                         <X className="size-6" />
                       </Dialog.Close>
@@ -75,7 +76,7 @@ export function Header() {
                           key={l.href}
                           href={l.href}
                           onClick={() => setOpen(false)}
-                          className="border-b border-line py-4 font-display text-2xl font-semibold"
+                          className="border-b border-line py-4 font-wide text-2xl font-bold"
                         >
                           {l.label}
                         </a>
@@ -97,13 +98,13 @@ export function Header() {
   );
 }
 
-// Placeholder mark: a simple stepped shape (three rising tiers). Replace with the real logo.
+// Placeholder mark: three rising tiers. Replace with the real logo.
 function Logo() {
   return (
-    <svg viewBox="0 0 28 28" className="size-7" aria-hidden>
-      <rect x="2" y="16" width="7" height="10" rx="1.5" fill="var(--color-sky-deep)" />
-      <rect x="10.5" y="10" width="7" height="16" rx="1.5" fill="var(--color-flag)" />
-      <rect x="19" y="3" width="7" height="23" rx="1.5" fill="var(--color-wheat)" />
+    <svg viewBox="0 0 28 28" className="size-6" aria-hidden>
+      <rect x="2" y="16" width="7" height="10" fill="rgb(255 255 255 / 0.35)" />
+      <rect x="10.5" y="10" width="7" height="16" fill="rgb(255 255 255 / 0.7)" />
+      <rect x="19" y="3" width="7" height="23" fill="var(--color-clay-glow)" />
     </svg>
   );
 }

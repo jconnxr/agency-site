@@ -35,6 +35,7 @@ export function Story() {
   }, []);
 
   const step = steps[active];
+  const reduce = useReducedMotion();
 
   return (
     <section id="story" aria-labelledby="story-title" className="relative bg-night text-white">
@@ -62,36 +63,34 @@ export function Story() {
         <div className="sticky top-16 h-[calc(100svh-4rem)] overflow-hidden">
           <div className="mx-auto grid h-full max-w-6xl grid-rows-[1fr_auto] px-5 pb-5 pt-4 md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14">
             {/* Captions. Desktop: left column. Mobile: under the phone.
-                The old caption is fully gone (200ms) before the new one starts (delay 240ms). */}
-            <ol className="relative order-2 mt-4 grid md:order-1 md:mt-0">
+                Every caption is rendered invisibly in the same grid cell to reserve the
+                tallest one's height; the visible one swaps with a short timed fade
+                (out 160ms, then in 260ms) that always completes. */}
+            <div aria-hidden className="relative order-2 mt-4 grid items-center md:order-1 md:mt-0">
               {steps.map((s, i) => (
-                <li
-                  key={s.title}
-                  aria-current={i === active ? "step" : undefined}
-                  className={cn(
-                    "col-start-1 row-start-1 transition-[opacity,transform] ease-[cubic-bezier(.2,.8,.2,1)] md:self-center",
-                    i === active
-                      ? "translate-y-0 opacity-100 delay-[240ms] duration-500"
-                      : cn("pointer-events-none opacity-0 delay-0 duration-200", i < active ? "-translate-y-3" : "translate-y-3")
-                  )}
+                <div key={s.title} className="invisible col-start-1 row-start-1">
+                  <Caption index={i} />
+                </div>
+              ))}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={active}
+                  className="col-start-1 row-start-1"
+                  initial={reduce ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.26, ease: [0.2, 0.8, 0.2, 1] } }}
+                  exit={{ opacity: 0, y: -8, transition: { duration: reduce ? 0 : 0.16, ease: "easeIn" } }}
                 >
-                  <p className="flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-clay-glow">
-                    <span>
-                      {String(i + 1).padStart(2, "0")}/{String(n).padStart(2, "0")}
-                    </span>
-                    <span aria-hidden className="h-px w-6 bg-clay-glow/50" />
-                    <span>{s.service}</span>
-                  </p>
-                  <h3 className="mt-2.5 text-[1.4rem] md:mt-4 md:text-[2.2rem]">{s.title}</h3>
-                  <p className="mt-2 max-w-[44ch] text-[0.95rem] leading-relaxed text-white/70 md:mt-4 md:text-[1.06rem]">
-                    {s.body}
-                  </p>
-                  <div aria-hidden className="mt-3 md:hidden">
-                    <p className="mb-1.5 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
-                      Your phone &middot; example
-                    </p>
-                    <OwnerRow event={s.owner} live={i === active} compact />
-                  </div>
+                  <Caption index={active} live />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <ol className="sr-only">
+              {steps.map((s, i) => (
+                <li key={s.title} aria-current={i === active ? "step" : undefined}>
+                  <h3>
+                    {s.service}: {s.title}
+                  </h3>
+                  <p>{s.body}</p>
                 </li>
               ))}
             </ol>
@@ -132,22 +131,54 @@ export function Story() {
   );
 }
 
+function Caption({ index, live }: { index: number; live?: boolean }) {
+  const s = steps[index];
+  return (
+    <>
+      <p className="flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-clay-glow">
+        <span>
+          {String(index + 1).padStart(2, "0")}/{String(n).padStart(2, "0")}
+        </span>
+        <span aria-hidden className="h-px w-6 bg-clay-glow/50" />
+        <span>{s.service}</span>
+      </p>
+      <p className="mt-2.5 font-wide text-[1.4rem] font-extrabold leading-[1.05] tracking-[-0.02em] md:mt-4 md:text-[2.2rem]">
+        {s.title}
+      </p>
+      <p className="mt-2 max-w-[44ch] text-[0.95rem] leading-relaxed text-white/70 md:mt-4 md:text-[1.06rem]">{s.body}</p>
+      <div className="mt-3 md:hidden">
+        <p className="mb-1.5 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-white/45">Your phone &middot; example</p>
+        <OwnerRow event={s.owner} live={!!live} compact />
+      </div>
+    </>
+  );
+}
+
+// The five most recent owner events, newest on top; older ones collapse out.
+const FEED_MAX = 5;
+
 function OwnerFeed({ active }: { active: number }) {
   const reduce = useReducedMotion();
-  const shown = steps.slice(0, active + 1).map((s, i) => ({ s, i })).reverse();
+  const shown = steps
+    .map((s, i) => ({ s, i }))
+    .slice(Math.max(0, active + 1 - FEED_MAX), active + 1)
+    .reverse();
   return (
-    <ul className="mt-3 flex flex-col gap-2">
+    <ul className="mt-3 flex flex-col">
       <AnimatePresence initial={false}>
         {shown.map(({ s, i }) => (
           <motion.li
             key={s.title}
             layout={!reduce}
-            initial={reduce ? false : { opacity: 0, y: -14, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, transition: { duration: 0.2 } }}
+            className="overflow-hidden"
+            initial={reduce ? false : { opacity: 0, y: -14, scale: 0.97, height: "auto" }}
+            animate={{ opacity: 1, y: 0, scale: 1, height: "auto" }}
+            exit={reduce ? { opacity: 0, height: 0 } : { opacity: 0, height: 0, transition: { duration: 0.24, ease: "easeOut" } }}
             transition={{ type: "spring", stiffness: 420, damping: 34 }}
           >
-            <OwnerRow event={s.owner} live={i === active} />
+            <div className="pb-2">
+              <OwnerRow event={s.owner} live={i === active} />
+            </div>
           </motion.li>
         ))}
       </AnimatePresence>

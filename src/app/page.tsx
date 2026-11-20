@@ -1,7 +1,7 @@
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { Story } from "@/components/story/story";
-import { WhoFor, Showcase, HowItWorks, Promises, Faq, Footer, RevealOnScroll } from "@/components/sections";
+import { WhoFor, Showcase, HowItWorks, Promises, Faq, Footer } from "@/components/sections";
 import { Packages } from "@/components/packages";
 import { Book } from "@/components/book";
 
@@ -27,7 +27,6 @@ export default function Home() {
         <Faq />
       </main>
       <Footer />
-      <RevealOnScroll />
     </>
   );
 }

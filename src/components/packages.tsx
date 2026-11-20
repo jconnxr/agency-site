@@ -9,10 +9,10 @@ export function Packages() {
     <section id="packages" className="bg-paper text-ink">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
         <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-16">
-          <h2 data-reveal className="text-[2.1rem] md:text-[3.2rem]">
+          <h2 className="text-[2.1rem] md:text-[3.2rem]">
             Five packages. Each one solves one problem.
           </h2>
-          <div data-reveal className="md:pt-3">
+          <div className="md:pt-3">
             <p className="text-[1.06rem] leading-relaxed text-muted">
               Pick the one that matches where you are. Monthly plans stack, so each includes everything in the one
               before it.
@@ -100,7 +100,7 @@ function Path() {
 function Founding() {
   return (
     <div
-      data-reveal
+     
       className="mt-14 grid gap-5 border-l-[3px] border-clay bg-card py-6 pl-6 pr-6 md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:pl-8"
     >
       <div>
@@ -134,7 +134,7 @@ function Group({
   return (
     <div id={id} className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
       <div className="grid gap-8 md:grid-cols-[15rem_1fr] md:gap-14">
-        <div data-reveal>
+        <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">{label}</p>
           <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">{title}</h3>
           <p className="mt-4 text-[1.02rem] font-semibold leading-snug">&ldquo;{problem}&rdquo;</p>
@@ -150,7 +150,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
   return (
     <div className="grid gap-10 md:grid-cols-2 md:gap-0 md:divide-x md:divide-line">
       {options.map((o, i) => (
-        <article key={o.name} data-reveal className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
+        <article key={o.name} className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
           <h4 className="font-wide text-[1.35rem] font-bold">{o.name}</h4>
           {o.liveBy && (
             <p className="mt-1 font-mono text-[0.72rem] uppercase tracking-[0.06em] text-clay-ink">{o.liveBy}</p>
@@ -184,7 +184,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
 function Monthly() {
   return (
     <div id="monthly" className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
-      <div data-reveal className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-14">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-14">
         <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Monthly plans</p>
           <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Plans that stack</h3>
@@ -198,7 +198,7 @@ function Monthly() {
         {plans.map((p, i) => (
           <article
             key={p.name}
-            data-reveal
+           
             className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-8" : i === 1 ? "md:px-8" : "md:pl-8")}
           >
             <div className="flex items-end justify-between">
@@ -243,7 +243,7 @@ function Monthly() {
 function AlaCarte() {
   return (
     <div className="mt-20 grid gap-8 border-t-2 border-ink pt-8 md:mt-24 md:grid-cols-[15rem_1fr] md:gap-14">
-      <div data-reveal>
+      <div>
         <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">&Agrave; la carte</p>
         <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Need just one thing?</h3>
         <p className="mt-4 text-muted">Book any of these on their own, or add them to a package.</p>
@@ -254,7 +254,7 @@ function AlaCarte() {
           Ask about a one-off
         </a>
       </div>
-      <ul data-reveal className="border-t border-line md:border-t-0">
+      <ul className="border-t border-line md:border-t-0">
         {addons.map((a) => (
           <li key={a.name} className="flex items-baseline gap-4 border-b border-line py-3.5">
             <span>{a.name}</span>

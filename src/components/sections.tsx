@@ -1,35 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { faqs, promises, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
-
-const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// One scroll-reveal for the whole page: anything marked data-reveal rises in as it enters.
-export function RevealOnScroll() {
-  useEffect(() => {
-    if (reducedMotion()) return;
-    const els = gsap.utils.toArray<HTMLElement>("[data-reveal]");
-    gsap.set(els, { y: 24, opacity: 0 });
-    const triggers = ScrollTrigger.batch(els, {
-      start: "top 90%",
-      once: true,
-      onEnter: (batch) => gsap.to(batch, { y: 0, opacity: 1, duration: 0.7, stagger: 0.07, ease: "power3.out" }),
-    });
-    return () => {
-      triggers.forEach((t) => t.kill());
-      gsap.set(els, { clearProps: "all" });
-    };
-  }, []);
-  return null;
-}
 
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.08em]";
 const link = "font-semibold underline decoration-2 underline-offset-[5px] transition-colors";
@@ -73,13 +47,13 @@ export function WhoFor() {
   return (
     <section id="who" className="scroll-mt-16 bg-paper text-ink">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <h2 data-reveal className="max-w-[18ch] text-[2.1rem] md:text-[3.2rem]">
+        <h2 className="max-w-[18ch] text-[2.1rem] md:text-[3.2rem]">
           Built for where your business is right now.
         </h2>
 
         <div className="mt-12 grid gap-14 md:mt-16 md:grid-cols-2 md:gap-0 md:divide-x md:divide-line">
           {groups.map((g, i) => (
-            <article key={g.title} data-reveal className={cn("flex flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
+            <article key={g.title} className={cn("flex flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
               <div className="relative aspect-[16/10] overflow-hidden rounded-md">
                 <Image
                   src={g.photo.src}
@@ -142,10 +116,10 @@ export function Showcase() {
     <section id="what" className="scroll-mt-16 border-y border-line bg-card text-ink">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
         <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-16">
-          <h2 data-reveal className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
+          <h2 className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
             Everything a local business needs online.
           </h2>
-          <p data-reveal className="max-w-[44ch] text-[1.06rem] leading-relaxed text-muted md:self-end">
+          <p className="max-w-[44ch] text-[1.06rem] leading-relaxed text-muted md:self-end">
             One team handles all of it, so your site, Google profile, booking and ads actually work together.
           </p>
         </div>
@@ -154,7 +128,7 @@ export function Showcase() {
           {services.map((s) => (
             <li
               key={s.title}
-              data-reveal
+             
               className="grid gap-1.5 border-b border-line py-5 md:grid-cols-[17rem_1fr_9rem] md:items-baseline md:gap-10 md:py-6"
             >
               <h3 className="text-[1.25rem] md:text-[1.35rem]">{s.title}</h3>
@@ -166,7 +140,7 @@ export function Showcase() {
 
         <div className="-mx-5 mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0 md:pb-0">
           {strip.map((p) => (
-            <figure key={p.src} data-reveal className="w-[72%] shrink-0 snap-start md:w-auto">
+            <figure key={p.src} className="w-[72%] shrink-0 snap-start md:w-auto">
               <div className="relative aspect-[4/3] overflow-hidden rounded-md">
                 <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 270px, 72vw" className={cn("object-cover", p.pos)} />
               </div>
@@ -189,14 +163,14 @@ export function HowItWorks() {
   return (
     <section id="how" className="scroll-mt-16 bg-night text-white">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <h2 data-reveal className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
+        <h2 className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
           From first call to customers calling you.
         </h2>
         <ol className="mt-12 border-t border-night-line md:mt-16">
           {process.map((s, i) => (
             <li
               key={s.title}
-              data-reveal
+             
               className="grid gap-2 border-b border-night-line py-7 md:grid-cols-[5rem_17rem_1fr_9rem] md:items-baseline md:gap-10 md:py-9"
             >
               <span className="font-mono text-[0.9rem] text-clay-glow">{String(i + 1).padStart(2, "0")}</span>
@@ -215,14 +189,14 @@ export function Promises() {
   return (
     <section aria-labelledby="promises-title" className="bg-paper text-ink">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
-        <h2 id="promises-title" data-reveal className="text-[1.8rem] md:text-[2.4rem]">
+        <h2 id="promises-title" className="text-[1.8rem] md:text-[2.4rem]">
           What we promise
         </h2>
         <div className="mt-10 grid border-t-2 border-ink sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-0 lg:divide-x lg:divide-line">
           {promises.map((p, i) => (
             <div
               key={p.title}
-              data-reveal
+             
               className={cn("border-b border-line py-7 lg:border-b-0", i === 0 ? "lg:pr-7" : i === 3 ? "lg:pl-7" : "lg:px-7")}
             >
               <h3 className="text-[1.2rem]">{p.title}</h3>
@@ -240,10 +214,10 @@ export function Faq() {
     <section id="faq" className="scroll-mt-16 border-t border-line bg-paper text-ink">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 md:grid-cols-[1fr_1.6fr] md:gap-16 md:px-8 md:py-28">
         <div className="md:sticky md:top-28 md:self-start">
-          <h2 data-reveal className="text-[2.1rem] md:text-[3rem]">
+          <h2 className="text-[2.1rem] md:text-[3rem]">
             Questions we get a lot
           </h2>
-          <p data-reveal className="mt-5 text-muted">
+          <p className="mt-5 text-muted">
             Something else on your mind? Ask on the call
             {site.email ? (
               <>
@@ -256,7 +230,7 @@ export function Faq() {
             .
           </p>
         </div>
-        <Accordion data-reveal type="single" collapsible defaultValue="q0" className="border-t-2 border-ink">
+        <Accordion type="single" collapsible defaultValue="q0" className="border-t-2 border-ink">
           {faqs.map((f, i) => (
             <AccordionItem key={f.q} value={`q${i}`}>
               <AccordionTrigger>{f.q}</AccordionTrigger>
@@ -282,7 +256,7 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-night text-white/70">
       {/* Sunset drone shot behind the closing call to action, fading into the footer */}
-      <div className="absolute inset-x-0 top-0 h-[420px] [mask-image:linear-gradient(to_bottom,black_40%,transparent)] md:h-[400px] md:[mask-image:linear-gradient(to_bottom,black_35%,transparent_95%)]">
+      <div className="absolute inset-x-0 top-0 h-[380px] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] md:h-[290px] md:[mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
         <Image
           src="/images/drone-operator.webp"
           alt="Hands holding a drone controller in an Oklahoma field at sunset, with the drone flying overhead"
@@ -290,7 +264,7 @@ export function Footer() {
           sizes="100vw"
           className="object-cover object-[62%_20%] md:object-[50%_12%]"
         />
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,18,32,0.9)_0%,rgba(11,18,32,0.62)_55%,rgba(11,18,32,0.45)_100%)]" />
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,18,32,0.62)_0%,rgba(11,18,32,0.25)_50%,rgba(11,18,32,0)_100%)]" />
       </div>
       <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8">
         <div className="flex flex-col justify-between gap-8 border-b border-night-line pb-14 md:flex-row md:items-end">
@@ -344,12 +318,6 @@ export function Footer() {
           <p>Based in {site.city}</p>
         </div>
       </div>
-      <p
-        aria-hidden
-        className="pointer-events-none select-none whitespace-nowrap text-center font-wide text-[12.5vw] font-extrabold leading-[0.78] text-white/[0.035]"
-      >
-        OKLAHOMA
-      </p>
     </footer>
   );
 }

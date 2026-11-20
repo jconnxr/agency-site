@@ -4,6 +4,7 @@
 // to fit whatever space it's given. Screens are realistic but brand-free UI.
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CalendarCheck, Globe, Navigation, Phone as PhoneIcon, Search, Star } from "lucide-react";
 import { AdScreen, BookingScreen, MessagesScreen, MissedScreen, ReelScreen, SocialScreen, WebsiteScreen } from "./screens";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,17 @@ export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; cla
     return () => ro.disconnect();
   }, [maxScale]);
 
-  const current = order.indexOf(screen);
+  // Direction of travel decides which way screens slide (forward = push in from the right).
+  // Latched only when the screen changes, so unrelated re-renders can't flip a slide mid-way.
+  const idx = order.indexOf(screen);
+  const prev = useRef(idx);
+  const dirRef = useRef(1);
+  if (idx !== prev.current) {
+    dirRef.current = idx > prev.current ? 1 : -1;
+    prev.current = idx;
+  }
+  const dir = dirRef.current;
+  const reduce = useReducedMotion();
 
   return (
     <div ref={box} aria-hidden className={cn("relative grid place-items-center", className)}>
@@ -39,34 +50,63 @@ export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; cla
         >
           <div className="relative h-full overflow-hidden rounded-[38px] bg-white text-[#1d232c]">
             <StatusBar dark={screen === "missed" || screen === "reel"} />
-            {order.map((s, i) => (
-              <div
-                key={s}
-                data-active={i === current}
+            {/* One timed slide per step change (450ms). It always runs to the end,
+                and once it settles only the current screen is mounted. */}
+            <AnimatePresence initial={false} custom={dir}>
+              <motion.div
+                key={screen}
+                custom={dir}
+                variants={slide}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: reduce ? 0 : 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+                data-active="true"
                 className={cn(
-                  "story-screen absolute inset-0 transition-transform duration-[650ms] ease-[cubic-bezier(.2,.8,.2,1)]",
-                  s === "missed" || s === "reel" ? "bg-[#151b26]" : "bg-white pt-11",
-                  i === current ? "translate-x-0" : i < current ? "-translate-x-[30%]" : "translate-x-full"
+                  "story-screen absolute inset-0",
+                  screen === "missed" || screen === "reel" ? "bg-[#151b26]" : "bg-white pt-11"
                 )}
               >
-                {s === "search" && <SearchScreen />}
-                {s === "listing" && <ListingScreen />}
-                {s === "website" && <WebsiteScreen />}
-                {s === "booking" && <BookingScreen />}
-                {s === "messages" && <MessagesScreen />}
-                {s === "missed" && <MissedScreen />}
-                {s === "ad" && <AdScreen />}
-                {s === "social" && <SocialScreen />}
-                {s === "reel" && <ReelScreen />}
-                {i < current && <div className="absolute inset-0 bg-black/20" />}
-              </div>
-            ))}
+                <ScreenView screen={screen} />
+              </motion.div>
+            </AnimatePresence>
             <span className="absolute left-1/2 top-2.5 z-20 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-black" />
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+// Forward: the new screen slides in over the old one, which eases left and dims.
+// Backward: the reverse.
+const slide = {
+  enter: (d: number) => (d > 0 ? { x: "100%", zIndex: 2, filter: "brightness(1)" } : { x: "-30%", zIndex: 1, filter: "brightness(0.8)" }),
+  center: { x: "0%", filter: "brightness(1)" },
+  exit: (d: number) => (d > 0 ? { x: "-30%", zIndex: 1, filter: "brightness(0.8)" } : { x: "100%", zIndex: 2, filter: "brightness(1)" }),
+};
+
+function ScreenView({ screen }: { screen: Screen }) {
+  switch (screen) {
+    case "search":
+      return <SearchScreen />;
+    case "listing":
+      return <ListingScreen />;
+    case "website":
+      return <WebsiteScreen />;
+    case "booking":
+      return <BookingScreen />;
+    case "messages":
+      return <MessagesScreen />;
+    case "missed":
+      return <MissedScreen />;
+    case "ad":
+      return <AdScreen />;
+    case "social":
+      return <SocialScreen />;
+    case "reel":
+      return <ReelScreen />;
+  }
 }
 
 function StatusBar({ dark }: { dark?: boolean }) {

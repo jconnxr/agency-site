@@ -2,16 +2,15 @@
 
 // A generic phone drawn in HTML/CSS at a fixed design size (290 x 600), scaled
 // to fit whatever space it's given. Screens are realistic but brand-free UI.
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { CalendarCheck, Globe, Navigation, Phone as PhoneIcon, Search, Star } from "lucide-react";
+import { CalendarCheck, Globe, Navigation, Phone as PhoneIcon, Search } from "lucide-react";
+import { PhoneFrame, Stars } from "./phone-frame";
 import { AdScreen, BookingScreen, MessagesScreen, MissedScreen, ReelScreen, SocialScreen, WebsiteScreen } from "./screens";
 import { cn } from "@/lib/utils";
 import { demoBusiness, type Screen } from "./steps";
 
-const W = 290;
-const H = 600;
 const order: Screen[] = ["search", "listing", "website", "booking", "messages", "missed", "ad", "social", "reel"];
 
 export function Phone({
@@ -31,20 +30,6 @@ export function Phone({
   overlayTop?: number;
   overlayInset?: number;
 }) {
-  const box = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([e]) => {
-      const { width, height } = e.contentRect;
-      setScale(Math.min(maxScale, width / W, height / H));
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [maxScale]);
-
   // Direction of travel decides which way screens slide (forward = push in from the right).
   // Latched only when the screen changes, so unrelated re-renders can't flip a slide mid-way.
   const idx = order.indexOf(screen);
@@ -56,50 +41,43 @@ export function Phone({
   }
   const dir = dirRef.current;
   const reduce = useReducedMotion();
+  const dark = screen === "missed" || screen === "reel";
 
   return (
-    <div ref={box} aria-hidden className={cn("relative grid place-items-center", className)}>
-      <div className="relative" style={{ width: W * scale, height: H * scale }}>
-        <div
-          style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: "top left" }}
-          className="relative rounded-[46px] bg-[#1a2233] p-[9px] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.12)]"
-        >
-          <div className="relative h-full overflow-hidden rounded-[38px] bg-white text-[#1d232c]">
-            <StatusBar dark={screen === "missed" || screen === "reel"} />
-            {/* One timed slide per step change (450ms). It always runs to the end,
-                and once it settles only the current screen is mounted. */}
-            <AnimatePresence initial={false} custom={dir}>
-              <motion.div
-                key={screen}
-                custom={dir}
-                variants={slide}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: reduce ? 0 : 0.45, ease: [0.2, 0.8, 0.2, 1] }}
-                data-active="true"
-                className={cn(
-                  "story-screen absolute inset-0",
-                  screen === "missed" || screen === "reel" ? "bg-[#151b26]" : "bg-white pt-11"
-                )}
-              >
-                <ScreenView screen={screen} />
-              </motion.div>
-            </AnimatePresence>
-            <span className="absolute left-1/2 top-2.5 z-20 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-black" />
-          </div>
-        </div>
-        {/* Island bottom sits at 45 design px (9 bezel + 10 + 26); by default the overlay starts just below it. */}
-        {overlay && (
+    <PhoneFrame
+      dark={dark}
+      className={className}
+      maxScale={maxScale}
+      after={(scale) =>
+        // Island bottom sits at 45 design px (9 bezel + 10 + 26); by default the overlay starts just below it.
+        overlay && (
           <div
             className="absolute inset-x-0 z-30 transition-[top,padding] duration-300"
             style={{ top: overlayTop * scale, paddingInline: overlayInset * scale }}
           >
             {overlay}
           </div>
-        )}
-      </div>
-    </div>
+        )
+      }
+    >
+      {/* One timed slide per step change (450ms). It always runs to the end,
+          and once it settles only the current screen is mounted. */}
+      <AnimatePresence initial={false} custom={dir}>
+        <motion.div
+          key={screen}
+          custom={dir}
+          variants={slide}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: reduce ? 0 : 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+          data-active="true"
+          className={cn("story-screen absolute inset-0", dark ? "bg-[#151b26]" : "bg-white pt-11")}
+        >
+          <ScreenView screen={screen} />
+        </motion.div>
+      </AnimatePresence>
+    </PhoneFrame>
   );
 }
 
@@ -134,40 +112,7 @@ function ScreenView({ screen }: { screen: Screen }) {
   }
 }
 
-function StatusBar({ dark }: { dark?: boolean }) {
-  return (
-    <div
-      className={cn(
-        "absolute inset-x-0 top-0 z-10 flex h-11 items-center justify-between px-7 pt-1 font-mono text-[12px] font-semibold transition-colors duration-500",
-        dark ? "bg-transparent text-white [&_.sb]:bg-white [&_.sbb]:border-white" : "bg-white text-[#1d232c] [&_.sb]:bg-[#1d232c] [&_.sbb]:border-[#1d232c]"
-      )}
-    >
-      <span>9:41</span>
-      <span className="flex items-end gap-[2px]" aria-hidden>
-        {[4, 6, 8, 10].map((h) => (
-          <span key={h} className="sb w-[3px] rounded-[1px]" style={{ height: h }} />
-        ))}
-        <span className="sbb ml-1.5 h-[10px] w-[20px] rounded-[3px] border p-[1px]">
-          <span className="sb block h-full w-[70%] rounded-[1px]" />
-        </span>
-      </span>
-    </div>
-  );
-}
-
-export function Stars({ n = 5, size = 10 }: { n?: number; size?: number }) {
-  return (
-    <span className="flex">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star
-          key={i}
-          style={{ width: size, height: size }}
-          className={i < n ? "fill-[#f2a93b] text-[#f2a93b]" : "fill-[#dfe3e8] text-[#dfe3e8]"}
-        />
-      ))}
-    </span>
-  );
-}
+export { Stars };
 
 // Step 1: a local search with the map results
 function SearchScreen() {

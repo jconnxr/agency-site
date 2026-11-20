@@ -4,10 +4,12 @@ import { Story } from "@/components/story/story";
 import { WhoFor, Showcase, HowItWorks, Promises, Faq, Footer } from "@/components/sections";
 import { Packages } from "@/components/packages";
 import { Book } from "@/components/book";
+import { SmoothScroll } from "@/components/smooth-scroll";
 
 export default function Home() {
   return (
     <>
+      <SmoothScroll />
       <a
         href="#main"
         className="sr-only z-50 bg-clay px-4 py-2 text-white font-semibold focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

@@ -162,3 +162,13 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Card page sandbox: light screen changes and message arrivals */
+@keyframes sbx-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.sbx-in { animation: sbx-in 0.24s cubic-bezier(.2,.8,.2,1) both; }
+.sbx-rise { animation: sbx-in 0.4s cubic-bezier(.2,.8,.2,1) 0.15s both; }
+.sbx-d2 { animation-delay: 0.7s; }
+.sbx-d3 { animation-delay: 1.2s; }
+@media (prefers-reduced-motion: reduce) {
+  .sbx-in, .sbx-rise { animation: none; }
+}

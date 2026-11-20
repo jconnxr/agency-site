@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
-import { SmoothScroll } from "@/components/smooth-scroll";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -55,7 +54,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
       <body>
-        <SmoothScroll />
         {children}
       </body>
     </html>

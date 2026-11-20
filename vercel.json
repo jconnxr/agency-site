@@ -1,0 +1,40 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/c",
+      "destination": "https://go.axiommediagroupokc.com/?src=card",
+      "permanent": false
+    },
+    {
+      "source": "/c/",
+      "destination": "https://go.axiommediagroupokc.com/?src=card",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "go.axiommediagroupokc.com" }],
+      "destination": "/card/"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/card/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "go.axiommediagroupokc.com" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/axiom-media-group.vcf",
+      "headers": [
+        { "key": "Content-Type", "value": "text/vcard; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,9 @@ export const site = {
   // Leave empty until the real business email exists; every email link on
   // the page hides itself while this is empty.
   email: "",
+  // Business phone in +1XXXXXXXXXX form. Leave empty until there's a number:
+  // every Call / Text link hides itself while this is empty.
+  phone: "",
   calendlyUrl: "https://calendly.com/jnjsystems/free-website-google-profile-call",
   // The contact form sends leads straight into the Axiom CRM. Paste the form
   // key from the CRM (Settings -> Forms, starts with fk_) here, or set

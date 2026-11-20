@@ -246,7 +246,8 @@ export function MissedScreen() {
         </p>
       </div>
 
-      <div className="mt-[118px] flex flex-col items-center">
+      {/* sits below the two stacked notifications on mobile */}
+      <div className="mt-[190px] flex flex-col items-center">
         <Avatar size={64} dark />
         <p className="mt-3 text-[15px] font-semibold">{demoBusiness.name}</p>
         <p className="mt-1 font-mono text-[10px] text-white/55">Call ended &middot; no answer</p>

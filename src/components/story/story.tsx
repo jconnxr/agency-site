@@ -99,7 +99,9 @@ export function Story() {
             </ol>
 
             <div className="relative order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full">
-              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" overlay={<MobileAlert active={active} engaged={engaged} />} />
+              <Phone screen={step.screen} maxScale={1.17} className="h-full w-full" overlay={<MobileAlert active={active} engaged={engaged} />}
+                overlayTop={step.banner?.top}
+                overlayInset={step.banner?.inset} />
             </div>
 
             {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
@@ -168,6 +170,7 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
   const step = steps[active];
   const ev = step.owner;
   const [visible, setVisible] = useState(false);
+  const delay = step.banner?.delay ?? BANNER_DELAY;
 
   // Each time a step becomes current (while the story is on screen) the banner
   // shows again; the dismiss timer starts then, not at page load.
@@ -177,10 +180,10 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
       return;
     }
     setVisible(true);
-    if (step.bannerCanStay) return;
-    const t = window.setTimeout(() => setVisible(false), BANNER_DELAY + BANNER_HOLD);
+    if (step.banner?.canStay) return;
+    const t = window.setTimeout(() => setVisible(false), delay + BANNER_HOLD);
     return () => window.clearTimeout(t);
-  }, [active, engaged, step.bannerCanStay]);
+  }, [active, engaged, delay, step.banner?.canStay]);
 
   return (
     <div aria-hidden className="pointer-events-none md:hidden">
@@ -190,7 +193,7 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
           key={active}
           className="rounded-[16px] border border-white/40 bg-white/90 p-2 text-ink shadow-[0_14px_32px_-10px_rgba(0,0,0,0.6)] backdrop-blur-md"
           initial={reduce ? false : { opacity: 0, y: -22, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1, transition: reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 30, delay: BANNER_DELAY / 1000 } }}
+          animate={{ opacity: 1, y: 0, scale: 1, transition: reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 30, delay: delay / 1000 } }}
           exit={{ opacity: 0, y: -14, scale: 0.98, transition: { duration: reduce ? 0 : 0.2, ease: "easeIn" } }}
         >
           <div className="flex items-center gap-2.5">

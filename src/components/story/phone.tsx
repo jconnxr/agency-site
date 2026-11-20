@@ -19,12 +19,17 @@ export function Phone({
   className,
   maxScale = 1,
   overlay,
+  overlayTop = 48,
+  overlayInset = 15,
 }: {
   screen: Screen;
   className?: string;
   maxScale?: number;
   /** Rendered over the top of the screen, just under the Dynamic Island, at real (unscaled) size. */
   overlay?: React.ReactNode;
+  /** Overlay position in design px (the island's bottom edge is at 45). */
+  overlayTop?: number;
+  overlayInset?: number;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -84,9 +89,12 @@ export function Phone({
             <span className="absolute left-1/2 top-2.5 z-20 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-black" />
           </div>
         </div>
-        {/* Island bottom sits at 45 design px (9 bezel + 10 + 26); the overlay starts just below it. */}
+        {/* Island bottom sits at 45 design px (9 bezel + 10 + 26); by default the overlay starts just below it. */}
         {overlay && (
-          <div className="absolute inset-x-0 z-30" style={{ top: 48 * scale, paddingInline: 9 * scale + 5 }}>
+          <div
+            className="absolute inset-x-0 z-30 transition-[top,padding] duration-300"
+            style={{ top: overlayTop * scale, paddingInline: overlayInset * scale }}
+          >
             {overlay}
           </div>
         )}

@@ -16,9 +16,11 @@ export type Step = {
   short: string;
   screen: Screen;
   owner: OwnerEvent;
-  /** True when the top of this screen holds nothing important, so the mobile
-      notification banner can stay. Otherwise it auto-dismisses after ~2s. */
-  bannerCanStay?: boolean;
+  /** Mobile owner-notification placement for this step (design px of the 290x600 phone).
+      canStay: the area it covers holds nothing important, so it stays; otherwise it
+      auto-dismisses after ~2s. delay: ms after the screen changes (default 500).
+      top/inset: where it sits (default: just under the Dynamic Island). */
+  banner?: { canStay?: boolean; delay?: number; top?: number; inset?: number };
 };
 
 export const demoBusiness = {
@@ -46,7 +48,7 @@ export const steps: Step[] = [
     body: "After every job, your customer gets a text asking for a review. More 5-star reviews move you up the list and make you the safe choice.",
     short: "Every job ends with a text asking for a review.",
     screen: "listing",
-    bannerCanStay: true,
+    banner: { canStay: true },
     owner: { kind: "alert", label: "New 5-star review", detail: "Requested by text after the job", stars: true },
   },
   {
@@ -55,7 +57,7 @@ export const steps: Step[] = [
     body: "They tap through to a fast, clean website that answers their questions and keeps the call and book buttons right under their thumb.",
     short: "A fast site with call and book buttons up front.",
     screen: "website",
-    bannerCanStay: true,
+    banner: { canStay: true },
     owner: { kind: "count", label: "Website visits today", to: 46 },
   },
   {
@@ -80,6 +82,7 @@ export const steps: Step[] = [
     body: "When you're on a job and can't pick up, the caller gets a text back within seconds, so they wait for you instead of calling the next company.",
     short: "Missed calls get a text back in seconds.",
     screen: "missed",
+    banner: { canStay: true, delay: 3200, top: 142, inset: 19 },
     owner: { kind: "alert", label: "Missed call, texted back", detail: "Replied in 30 sec" },
   },
   {
@@ -104,7 +107,7 @@ export const steps: Step[] = [
     body: "A monthly shoot of your crew and jobs, cut into 8 to 12 short clips, plus quarterly drone footage that shows the work from above.",
     short: "Monthly clips plus quarterly drone footage.",
     screen: "reel",
-    bannerCanStay: true,
+    banner: { canStay: true },
     owner: { kind: "alert", label: "New clips ready", detail: "From this month's shoot" },
   },
 ];

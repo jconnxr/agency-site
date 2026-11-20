@@ -2,11 +2,11 @@
 // journey, the service that makes it happen, and what the owner sees on their side.
 // The business in the demo is fictional.
 
-export type Screen = "search" | "listing";
+export type Screen = "search" | "listing" | "website" | "booking" | "messages" | "missed" | "ad" | "social" | "reel";
 
 export type OwnerEvent =
-  | { kind: "count"; label: string; to: number }
-  | { kind: "alert"; label: string; detail: string; stars?: boolean };
+  | { kind: "count"; label: string; to: number; detail?: string }
+  | { kind: "alert"; label: string; detail: string; stars?: boolean; success?: boolean };
 
 export type Step = {
   service: string;
@@ -18,6 +18,8 @@ export type Step = {
 
 export const demoBusiness = {
   name: "Red Dirt Foundation Repair",
+  short: "Red Dirt Foundation",
+  initials: "RD",
   category: "Foundation repair",
   query: "foundation repair near me",
   rating: 4.9,
@@ -38,5 +40,54 @@ export const steps: Step[] = [
     body: "After every job, your customer gets a text asking for a review. More 5-star reviews move you up the list and make you the safe choice.",
     screen: "listing",
     owner: { kind: "alert", label: "New 5-star review", detail: "Requested by text after the job", stars: true },
+  },
+  {
+    service: "Website",
+    title: "One tap to a site that sells.",
+    body: "They tap through to a fast, clean website that answers their questions and keeps the call and book buttons right under their thumb.",
+    screen: "website",
+    owner: { kind: "count", label: "Website visits today", to: 46 },
+  },
+  {
+    service: "Online booking",
+    title: "They book it themselves.",
+    body: "No phone tag. They pick a day and time that works, and it lands on your calendar without you lifting a finger.",
+    screen: "booking",
+    owner: { kind: "alert", label: "New booking", detail: "Free inspection · Tue 10:30 AM" },
+  },
+  {
+    service: "Confirmations and reminders",
+    title: "Booked, confirmed, reminded.",
+    body: "A confirmation text goes out the second they book, and a reminder the day before, so fewer people forget or don't show.",
+    screen: "messages",
+    owner: { kind: "alert", label: "Booking confirmed", detail: "Reminder set for Mon 10:30 AM", success: true },
+  },
+  {
+    service: "Missed-call text-back",
+    title: "A missed call isn't a lost job.",
+    body: "When you're on a job and can't pick up, the caller gets a text back within seconds, so they wait for you instead of calling the next company.",
+    screen: "missed",
+    owner: { kind: "alert", label: "Missed call, texted back", detail: "Replied in 30 sec" },
+  },
+  {
+    service: "Meta and Google ads",
+    title: "Ads you can count.",
+    body: "Ads put you in front of people nearby who need what you do. Every call and form is tracked, so you see exactly what each lead costs.",
+    screen: "ad",
+    owner: { kind: "count", label: "Leads from ads this month", to: 23, detail: "Cost per lead tracked" },
+  },
+  {
+    service: "Social, handled",
+    title: "Your page looks alive.",
+    body: "Three posts a week on two platforms, planned and designed for you, so anyone checking you out sees a busy, real business.",
+    screen: "social",
+    owner: { kind: "alert", label: "3 posts scheduled", detail: "Mon · Wed · Fri" },
+  },
+  {
+    service: "Photo, video and drone",
+    title: "Real footage of your real work.",
+    body: "A monthly shoot of your crew and jobs, cut into 8 to 12 short clips, plus quarterly drone footage that shows the work from above.",
+    screen: "reel",
+    owner: { kind: "alert", label: "New clips ready", detail: "From this month's shoot" },
   },
 ];

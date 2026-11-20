@@ -5,14 +5,15 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { CalendarCheck, Globe, Navigation, Phone as PhoneIcon, Search, Star } from "lucide-react";
+import { AdScreen, BookingScreen, MessagesScreen, MissedScreen, ReelScreen, SocialScreen, WebsiteScreen } from "./screens";
 import { cn } from "@/lib/utils";
 import { demoBusiness, type Screen } from "./steps";
 
 const W = 290;
 const H = 600;
-const order: Screen[] = ["search", "listing"];
+const order: Screen[] = ["search", "listing", "website", "booking", "messages", "missed", "ad", "social", "reel"];
 
-export function Phone({ screen, className }: { screen: Screen; className?: string }) {
+export function Phone({ screen, className, maxScale = 1 }: { screen: Screen; className?: string; maxScale?: number }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
@@ -21,34 +22,42 @@ export function Phone({ screen, className }: { screen: Screen; className?: strin
     if (!el) return;
     const ro = new ResizeObserver(([e]) => {
       const { width, height } = e.contentRect;
-      setScale(Math.min(1, width / W, height / H));
+      setScale(Math.min(maxScale, width / W, height / H));
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [maxScale]);
 
   const current = order.indexOf(screen);
 
   return (
-    <div ref={box} className={cn("relative grid place-items-center", className)}>
+    <div ref={box} aria-hidden className={cn("relative grid place-items-center", className)}>
       <div style={{ width: W * scale, height: H * scale }}>
         <div
           style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: "top left" }}
           className="relative rounded-[46px] bg-[#1a2233] p-[9px] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.12)]"
         >
           <div className="relative h-full overflow-hidden rounded-[38px] bg-white text-[#1d232c]">
-            <StatusBar />
+            <StatusBar dark={screen === "missed" || screen === "reel"} />
             {order.map((s, i) => (
               <div
                 key={s}
                 data-active={i === current}
                 className={cn(
-                  "story-screen absolute inset-0 bg-white pt-11 transition-transform duration-[650ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+                  "story-screen absolute inset-0 transition-transform duration-[650ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+                  s === "missed" || s === "reel" ? "bg-[#151b26]" : "bg-white pt-11",
                   i === current ? "translate-x-0" : i < current ? "-translate-x-[30%]" : "translate-x-full"
                 )}
               >
                 {s === "search" && <SearchScreen />}
                 {s === "listing" && <ListingScreen />}
+                {s === "website" && <WebsiteScreen />}
+                {s === "booking" && <BookingScreen />}
+                {s === "messages" && <MessagesScreen />}
+                {s === "missed" && <MissedScreen />}
+                {s === "ad" && <AdScreen />}
+                {s === "social" && <SocialScreen />}
+                {s === "reel" && <ReelScreen />}
                 {i < current && <div className="absolute inset-0 bg-black/20" />}
               </div>
             ))}
@@ -60,23 +69,28 @@ export function Phone({ screen, className }: { screen: Screen; className?: strin
   );
 }
 
-function StatusBar() {
+function StatusBar({ dark }: { dark?: boolean }) {
   return (
-    <div className="absolute inset-x-0 top-0 z-10 flex h-11 items-center justify-between bg-white px-7 pt-1 font-mono text-[12px] font-semibold">
+    <div
+      className={cn(
+        "absolute inset-x-0 top-0 z-10 flex h-11 items-center justify-between px-7 pt-1 font-mono text-[12px] font-semibold transition-colors duration-500",
+        dark ? "bg-transparent text-white [&_.sb]:bg-white [&_.sbb]:border-white" : "bg-white text-[#1d232c] [&_.sb]:bg-[#1d232c] [&_.sbb]:border-[#1d232c]"
+      )}
+    >
       <span>9:41</span>
       <span className="flex items-end gap-[2px]" aria-hidden>
         {[4, 6, 8, 10].map((h) => (
-          <span key={h} className="w-[3px] rounded-[1px] bg-[#1d232c]" style={{ height: h }} />
+          <span key={h} className="sb w-[3px] rounded-[1px]" style={{ height: h }} />
         ))}
-        <span className="ml-1.5 h-[10px] w-[20px] rounded-[3px] border border-[#1d232c] p-[1px]">
-          <span className="block h-full w-[70%] rounded-[1px] bg-[#1d232c]" />
+        <span className="sbb ml-1.5 h-[10px] w-[20px] rounded-[3px] border p-[1px]">
+          <span className="sb block h-full w-[70%] rounded-[1px]" />
         </span>
       </span>
     </div>
   );
 }
 
-function Stars({ n = 5, size = 10 }: { n?: number; size?: number }) {
+export function Stars({ n = 5, size = 10 }: { n?: number; size?: number }) {
   return (
     <span className="flex">
       {Array.from({ length: 5 }).map((_, i) => (

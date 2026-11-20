@@ -2,11 +2,12 @@
 
 // "Watch a customer find you": a tall scroll track with a sticky stage inside.
 // Scroll position picks the active step; the phone, the caption and the owner's
-// side all follow it. Everything stays in the DOM so screen readers get every step.
+// feed all follow it. Every caption stays in the DOM so screen readers get each step.
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Star } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Phone } from "./phone";
 import { steps, type OwnerEvent } from "./steps";
@@ -47,24 +48,31 @@ export function Story() {
           </p>
         </div>
         <p className="sr-only">
-          An animated example of a customer finding a local business on their phone, step by step, alongside
-          what the business owner sees.
+          An animated example of a customer finding a local business on their phone, step by step, alongside what the
+          business owner sees.
         </p>
       </div>
 
-      {/* Scroll track: stage height plus roughly one screen of scrolling per step */}
-      <div ref={track} className="relative" style={{ height: `calc(100svh - 4rem + ${n * 85}svh)` }}>
+      {/* Scroll track: the stage's height plus a stretch of scrolling for each step */}
+      <div
+        ref={track}
+        className="relative h-[calc(100svh-4rem+var(--n)*72svh)] md:h-[calc(100svh-4rem+var(--n)*80svh)]"
+        style={{ "--n": n } as React.CSSProperties}
+      >
         <div className="sticky top-16 h-[calc(100svh-4rem)] overflow-hidden">
-          <div className="mx-auto grid h-full max-w-6xl grid-rows-[1fr_auto] px-5 pb-5 pt-4 md:grid-cols-[1fr_300px_250px] md:grid-rows-1 md:items-center md:gap-12 md:px-8 md:py-10">
-            {/* Captions (desktop: left column; mobile: under the phone) */}
-            <ol className="relative order-2 grid min-h-[13.5rem] md:order-1 md:min-h-0">
+          <div className="mx-auto grid h-full max-w-6xl grid-rows-[1fr_auto] px-5 pb-5 pt-4 md:grid-cols-[1fr_340px_272px] md:grid-rows-1 md:items-center md:gap-10 md:px-8 md:py-8 lg:gap-14">
+            {/* Captions. Desktop: left column. Mobile: under the phone.
+                The old caption is fully gone (200ms) before the new one starts (delay 240ms). */}
+            <ol className="relative order-2 mt-4 grid md:order-1 md:mt-0">
               {steps.map((s, i) => (
                 <li
                   key={s.title}
                   aria-current={i === active ? "step" : undefined}
                   className={cn(
-                    "col-start-1 row-start-1 transition-[opacity,transform] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] md:self-center",
-                    i === active ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"
+                    "col-start-1 row-start-1 transition-[opacity,transform] ease-[cubic-bezier(.2,.8,.2,1)] md:self-center",
+                    i === active
+                      ? "translate-y-0 opacity-100 delay-[240ms] duration-500"
+                      : cn("pointer-events-none opacity-0 delay-0 duration-200", i < active ? "-translate-y-3" : "translate-y-3")
                   )}
                 >
                   <p className="flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-clay-glow">
@@ -74,11 +82,10 @@ export function Story() {
                     <span aria-hidden className="h-px w-6 bg-clay-glow/50" />
                     <span>{s.service}</span>
                   </p>
-                  <h3 className="mt-2.5 text-[1.45rem] md:mt-4 md:text-[2.2rem]">{s.title}</h3>
-                  <p className="mt-2 max-w-[44ch] text-[0.98rem] leading-relaxed text-white/70 md:mt-4 md:text-[1.06rem]">
+                  <h3 className="mt-2.5 text-[1.4rem] md:mt-4 md:text-[2.2rem]">{s.title}</h3>
+                  <p className="mt-2 max-w-[44ch] text-[0.95rem] leading-relaxed text-white/70 md:mt-4 md:text-[1.06rem]">
                     {s.body}
                   </p>
-                  {/* Owner's side, compact, on mobile */}
                   <div aria-hidden className="mt-3 md:hidden">
                     <p className="mb-1.5 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
                       Your phone &middot; example
@@ -89,28 +96,16 @@ export function Story() {
               ))}
             </ol>
 
-            <Phone screen={step.screen} className="order-1 min-h-0 md:order-2 md:h-[600px] md:max-h-full" />
+            <Phone screen={step.screen} maxScale={1.17} className="order-1 min-h-0 md:order-2 md:h-[702px] md:max-h-full" />
 
-            {/* Owner's side, desktop */}
-            <aside aria-hidden className="order-3 hidden md:block">
-              <div className="rounded-lg border border-night-line bg-night-2 p-4">
-                <p className="flex items-center justify-between font-mono text-[0.68rem] uppercase tracking-[0.08em] text-white/45">
+            {/* Owner's side, desktop: a feed that grows with each step, newest on top */}
+            <aside aria-hidden className="order-3 hidden md:block md:max-h-full md:self-center">
+              <div className="rounded-lg border border-night-line bg-night-2 p-3.5">
+                <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
                   <span>Your phone</span>
                   <span>Example</span>
                 </p>
-                <div className="mt-3 space-y-2">
-                  {steps.map((s, i) => (
-                    <div
-                      key={s.title}
-                      className={cn(
-                        "transition-[opacity,transform] duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
-                        i <= active ? "opacity-100" : "translate-y-2 opacity-0"
-                      )}
-                    >
-                      <OwnerRow event={s.owner} live={i === active} />
-                    </div>
-                  ))}
-                </div>
+                <OwnerFeed active={active} />
               </div>
               <Progress active={active} />
             </aside>
@@ -137,9 +132,32 @@ export function Story() {
   );
 }
 
+function OwnerFeed({ active }: { active: number }) {
+  const reduce = useReducedMotion();
+  const shown = steps.slice(0, active + 1).map((s, i) => ({ s, i })).reverse();
+  return (
+    <ul className="mt-3 flex flex-col gap-2">
+      <AnimatePresence initial={false}>
+        {shown.map(({ s, i }) => (
+          <motion.li
+            key={s.title}
+            layout={!reduce}
+            initial={reduce ? false : { opacity: 0, y: -14, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, transition: { duration: 0.2 } }}
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+          >
+            <OwnerRow event={s.owner} live={i === active} />
+          </motion.li>
+        ))}
+      </AnimatePresence>
+    </ul>
+  );
+}
+
 function Progress({ active }: { active: number }) {
   return (
-    <div className="mt-4 flex gap-1.5">
+    <div className="mt-3 flex gap-1">
       {steps.map((s, i) => (
         <span
           key={s.title}
@@ -151,26 +169,35 @@ function Progress({ active }: { active: number }) {
 }
 
 function OwnerRow({ event, live, compact }: { event: OwnerEvent; live: boolean; compact?: boolean }) {
+  const success = event.kind === "alert" && event.success;
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-md border px-3 py-2.5 transition-[border-color,box-shadow,background-color] duration-700",
+        "flex items-center gap-3 rounded-md border px-3 py-2 transition-[border-color,box-shadow,background-color] duration-700",
         live
           ? "border-clay-glow/60 bg-clay-glow/[0.08] shadow-[0_0_0_4px_rgb(232_105_63/0.10),0_0_28px_-6px_rgb(232_105_63/0.55)]"
-          : "border-night-line bg-white/[0.02]",
-        compact && "py-2"
+          : "border-night-line bg-white/[0.02]"
       )}
     >
-      <span className={cn("size-2 shrink-0 rounded-full", live ? "bg-clay-glow" : "bg-white/25")} />
+      {success ? (
+        <span className="grid size-4 shrink-0 place-items-center rounded-full bg-go-glow text-night">
+          <Check className="size-2.5" strokeWidth={4} />
+        </span>
+      ) : (
+        <span className={cn("size-2 shrink-0 rounded-full", live ? "bg-clay-glow" : "bg-white/25")} />
+      )}
       <div className="min-w-0 flex-1">
         {event.kind === "count" ? (
-          <p className="flex items-baseline justify-between gap-3 text-[0.88rem]">
-            <span className="text-white/80">{event.label}</span>
-            <CountUp to={event.to} run={live} />
-          </p>
+          <>
+            <p className="flex items-baseline justify-between gap-3 text-[0.86rem]">
+              <span className="text-white/85">{event.label}</span>
+              <CountUp to={event.to} run={live} />
+            </p>
+            {event.detail && !compact && <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>}
+          </>
         ) : (
           <>
-            <p className="flex items-center justify-between gap-3 text-[0.88rem] font-semibold text-white">
+            <p className="flex items-center justify-between gap-3 text-[0.86rem] font-semibold text-white">
               {event.label}
               {event.stars && (
                 <span className="flex shrink-0">
@@ -180,7 +207,7 @@ function OwnerRow({ event, live, compact }: { event: OwnerEvent; live: boolean; 
                 </span>
               )}
             </p>
-            {!compact && <p className="mt-0.5 font-mono text-[0.68rem] text-white/50">{event.detail}</p>}
+            {!compact && <p className="font-mono text-[0.66rem] text-white/45">{event.detail}</p>}
           </>
         )}
       </div>
@@ -196,6 +223,7 @@ function CountUp({ to, run }: { to: number; run: boolean }) {
     if (!run) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setV(to);
     const obj = { v: 0 };
+    setV(0);
     const tw = gsap.to(obj, {
       v: to,
       duration: 1.6,
@@ -203,12 +231,11 @@ function CountUp({ to, run }: { to: number; run: boolean }) {
       delay: 0.4,
       onUpdate: () => setV(Math.round(obj.v)),
     });
-    setV(0);
     return () => {
       tw.kill();
       setV(to);
     };
   }, [run, to]);
 
-  return <span className="font-mono text-[0.95rem] font-semibold tabular-nums text-white">{v}</span>;
+  return <span className="font-mono text-[0.92rem] font-semibold tabular-nums text-white">{v}</span>;
 }

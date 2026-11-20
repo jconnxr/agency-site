@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
 
 const links = [
+  { href: "#story", label: "How it works" },
   { href: "#who", label: "Who it's for" },
   { href: "#what", label: "What you get" },
   { href: "#packages", label: "Packages" },
-  { href: "#how", label: "How it works" },
+  { href: "#how", label: "Getting started" },
   { href: "#faq", label: "Questions" },
 ];
 

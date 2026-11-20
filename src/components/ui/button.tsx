@@ -12,7 +12,7 @@ const buttonVariants = cva(
         primary: "bg-clay text-white hover:bg-clay-ink",
         solid: "bg-ink text-white hover:bg-night-2",
         outline: "border border-ink text-ink hover:bg-ink hover:text-paper",
-        ghost: "text-ink hover:bg-sky",
+        ghost: "text-ink hover:bg-line/40",
       },
       size: {
         sm: "h-10 px-4 text-[0.95rem]",

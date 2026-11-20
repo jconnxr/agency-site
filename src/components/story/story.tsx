@@ -69,6 +69,63 @@ export function Story() {
   const next = () => goTo(from() + 1);
   const prev = () => goTo(from() - 1);
 
+  // Wheel/trackpad: while the story is pinned, one gesture moves exactly one step.
+  // The first wheel event of a gesture starts a smooth scroll to the next/previous
+  // step; the rest of that gesture (trackpad momentum included) is absorbed until
+  // the wheel has been quiet for a moment. At the ends (down on the last step, up
+  // on the first) the wheel is left alone so nobody gets trapped in the section.
+  // Runs in the capture phase so it gets the event before Lenis does.
+  const live = useRef({ active: 0, engaged: false, goTo: (_: number) => {} });
+  live.current = { active, engaged, goTo };
+  useEffect(() => {
+    const g = { locked: false, minUntil: 0, quiet: 0, last: 0, wasEngaged: false };
+    const QUIET = 170; // ms of no wheel events that ends a gesture
+    const MIN_LOCK = 520; // a step's scroll is ~900ms; don't take a new gesture too early
+    const release = () => {
+      const wait = g.minUntil - performance.now();
+      if (wait > 0) g.quiet = window.setTimeout(release, wait);
+      else g.locked = false;
+    };
+    const absorb = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.clearTimeout(g.quiet);
+      g.quiet = window.setTimeout(release, QUIET);
+    };
+    const onWheel = (e: WheelEvent) => {
+      const now = performance.now();
+      const midGesture = now - g.last < QUIET;
+      g.last = now;
+      const { engaged: on, active: act, goTo: jump } = live.current;
+      const entering = on && !g.wasEngaged;
+      g.wasEngaged = on;
+      if (!on || e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+
+      const cur = pending.current ?? act;
+      if (g.locked) return absorb(e);
+      // A flick that carries the visitor into the story settles on the current step
+      // instead of skipping ahead.
+      if (entering && midGesture) {
+        g.locked = true;
+        g.minUntil = now + MIN_LOCK;
+        jump(cur);
+        return absorb(e);
+      }
+      const dir = e.deltaY > 0 ? 1 : -1;
+      if ((dir > 0 && cur >= n - 1) || (dir < 0 && cur <= 0)) return; // let them leave
+      if (Math.abs(e.deltaY) < 2) return;
+      g.locked = true;
+      g.minUntil = now + MIN_LOCK;
+      jump(cur + dir);
+      absorb(e);
+    };
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => {
+      window.removeEventListener("wheel", onWheel, { capture: true });
+      window.clearTimeout(g.quiet);
+    };
+  }, []);
+
   // Left/right arrow keys while the story is pinned on screen
   useEffect(() => {
     if (!engaged) return;
@@ -219,7 +276,7 @@ export function Story() {
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:px-8 md:pb-28">
         <div className="border-t border-night-line pt-12 md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-16 md:pt-16">
           <h2 className="max-w-[20ch] text-[1.9rem] md:text-[3rem]">
-            That&rsquo;s the whole system. <span className="text-clay-glow">We set it up and keep it running.</span>
+            That&rsquo;s the whole system. We set it up and keep it running.
           </h2>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-0">
             <a

@@ -102,6 +102,9 @@
   to { height: 0; }
 }
 
+/* Gentle bob for the story's scroll hint chevron */
+@keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
 /* Soft pulse on the hero map pins */
 @keyframes okc-pulse { 0% { transform: scale(0.4); opacity: 0.9; } 80%, 100% { transform: scale(1.6); opacity: 0; } }
 .okc-pulse { transform-box: fill-box; transform-origin: center; animation: okc-pulse 3.6s ease-out infinite; }

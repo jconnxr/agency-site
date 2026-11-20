@@ -1,68 +1,63 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Check, ChevronRight, Clock, Gift, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Eyebrow, sectionTitle } from "@/components/sections";
 import { addons, automate, founding, launch, plans, type Option } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Five packages in the order clients move through them:
-// Launch (one-time) → the three monthly plans → Automate whenever busywork piles up.
+// Packages on warm paper: rules and columns instead of cards, mono for the data.
+// Order follows how clients move: Launch (one-time) → three monthly plans → Automate.
 export function Packages() {
   return (
-    <section id="packages" className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-32">
-      <div className="max-w-[62ch]">
-        <Eyebrow n="03">Packages</Eyebrow>
-        <h2 data-reveal className={sectionTitle}>
-          Five packages. Each one solves one problem.
-        </h2>
-        <p data-reveal className="mt-5 text-lg text-muted">
-          Pick the one that matches where you are. Monthly plans stack, so each includes everything in the one before it.
-        </p>
-      </div>
-
-      <Path />
-      <Founding />
-
-      <div id="launch" className="mt-20 scroll-mt-24">
-        <GroupHeader label="One-time project" title={launch.name} problem={launch.problem} bestFor={launch.bestFor} />
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {launch.options.map((o, i) => (
-            <OptionCard key={o.name} option={o} dark={i === 1} badge={i === 1 ? "Payment plan available" : undefined} />
-          ))}
+    <section id="packages" className="bg-paper text-ink">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+        <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-16">
+          <h2 data-reveal className="text-[2.1rem] md:text-[3.2rem]">
+            Five packages. Each one solves one problem.
+          </h2>
+          <div data-reveal className="md:pt-3">
+            <p className="text-[1.06rem] leading-relaxed text-muted">
+              Pick the one that matches where you are. Monthly plans stack, so each includes everything in the one
+              before it.
+            </p>
+            <Path />
+          </div>
         </div>
-        <div data-reveal className="mt-5 grid gap-3 text-[0.98rem] md:grid-cols-2">
-          <p className="flex gap-3 rounded-md bg-sky/60 px-5 py-4 text-ink">
-            <Check className="mt-1 size-4 shrink-0 text-flag" strokeWidth={3} aria-hidden />
-            {launch.note}
-          </p>
-          <p className="flex gap-3 rounded-md bg-wheat-soft px-5 py-4 text-ink">
-            <Gift className="mt-0.5 size-5 shrink-0 text-[#a36f12]" aria-hidden />
-            <span>
-              <span className="font-semibold">Launch + Get Found bundle.</span> {launch.bundle}
-            </span>
-          </p>
-        </div>
+
+        <Founding />
+
+        <Group
+          id="launch"
+          label="One-time project"
+          title={launch.name}
+          problem={launch.problem}
+          bestFor={launch.bestFor}
+        >
+          <Options options={launch.options} notes={{ 1: "Payment plan available" }} />
+          <dl className="mt-8 grid gap-6 border-t border-line pt-6 text-[0.98rem] md:grid-cols-2 md:gap-10">
+            <div>
+              <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Included</dt>
+              <dd className="mt-1.5">{launch.note}</dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found bundle</dt>
+              <dd className="mt-1.5">{launch.bundle}</dd>
+            </div>
+          </dl>
+        </Group>
+
+        <Monthly />
+
+        <Group
+          id="automate"
+          label="One-time project"
+          title={automate.name}
+          problem={automate.problem}
+          bestFor={automate.bestFor}
+        >
+          <Options options={automate.options} />
+          <p className="mt-8 border-t border-line pt-6 text-[0.98rem] text-muted">{automate.note}</p>
+        </Group>
+
+        <AlaCarte />
       </div>
-
-      <Monthly />
-
-      <div id="automate" data-reveal className="mt-24 scroll-mt-24 rounded-lg bg-sky/60 p-6 md:p-10">
-        <GroupHeader label="One-time project" title={automate.name} problem={automate.problem} bestFor={automate.bestFor} />
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {automate.options.map((o) => (
-            <OptionCard key={o.name} option={o} />
-          ))}
-        </div>
-        <p className="mt-5 text-[0.98rem] text-muted">{automate.note}</p>
-      </div>
-
-      <AlaCarte />
     </section>
   );
 }
@@ -75,31 +70,29 @@ function Path() {
     { label: "Full Department", href: "#monthly" },
   ];
   return (
-    <div data-reveal className="mt-10">
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">The path most clients take</p>
-      <ol className="mt-3 flex flex-wrap items-center gap-2">
+    <div className="mt-7">
+      <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">The path most clients take</p>
+      <ol className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 font-semibold">
         {steps.map((s, i) => (
-          <li key={s.label} className="flex items-center gap-2">
-            <a
-              href={s.href}
-              className={cn(
-                "rounded-full px-4 py-2 font-display text-[0.95rem] font-bold transition-colors",
-                i === 0 ? "bg-wheat text-ink hover:bg-[#d4972b]" : "border border-line bg-white text-ink hover:border-flag hover:text-flag"
-              )}
-            >
+          <li key={s.label} className="flex items-center gap-2.5">
+            <a href={s.href} className="underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay">
               {s.label}
             </a>
-            {i < steps.length - 1 && <ChevronRight className="size-4 text-muted" aria-hidden />}
+            {i < steps.length - 1 && (
+              <span aria-hidden className="font-mono text-muted">
+                →
+              </span>
+            )}
           </li>
         ))}
-        <li className="flex items-center gap-2 text-[0.95rem] text-muted sm:ml-3">
-          <span aria-hidden className="font-bold text-flag">+</span>
-          <a href="#automate" className="font-semibold text-flag underline underline-offset-4 hover:text-flag-dark">
-            Automate
-          </a>
-          whenever busywork piles up
-        </li>
       </ol>
+      <p className="mt-1.5 text-[0.95rem] text-muted">
+        Plus{" "}
+        <a href="#automate" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay">
+          Automate
+        </a>{" "}
+        whenever busywork piles up.
+      </p>
     </div>
   );
 }
@@ -108,163 +101,140 @@ function Founding() {
   return (
     <div
       data-reveal
-      className="mt-10 flex flex-col gap-4 rounded-lg border border-wheat bg-wheat-soft/60 p-6 md:flex-row md:items-center md:justify-between"
+      className="mt-14 grid gap-5 border-l-[3px] border-clay bg-card py-6 pl-6 pr-6 md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:pl-8"
     >
-      <div className="flex gap-4">
-        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-wheat text-ink">
-          <Sparkles className="size-5" aria-hidden />
-        </span>
-        <p className="text-ink">
-          <span className="block font-display text-lg font-bold">Founding client offer</span>
-          <span className="text-[0.98rem] text-ink/80">{founding.body}</span>
+      <div>
+        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">
+          Founding client offer &middot; first {founding.spots} clients
         </p>
+        <p className="mt-2 max-w-[70ch] text-[1.02rem] leading-relaxed">{founding.body}</p>
       </div>
-      <Button asChild variant="solid" className="shrink-0 self-start md:self-auto">
+      <Button asChild variant="outline" className="self-start md:self-auto">
         <a href="#book">Ask about a founding spot</a>
       </Button>
     </div>
   );
 }
 
-function GroupHeader({ label, title, problem, bestFor }: { label: string; title: string; problem: string; bestFor: string }) {
+function Group({
+  id,
+  label,
+  title,
+  problem,
+  bestFor,
+  children,
+}: {
+  id: string;
+  label: string;
+  title: string;
+  problem: string;
+  bestFor: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div data-reveal className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-flag">{label}</p>
-        <h3 className="mt-1 text-4xl font-extrabold">{title}</h3>
-      </div>
-      <div className="md:max-w-[46ch] md:text-right">
-        <p className="font-display text-lg italic text-ink">&ldquo;{problem}&rdquo;</p>
-        <p className="text-[0.95rem] text-muted">Best for: {bestFor}</p>
+    <div id={id} className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
+      <div className="grid gap-8 md:grid-cols-[15rem_1fr] md:gap-14">
+        <div data-reveal>
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">{label}</p>
+          <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">{title}</h3>
+          <p className="mt-4 text-[1.02rem] font-semibold leading-snug">&ldquo;{problem}&rdquo;</p>
+          <p className="mt-2 text-[0.95rem] text-muted">Best for: {bestFor}</p>
+        </div>
+        <div>{children}</div>
       </div>
     </div>
   );
 }
 
-function OptionCard({ option, dark, badge }: { option: Option; dark?: boolean; badge?: string }) {
+function Options({ options, notes = {} }: { options: Option[]; notes?: Record<number, string> }) {
   return (
-    <article
-      data-reveal
-      className={cn(
-        "relative flex min-w-0 flex-col break-words rounded-lg p-7 md:p-8",
-        dark ? "bg-ink text-white" : "border border-line bg-white text-ink"
-      )}
-    >
-      {badge && (
-        <span className="absolute -top-3 right-7 rounded-full bg-wheat px-3 py-1 text-xs font-bold text-ink shadow-sm">{badge}</span>
-      )}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h4 className="font-display text-2xl font-bold">{option.name}</h4>
-        {option.liveBy && (
-          <span
-            className={cn(
-              "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
-              dark ? "bg-white/10 text-wheat" : "bg-sky text-flag-dark"
-            )}
-          >
-            <Clock className="size-3.5" aria-hidden />
-            {option.liveBy}
-          </span>
-        )}
-      </div>
-      <p className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className={cn("font-display text-[3rem] font-extrabold leading-none", dark && "text-wheat")}>{option.price}</span>
-        <span className={cn("text-sm", dark ? "text-white/70" : "text-muted")}>{option.priceNote}</span>
-      </p>
-      <div className={cn("my-6 h-px", dark ? "bg-white/15" : "bg-line")} />
-      <ul className="space-y-3 text-[0.98rem]">
-        {option.includes.map((inc) => (
-          <li key={inc} className="flex gap-3">
-            <Check aria-hidden className={cn("mt-1 size-4 shrink-0", dark ? "text-wheat" : "text-flag")} strokeWidth={3} />
-            <span>{inc}</span>
-          </li>
-        ))}
-      </ul>
-      <Button asChild variant={dark ? "primary" : "solid"} size="lg" className="group mt-8 w-full [margin-top:max(2rem,auto)]">
-        <a href="#book">
-          Start with {option.name}
-          <ArrowRight className="transition-transform group-hover:translate-x-1" aria-hidden />
-        </a>
-      </Button>
-    </article>
+    <div className="grid gap-10 md:grid-cols-2 md:gap-0 md:divide-x md:divide-line">
+      {options.map((o, i) => (
+        <article key={o.name} data-reveal className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
+          <h4 className="font-wide text-[1.35rem] font-bold">{o.name}</h4>
+          {o.liveBy && (
+            <p className="mt-1 font-mono text-[0.72rem] uppercase tracking-[0.06em] text-clay-ink">{o.liveBy}</p>
+          )}
+          <p className="mt-4 font-wide text-[2.6rem] font-extrabold leading-none">{o.price}</p>
+          <p className="mt-2 text-[0.92rem] text-muted">
+            {o.priceNote}
+            {notes[i] && <span className="font-semibold text-ink"> &middot; {notes[i]}</span>}
+          </p>
+          <ul className="mt-6 space-y-2.5 border-t border-line pt-5 text-[0.98rem]">
+            {o.includes.map((inc) => (
+              <li key={inc} className="flex gap-3">
+                <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-clay" />
+                <span>{inc}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto pt-8">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+              <a href="#book">Start with {o.name}</a>
+            </Button>
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }
 
-// Monthly plans as a staircase: each step sits higher than the last, because
-// each plan includes the one before it.
-const stepStyle = [
-  { card: "bg-white border border-line text-ink", offset: "md:translate-y-20", price: "text-ink", muted: "text-muted", check: "text-flag", rule: "bg-line", btn: "solid" as const },
-  { card: "bg-flag text-white", offset: "md:translate-y-10", price: "text-white", muted: "text-white/80", check: "text-wheat", rule: "bg-white/15", btn: "primary" as const },
-  { card: "bg-ink text-white", offset: "md:translate-y-0", price: "text-wheat", muted: "text-white/70", check: "text-wheat", rule: "bg-white/15", btn: "primary" as const },
-];
-
+// Monthly plans: three columns on one rule. The bars at the top of each column
+// grow by one, because each plan includes the one before it.
 function Monthly() {
-  const root = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!root.current) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => {
-      gsap.from("[data-step]", {
-        yPercent: 18,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
-      });
-    });
-    return () => mm.revert();
-  }, []);
-
   return (
-    <div id="monthly" className="mt-24 scroll-mt-24">
-      <div data-reveal className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div id="monthly" className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
+      <div data-reveal className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-14">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-flag">Monthly plans</p>
-          <h3 className="mt-1 text-4xl font-extrabold">Plans that stack</h3>
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Monthly plans</p>
+          <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Plans that stack</h3>
         </div>
-        <p className="text-[0.95rem] text-muted md:max-w-[44ch] md:text-right">
+        <p className="max-w-[44ch] text-[1.02rem] text-muted md:text-right">
           3-month minimum, then month to month. Move up a step whenever you&rsquo;re ready.
         </p>
       </div>
 
-      <div ref={root} className="mt-14 grid gap-5 md:mb-20 md:grid-cols-3 md:items-start">
-        {plans.map((p, i) => {
-          const s = stepStyle[i];
-          return (
-            <article key={p.name} data-step className={cn("relative flex flex-col rounded-lg p-7", s.card, s.offset)}>
-              <div className="flex items-baseline justify-between">
-                <h4 className="font-display text-[1.7rem] font-bold">{p.name}</h4>
-                <span className={cn("font-display text-sm font-bold", s.muted)}>Step {i + 1}</span>
-              </div>
-              <p className={cn("mt-2 min-h-[3em] font-display italic", s.muted)}>&ldquo;{p.problem}&rdquo;</p>
-              <p className={cn("text-sm", s.muted)}>Best for: {p.bestFor}</p>
-              <p className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <span className={cn("font-display text-[2.6rem] font-extrabold leading-none", s.price)}>{p.price}</span>
-                <span className={cn("text-sm", s.muted)}>{p.priceNote}</span>
-              </p>
-              <div className={cn("my-6 h-px", s.rule)} />
+      <div className="mt-10 grid gap-12 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
+        {plans.map((p, i) => (
+          <article
+            key={p.name}
+            data-reveal
+            className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-8" : i === 1 ? "md:px-8" : "md:pl-8")}
+          >
+            <div className="flex items-end justify-between">
+              <span aria-hidden className="flex items-end gap-1">
+                {[0, 1, 2].map((b) => (
+                  <span key={b} className={cn("w-2.5", b <= i ? "bg-clay" : "bg-line")} style={{ height: 8 + b * 7 }} />
+                ))}
+              </span>
+              <span className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Step {i + 1}</span>
+            </div>
+            <h4 className="mt-5 font-wide text-[1.6rem] font-extrabold">{p.name}</h4>
+            <p className="mt-2 min-h-[3em] font-semibold leading-snug">&ldquo;{p.problem}&rdquo;</p>
+            <p className="text-[0.92rem] text-muted">Best for: {p.bestFor}</p>
+            <p className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span className="font-wide text-[2.3rem] font-extrabold leading-none">{p.price}</span>
+              <span className="text-[0.92rem] text-muted">{p.priceNote}</span>
+            </p>
+            <div className="mt-6 border-t border-line pt-5">
               {p.base && <p className="mb-3 text-[0.95rem] font-semibold">Everything in {p.base}, plus:</p>}
-              <ul className="space-y-3 text-[0.96rem]">
+              <ul className="space-y-2.5 text-[0.96rem]">
                 {p.includes.map((inc) => (
                   <li key={inc} className="flex gap-3">
-                    <Check aria-hidden className={cn("mt-1 size-4 shrink-0", s.check)} strokeWidth={3} />
+                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-clay" />
                     <span>{inc}</span>
                   </li>
                 ))}
               </ul>
-              <p className={cn("mt-6 text-sm", s.muted)}>{p.terms}</p>
-              <Button asChild variant={s.btn} size="lg" className="group mt-6 w-full">
-                <a href="#book">
-                  Talk about {p.name}
-                  <ArrowRight className="transition-transform group-hover:translate-x-1" aria-hidden />
-                </a>
+            </div>
+            <div className="mt-auto pt-6">
+              <p className="text-[0.88rem] text-muted">{p.terms}</p>
+              <Button asChild variant="outline" size="lg" className="mt-5 w-full sm:w-auto md:w-full">
+                <a href="#book">Talk about {p.name}</a>
               </Button>
-            </article>
-          );
-        })}
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   );
@@ -272,21 +242,24 @@ function Monthly() {
 
 function AlaCarte() {
   return (
-    <div className="mt-24 grid gap-10 md:grid-cols-[1fr_1.7fr]">
+    <div className="mt-20 grid gap-8 border-t-2 border-ink pt-8 md:mt-24 md:grid-cols-[15rem_1fr] md:gap-14">
       <div data-reveal>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-flag">À la carte</p>
-        <h3 className="mt-1 text-4xl font-extrabold">Need just one thing?</h3>
+        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">&Agrave; la carte</p>
+        <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Need just one thing?</h3>
         <p className="mt-4 text-muted">Book any of these on their own, or add them to a package.</p>
-        <a href="#book" className="mt-5 inline-block font-semibold text-flag underline underline-offset-4 hover:text-flag-dark">
+        <a
+          href="#book"
+          className="mt-4 inline-block font-semibold underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay"
+        >
           Ask about a one-off
         </a>
       </div>
-      <ul data-reveal className="border-t border-line">
+      <ul data-reveal className="border-t border-line md:border-t-0">
         {addons.map((a) => (
           <li key={a.name} className="flex items-baseline gap-4 border-b border-line py-3.5">
-            <span className="text-ink">{a.name}</span>
+            <span>{a.name}</span>
             <span aria-hidden className="flex-1 translate-y-[-4px] border-b border-dotted border-line" />
-            <span className="shrink-0 font-semibold text-ink">{a.price}</span>
+            <span className="shrink-0 font-mono text-[0.92rem] font-medium">{a.price}</span>
           </li>
         ))}
       </ul>

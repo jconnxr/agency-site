@@ -33,7 +33,9 @@ npm run dev        # http://localhost:3000
 1. Create a free form at https://formspree.io and copy its ID (the part after `/f/`).
 2. Add `NEXT_PUBLIC_FORMSPREE_ID=yourid` to `.env.local`, and to Vercel's environment variables.
 
-To use Resend instead, remove `output: "export"` from `next.config.mjs`, then add a route handler at `src/app/api/contact/route.ts` and point the form there.
+## Intake modal
+
+Every package button and "Book a call" CTA opens a 4-step intake modal (`src/components/intake.tsx`), with the clicked package's services pre-checked (mapping in `src/lib/intake.ts`). It posts to `POST /api/intake` (`src/app/api/intake/route.ts`), which validates and logs each submission server-side for now; connect the CRM in that route. Because of this route the site runs as a full Next.js app on Vercel rather than a static export.
 
 ## Deploy to Vercel
 

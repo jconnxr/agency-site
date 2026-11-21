@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
+import { IntakeTrigger } from "@/components/intake";
 
 const links = [
   { href: "#story", label: "How it works" },
@@ -27,20 +28,22 @@ export function Header() {
           {site.name}
         </a>
 
-        <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
             <a key={l.href} href={l.href} className="text-[0.92rem] font-medium text-white/65 transition-colors hover:text-white">
               {l.label}
             </a>
           ))}
           <Button asChild size="sm" className="rounded-full shadow-[0_8px_24px_-8px_rgb(232_105_63/0.8)] hover:bg-clay-glow">
-            <a href="#book">Book a call</a>
+            <IntakeTrigger source="Header: Book a call">
+              <a href="#book">Book a call</a>
+            </IntakeTrigger>
           </Button>
         </nav>
 
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild>
-            <button className="grid size-11 place-items-center rounded-full text-white md:hidden" aria-label="Open menu">
+            <button className="grid size-11 place-items-center rounded-full text-white lg:hidden" aria-label="Open menu">
               <Menu className="size-6" />
             </button>
           </Dialog.Trigger>
@@ -83,9 +86,9 @@ export function Header() {
                       ))}
                     </nav>
                     <Button asChild size="lg" className="mt-6 w-full rounded-full">
-                      <a href="#book" onClick={() => setOpen(false)}>
-                        Book a free call
-                      </a>
+                      <IntakeTrigger source="Mobile menu: Book a call" onOpen={() => setOpen(false)}>
+                        <a href="#book">Book a free call</a>
+                      </IntakeTrigger>
                     </Button>
                   </motion.div>
                 </Dialog.Content>

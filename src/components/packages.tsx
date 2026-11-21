@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { addons, automate, founding, launch, plans, type Option } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { FadeUp, Panel, RevealHeading, Rise, Stagger } from "@/components/fx";
+import { IntakeTrigger } from "@/components/intake";
 
 // Packages on warm paper: rules and columns instead of cards, mono for the data.
 // Order follows how clients move: Launch (one-time) → three monthly plans → Automate.
@@ -35,18 +36,20 @@ export function Packages() {
           title={launch.name}
           problem={launch.problem}
           bestFor={launch.bestFor}
+          aside={
+            <dl className="grid gap-5 text-[0.95rem]">
+              <div className="rounded-2xl bg-cream/70 p-4">
+                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Included</dt>
+                <dd className="mt-1.5">{launch.note}</dd>
+              </div>
+              <div className="rounded-2xl border border-clay/25 bg-clay-soft/40 p-4">
+                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found bundle</dt>
+                <dd className="mt-1.5">{launch.bundle}</dd>
+              </div>
+            </dl>
+          }
         >
           <Options options={launch.options} notes={{ 1: "Payment plan available" }} />
-          <dl className="mt-8 grid gap-6 border-t border-line pt-6 text-[0.98rem] md:grid-cols-2 md:gap-10">
-            <div>
-              <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Included</dt>
-              <dd className="mt-1.5">{launch.note}</dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found bundle</dt>
-              <dd className="mt-1.5">{launch.bundle}</dd>
-            </div>
-          </dl>
         </Group>
 
         <Monthly />
@@ -57,9 +60,9 @@ export function Packages() {
           title={automate.name}
           problem={automate.problem}
           bestFor={automate.bestFor}
+          aside={<p className="rounded-2xl bg-cream/70 p-4 text-[0.95rem] text-muted">{automate.note}</p>}
         >
           <Options options={automate.options} />
-          <p className="mt-8 border-t border-line pt-6 text-[0.98rem] text-muted">{automate.note}</p>
         </Group>
 
         <AlaCarte />
@@ -113,7 +116,7 @@ function Founding() {
         <p className="mt-2 max-w-[70ch] text-[1.02rem] leading-relaxed">{founding.body}</p>
       </div>
       <Button asChild className="self-start rounded-full hover:bg-clay-glow md:self-auto">
-        <a href="#book">Ask about a founding spot</a>
+        <IntakeTrigger source="Founding client spot"><a href="#book">Ask about a founding spot</a></IntakeTrigger>
       </Button>
     </FadeUp>
   );
@@ -125,6 +128,7 @@ function Group({
   title,
   problem,
   bestFor,
+  aside,
   children,
 }: {
   id: string;
@@ -132,17 +136,20 @@ function Group({
   title: string;
   problem: string;
   bestFor: string;
+  /** Notes under the title column, so it isn't left empty beside the options */
+  aside?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <FadeUp className="mt-6 md:mt-8">
     <div id={id} className="scroll-mt-28 rounded-[24px] border border-line/70 bg-white/70 p-6 shadow-[0_1px_0_rgb(255_255_255)_inset,0_30px_60px_-40px_rgb(15_26_42/0.35)] md:p-10">
-      <div className="grid gap-8 md:grid-cols-[15rem_1fr] md:gap-14">
+      <div className="grid gap-8 md:grid-cols-[17rem_1fr] md:gap-12">
         <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">{label}</p>
           <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">{title}</h3>
           <p className="mt-4 text-[1.02rem] font-semibold leading-snug">&ldquo;{problem}&rdquo;</p>
           <p className="mt-2 text-[0.95rem] text-muted">Best for: {bestFor}</p>
+          {aside && <div className="mt-6">{aside}</div>}
         </div>
         <div>{children}</div>
       </div>
@@ -173,9 +180,9 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
               </li>
             ))}
           </ul>
-          <div className="mt-auto pt-8">
+          <div className="pt-7">
             <Button asChild variant="outline" size="lg" className="w-full rounded-full sm:w-auto">
-              <a href="#book">Start with {o.name}</a>
+              <IntakeTrigger source={o.name}><a href="#book">Start with {o.name}</a></IntakeTrigger>
             </Button>
           </div>
         </article>
@@ -235,7 +242,7 @@ function Monthly() {
             <div className="mt-auto pt-6">
               <p className="text-[0.88rem] text-muted">{p.terms}</p>
               <Button asChild variant="outline" size="lg" className="mt-5 w-full rounded-full sm:w-auto md:w-full">
-                <a href="#book">Talk about {p.name}</a>
+                <IntakeTrigger source={p.name}><a href="#book">Talk about {p.name}</a></IntakeTrigger>
               </Button>
             </div>
           </Rise>
@@ -252,12 +259,14 @@ function AlaCarte() {
         <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">&Agrave; la carte</p>
         <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Need just one thing?</h3>
         <p className="mt-4 text-muted">Book any of these on their own, or add them to a package.</p>
+        <IntakeTrigger source="À la carte">
         <a
           href="#book"
           className="mt-4 inline-block font-semibold underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay"
         >
           Ask about a one-off
         </a>
+        </IntakeTrigger>
       </div>
       <ul className="border-t border-line md:border-t-0">
         {addons.map((a) => (

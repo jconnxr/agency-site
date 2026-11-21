@@ -14,6 +14,7 @@ import { CalendarCheck, Check, FileText, MapPin, Star } from "lucide-react";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { useReduced } from "./fx";
+import { IntakeTrigger } from "./intake";
 
 const HEADLINE = "We set up the online side of your business, then keep it bringing in customers.";
 
@@ -23,7 +24,7 @@ export function Hero() {
   const words = HEADLINE.split(" ");
   return (
     <section id="top" className="relative overflow-x-clip px-3 pb-24 pt-28 sm:px-4 md:px-6 md:pb-32 md:pt-32">
-      <div className="mx-auto grid max-w-[1280px] items-center gap-6 px-2 md:grid-cols-[1.05fr_1fr] md:gap-8 md:px-6 lg:gap-12">
+      <div className="mx-auto grid max-w-[1280px] items-center gap-6 px-2 md:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
         <div className="relative z-10">
           <p className="glass inline-flex items-center gap-2.5 rounded-full py-1.5 pl-2.5 pr-4 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-white/70">
             <span className="relative flex size-2" aria-hidden>
@@ -33,7 +34,7 @@ export function Hero() {
             {site.city} &middot; taking new clients
           </p>
 
-          <h1 className="mt-7 max-w-[17ch] text-[2.3rem] leading-[1.02] text-white sm:text-[3.1rem] md:mt-8 md:text-[2.9rem] lg:text-[3.5rem] xl:text-[4rem]">
+          <h1 className="mt-7 max-w-[17ch] text-[2.3rem] leading-[1.02] text-white sm:text-[3.1rem] md:mt-8 md:text-[3.6rem] lg:text-[3.3rem] xl:text-[4rem]">
             {words.map((w, i) => {
               const last = i === words.length - 1;
               return (
@@ -59,12 +60,14 @@ export function Hero() {
             Start with the basics on day one, add a monthly team when you&rsquo;re ready.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-10">
+            <IntakeTrigger source="Hero: Book a call">
             <a
               href="#book"
               className="group relative inline-flex h-14 items-center rounded-full bg-clay px-7 text-[1.05rem] font-semibold text-white shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7),inset_0_1px_0_rgb(255_255_255/0.25)] transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-clay-glow"
             >
               Book a free 30-minute call
             </a>
+            </IntakeTrigger>
             <a
               href="#packages"
               className="font-semibold text-white underline decoration-white/30 underline-offset-[6px] transition-colors hover:decoration-white"
@@ -85,9 +88,9 @@ export function Hero() {
 /* ------------------------------------------------------------------ */
 
 const stats = [
-  { k: "Websites from", v: "$750", pos: "left-[-2rem] top-[9%] sm:left-[-7.5rem] lg:left-[-9rem]", depth: 26 },
-  { k: "Live in", v: "14 days", pos: "right-[-2rem] top-[-3%] sm:right-[-8rem] lg:right-[-9.5rem]", depth: 14 },
-  { k: "You own", v: "everything", pos: "left-[-1.8rem] bottom-[6%] sm:left-[-6.5rem] lg:left-[-8rem]", depth: 34 },
+  { k: "Websites from", v: "$750", pos: "left-[-2rem] top-[9%] sm:left-[-7.5rem] lg:left-[-7rem] xl:left-[-9rem]", depth: 26 },
+  { k: "Live in", v: "14 days", pos: "right-[-2rem] top-[-3%] sm:right-[-8rem] lg:right-[-6rem] xl:right-[-9.5rem]", depth: 14 },
+  { k: "You own", v: "everything", pos: "left-[-1.8rem] bottom-[-7%] sm:bottom-[6%] sm:left-[-6.5rem] lg:left-[-6rem] xl:left-[-8rem]", depth: 34 },
 ];
 
 function useParallax(depth: number, mx: MotionValue<number>, my: MotionValue<number>) {
@@ -122,7 +125,7 @@ function Composition() {
   const card = useParallax(28, mx, my);
 
   return (
-    <div ref={ref} className="relative mx-auto mt-6 h-[33rem] w-full max-w-[36rem] sm:h-[38rem] md:mt-0 lg:h-[40rem]">
+    <div ref={ref} className="relative mx-auto mt-6 h-[38rem] w-full max-w-[36rem] sm:h-[38rem] md:mt-10 lg:mt-0 lg:h-[40rem]">
       {/* Map, behind everything: blurred base + crisp glowing routes */}
       <motion.div aria-hidden className="absolute inset-[-12%] [mask-image:radial-gradient(closest-side,black_55%,transparent)]" style={map}>
         <MetroMap />
@@ -136,7 +139,7 @@ function Composition() {
       />
 
       {/* Phone + everything pinned to its edges */}
-      <div className="absolute left-1/2 top-1/2 w-[13.5rem] -translate-x-1/2 -translate-y-1/2 sm:w-[15.5rem] lg:w-[16.5rem]">
+      <div className="absolute left-1/2 top-[44%] w-[13.5rem] -translate-x-1/2 -translate-y-1/2 sm:top-1/2 sm:w-[15.5rem] lg:w-[14.5rem] xl:w-[16.5rem]">
         <motion.div style={phone}>
           <HeroPhone />
         </motion.div>
@@ -145,7 +148,7 @@ function Composition() {
         <motion.div
           aria-hidden
           style={card}
-          className="absolute right-[-3.4rem] top-[56%] z-20 w-[13.5rem] sm:right-[-8.5rem] sm:w-[17rem] lg:right-[-10rem] lg:w-[18rem]"
+          className="absolute right-[-4.6rem] top-[95%] z-20 w-[11.5rem] sm:right-[-11rem] sm:top-[82%] sm:w-[14.5rem] lg:right-[-7.5rem] lg:top-[93%] lg:w-[13.5rem] xl:right-[-12.2rem] xl:top-[82%] xl:w-[15.3rem]"
         >
           <FloatingBooking />
         </motion.div>
@@ -157,7 +160,7 @@ function Composition() {
         </dl>
       </div>
 
-      <p className="absolute bottom-[-1.5rem] left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[0.64rem] uppercase tracking-[0.1em] text-white/40">
+      <p className="absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2 whitespace-nowrap sm:bottom-[-3.5rem] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-white/40">
         Example notifications &middot; not real customers
       </p>
     </div>
@@ -307,10 +310,10 @@ function FloatingBooking() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.08em] text-muted">
-            <span>Booked online</span>
+            <span>New booking</span>
             <span className="rounded-full bg-ink/[0.06] px-1.5 py-0.5">Example</span>
           </p>
-          <p className="text-[0.92rem] font-bold leading-tight sm:text-[1rem]">New booking: Thu 2:00pm</p>
+          <p className="whitespace-nowrap text-[1rem] font-bold leading-tight sm:text-[1.1rem]">Thu 2:00pm</p>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1" aria-hidden>
@@ -330,7 +333,7 @@ function FloatingBooking() {
         <span className="grid size-4 place-items-center rounded-full bg-go text-white">
           <Check className="size-2.5" strokeWidth={4} />
         </span>
-        Confirmed &middot; added to your calendar
+        Confirmed &middot; on your calendar
       </p>
     </div>
   );
@@ -344,12 +347,15 @@ function FloatingBooking() {
 // lakes, with a pulse on each city in the service area and light running along
 // routes out from OKC. Stylized, not to scale.
 const towns = [
-  { name: "Edmond", x: 158, y: 52, lx: 8, anchor: "start" },
-  { name: "Yukon", x: 52, y: 150, lx: 0, ly: -10, anchor: "middle" },
-  { name: "Oklahoma City", x: 146, y: 152, lx: -8, anchor: "end" },
-  { name: "Midwest City", x: 222, y: 150, lx: 0, ly: -10, anchor: "middle" },
-  { name: "Moore", x: 152, y: 222, lx: 8, anchor: "start" },
-  { name: "Norman", x: 156, y: 272, lx: 8, anchor: "start" },
+  { name: "Edmond", x: 158, y: 52 },
+  { name: "Yukon", x: 52, y: 150, label: { x: -9, y: 3, anchor: "end" } },
+  { name: "Oklahoma City", x: 146, y: 152 },
+  { name: "Midwest City", x: 222, y: 150, label: { x: 9, y: 3, anchor: "start" } },
+  { name: "Moore", x: 152, y: 222 },
+  // Below the phone on tablet and desktop. On phones the phone and screen edges
+  // cover or cut every label, so the map shows pins and routes only there. At lg
+  // the booking card sits over Norman, so that label waits for xl.
+  { name: "Norman", x: 156, y: 272, label: { x: 0, y: 15, anchor: "middle", notLg: true } },
 ] as const;
 
 const hub = towns[2];
@@ -386,18 +392,22 @@ function MetroMap() {
           </g>
           <path d="M70 172 C 66 120, 96 78, 150 70 S 232 74, 252 96" stroke="rgb(255 255 255 / 0.14)" strokeWidth="0.8" strokeDasharray="3 3" />
         </g>
-        {towns.map((t) => (
-          <text
-            key={t.name}
-            x={t.x + t.lx}
-            y={t.y + ("ly" in t ? t.ly : 3.5)}
-            textAnchor={t.anchor}
-            className="fill-white/60 font-mono"
-            style={{ fontSize: 8.5, letterSpacing: "0.04em" }}
-          >
-            {t.name}
-          </text>
-        ))}
+        {/* Labels only for pins outside the phone's footprint, set on the side away
+            from it, so none are ever half-hidden behind the phone */}
+        {towns.map((t) =>
+          "label" in t ? (
+            <text
+              key={t.name}
+              x={t.x + t.label.x}
+              y={t.y + t.label.y}
+              textAnchor={t.label.anchor}
+              className={cn("hidden fill-white/65 font-mono sm:inline", "notLg" in t.label && "lg:hidden xl:inline")}
+              style={{ fontSize: 8.5, letterSpacing: "0.04em" }}
+            >
+              {t.name}
+            </text>
+          ) : null
+        )}
       </svg>
 
       {/* Live layer: routes with travelling light, pulsing pins */}

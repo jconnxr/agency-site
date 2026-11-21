@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { faqs, promises, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { IntakeTrigger } from "@/components/intake";
 import { FadeUp, Panel, RevealHeading, Rise, SpotlightCard, Stagger } from "@/components/fx";
 
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.08em]";
@@ -186,12 +187,14 @@ export function Footer() {
       <div className="relative mx-auto max-w-6xl px-5 pt-24 md:px-8 md:pt-28">
         <div className="flex flex-col justify-between gap-8 border-b border-night-line pb-14 md:flex-row md:items-end">
           <RevealHeading text="Ready to be the one they find first?" accent={1} className="max-w-[16ch] text-[2.2rem] text-white md:text-[3.2rem]" />
+          <IntakeTrigger source="Footer: Book a call">
           <a
             href="#book"
             className="inline-flex h-14 items-center self-start rounded-full bg-clay shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow md:self-auto"
           >
             Book a free 30-minute call
           </a>
+          </IntakeTrigger>
         </div>
 
         <div className="grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">

@@ -1,7 +1,6 @@
-// `output: "export"` builds a static site (the `out/` folder) that can be
-// hosted anywhere. On Vercel you can delete `output` to get the full
-// Next.js server (needed if you later swap Formspree for a Resend API route).
-// PREVIEW=1 builds with relative asset paths for the claude.ai preview link.
+// Runs as a full Next.js app (no static export) so /api/intake works on Vercel.
+// PREVIEW=1 still builds with relative asset paths, but a static preview can't
+// run the API route, so the intake form won't submit there.
 //
 // Photos are pre-sized by scripts/optimize-images.mjs; the custom loader picks
 // the right width, so next/image still gets a responsive srcset in a static export.
@@ -9,7 +8,6 @@ const preview = process.env.PREVIEW === "1";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   images: {
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",

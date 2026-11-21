@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { AUTOPLAY_MS, FollowHint, NextButton, PlayToggle, PrevButton, StepProgress } from "./controls";
 import { Phone } from "./phone";
 import { RevealHeading, useReduced } from "@/components/fx";
+import { IntakeTrigger } from "@/components/intake";
 import { steps, type OwnerEvent } from "./steps";
 
 const n = steps.length;
@@ -143,7 +144,7 @@ export function Story() {
         {/* Captions. Desktop: left column. Mobile: under the phone. Every caption is
             rendered invisibly in the same cell to reserve the tallest one's height.
             On phones the phone is sized so phone + controls + caption fit on one screen. */}
-        <div className="relative order-3 mt-3 md:order-1 md:mt-0 md:self-center">
+        <div className="relative order-3 mt-3 md:order-1 md:mt-0 md:self-start md:pt-6">
           <div aria-hidden className="grid items-center">
             {steps.map((s, i) => (
               <div key={s.title} className="invisible col-start-1 row-start-1">
@@ -211,13 +212,28 @@ export function Story() {
 
         {/* Owner's side, desktop: the five latest events, with the controls fixed
             at the bottom of the column, level with the phone's bottom edge */}
-        <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-center">
-          <div aria-hidden className="glass rounded-[20px] bg-white/[0.03] p-3.5">
+        <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-start">
+          <div aria-hidden className="glass flex min-h-0 flex-1 flex-col rounded-[20px] bg-white/[0.03] p-3.5">
             <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
               <span>Your phone</span>
               <span>Example</span>
             </p>
             <OwnerFeed active={active} />
+            {/* Tally at the foot of the card */}
+            <div className="mt-auto border-t border-white/10 px-0.5 pt-3">
+              <p className="flex items-baseline justify-between font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
+                <span>Today so far</span>
+                <span className="text-white/70 tabular-nums">
+                  {active + 1} / {n} events
+                </span>
+              </p>
+              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full origin-left rounded-full bg-clay-glow transition-transform duration-500"
+                  style={{ transform: `scaleX(${(active + 1) / n})` }}
+                />
+              </div>
+            </div>
           </div>
           <nav aria-label="Story steps" className="mt-auto pt-3">
             {progress}
@@ -237,12 +253,14 @@ export function Story() {
             className="max-w-[20ch] text-[1.9rem] md:text-[3rem]"
           />
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-0">
+            <IntakeTrigger source="Story: Book a call">
             <a
               href="#book"
               className="inline-flex h-14 items-center rounded-full bg-clay px-7 shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow"
             >
               Book a free 30-minute call
             </a>
+            </IntakeTrigger>
           </div>
         </div>
       </div>
@@ -344,7 +362,7 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
 }
 
 // The five most recent owner events, newest on top; older ones collapse out.
-const FEED_MAX = 5;
+const FEED_MAX = 7;
 
 function OwnerFeed({ active }: { active: number }) {
   const reduce = useReducedMotion();
@@ -371,6 +389,15 @@ function OwnerFeed({ active }: { active: number }) {
           </motion.li>
         ))}
       </AnimatePresence>
+      {/* Empty slots for events still to come, so the column never looks blank */}
+      {Array.from({ length: FEED_MAX - shown.length }).map((_, i) => (
+        <li key={`ghost-${i}`} className="pb-2">
+          <div className="flex h-[3.25rem] items-center gap-3 rounded-md border border-dashed border-white/10 px-3">
+            <span className="size-2 shrink-0 rounded-full bg-white/10" />
+            <span className="h-1.5 w-[55%] rounded bg-white/[0.06]" />
+          </div>
+        </li>
+      ))}
     </ul>
   );
 }

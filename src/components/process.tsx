@@ -64,7 +64,9 @@ export function HowItWorks() {
               );
             })}
             <defs>
-              <linearGradient id="spoke" x1="0" x2="1" y1="0" y2="1">
+              {/* userSpaceOnUse: the vertical spoke to step 03 has a zero-width bounding box,
+                  which makes an objectBoundingBox gradient render nothing */}
+              <linearGradient id="spoke" gradientUnits="userSpaceOnUse" x1="150" y1="150" x2="850" y2="600">
                 <stop offset="0" stopColor="rgb(232 105 63 / 0.9)" />
                 <stop offset="1" stopColor="rgb(111 116 255 / 0.6)" />
               </linearGradient>

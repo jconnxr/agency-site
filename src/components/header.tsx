@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
@@ -20,8 +20,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-night-line bg-night/95 text-white backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+    <header className="fixed inset-x-3 top-3 z-40 text-white sm:inset-x-4 md:inset-x-6 md:top-4">
+      <div className="glass mx-auto flex h-14 max-w-[1280px] items-center justify-between rounded-full bg-[rgb(10_16_30/0.78)] pl-4 pr-2 md:h-16 md:pl-6">
         <a href="#top" className="flex items-center gap-2.5 font-wide text-lg font-extrabold tracking-tight text-white">
           <Logo />
           {site.name}
@@ -33,14 +33,14 @@ export function Header() {
               {l.label}
             </a>
           ))}
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="rounded-full shadow-[0_8px_24px_-8px_rgb(232_105_63/0.8)] hover:bg-clay-glow">
             <a href="#book">Book a call</a>
           </Button>
         </nav>
 
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild>
-            <button className="grid size-11 place-items-center rounded-sm text-white md:hidden" aria-label="Open menu">
+            <button className="grid size-11 place-items-center rounded-full text-white md:hidden" aria-label="Open menu">
               <Menu className="size-6" />
             </button>
           </Dialog.Trigger>
@@ -49,7 +49,7 @@ export function Header() {
               <Dialog.Portal forceMount>
                 <Dialog.Overlay asChild forceMount>
                   <motion.div
-                    className="fixed inset-0 z-50 bg-ink/40"
+                    className="fixed inset-0 z-50 bg-abyss/60 backdrop-blur-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -57,10 +57,10 @@ export function Header() {
                 </Dialog.Overlay>
                 <Dialog.Content asChild forceMount>
                   <motion.div
-                    className="fixed inset-x-0 top-0 z-50 bg-paper px-5 pb-8 pt-4 text-ink shadow-xl"
-                    initial={{ y: "-100%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "-100%" }}
+                    className="glass fixed inset-x-3 top-3 z-50 rounded-[28px] bg-[rgb(12_19_34/0.92)] px-5 pb-6 pt-3 text-white"
+                    initial={{ opacity: 0, y: -24, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -16, scale: 0.98 }}
                     transition={{ type: "spring", damping: 30, stiffness: 300 }}
                   >
                     <div className="flex items-center justify-between">
@@ -76,13 +76,13 @@ export function Header() {
                           key={l.href}
                           href={l.href}
                           onClick={() => setOpen(false)}
-                          className="border-b border-line py-4 font-wide text-2xl font-bold"
+                          className="border-b border-white/10 py-4 font-wide text-2xl font-bold"
                         >
                           {l.label}
                         </a>
                       ))}
                     </nav>
-                    <Button asChild size="lg" className="mt-6 w-full">
+                    <Button asChild size="lg" className="mt-6 w-full rounded-full">
                       <a href="#book" onClick={() => setOpen(false)}>
                         Book a free call
                       </a>

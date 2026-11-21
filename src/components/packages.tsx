@@ -1,17 +1,23 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { addons, automate, founding, launch, plans, type Option } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { FadeUp, Panel, RevealHeading, Rise, Stagger } from "@/components/fx";
 
 // Packages on warm paper: rules and columns instead of cards, mono for the data.
 // Order follows how clients move: Launch (one-time) → three monthly plans → Automate.
 export function Packages() {
   return (
-    <section id="packages" className="bg-paper text-ink">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+    <Panel id="packages" surface="cream" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
+      <div className="mx-auto max-w-6xl">
         <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-16">
-          <h2 className="text-[2.1rem] md:text-[3.2rem]">
-            Five packages. Each one solves one problem.
-          </h2>
+          <RevealHeading
+            text="Five packages. Each one solves one problem."
+            accent={2}
+            accentClass="text-clay-ink"
+            className="text-[2.1rem] md:text-[3.2rem]"
+          />
           <div className="md:pt-3">
             <p className="text-[1.06rem] leading-relaxed text-muted">
               Pick the one that matches where you are. Monthly plans stack, so each includes everything in the one
@@ -58,7 +64,7 @@ export function Packages() {
 
         <AlaCarte />
       </div>
-    </section>
+    </Panel>
   );
 }
 
@@ -99,20 +105,17 @@ function Path() {
 
 function Founding() {
   return (
-    <div
-     
-      className="mt-14 grid gap-5 border-l-[3px] border-clay bg-card py-6 pl-6 pr-6 md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:pl-8"
-    >
+    <FadeUp className="relative mt-14 grid gap-5 overflow-hidden rounded-[24px] bg-[radial-gradient(80%_140%_at_0%_0%,rgb(232_105_63/0.35),transparent_60%),linear-gradient(135deg,#111a2b,#0b1220)] p-6 text-white shadow-[0_30px_60px_-30px_rgb(15_26_42/0.6)] md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:p-8">
       <div>
-        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">
+        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-glow">
           Founding client offer &middot; first {founding.spots} clients
         </p>
         <p className="mt-2 max-w-[70ch] text-[1.02rem] leading-relaxed">{founding.body}</p>
       </div>
-      <Button asChild variant="outline" className="self-start md:self-auto">
+      <Button asChild className="self-start rounded-full hover:bg-clay-glow md:self-auto">
         <a href="#book">Ask about a founding spot</a>
       </Button>
-    </div>
+    </FadeUp>
   );
 }
 
@@ -132,7 +135,8 @@ function Group({
   children: React.ReactNode;
 }) {
   return (
-    <div id={id} className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
+    <FadeUp className="mt-6 md:mt-8">
+    <div id={id} className="scroll-mt-28 rounded-[24px] border border-line/70 bg-white/70 p-6 shadow-[0_1px_0_rgb(255_255_255)_inset,0_30px_60px_-40px_rgb(15_26_42/0.35)] md:p-10">
       <div className="grid gap-8 md:grid-cols-[15rem_1fr] md:gap-14">
         <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">{label}</p>
@@ -143,6 +147,7 @@ function Group({
         <div>{children}</div>
       </div>
     </div>
+    </FadeUp>
   );
 }
 
@@ -169,7 +174,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
             ))}
           </ul>
           <div className="mt-auto pt-8">
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+            <Button asChild variant="outline" size="lg" className="w-full rounded-full sm:w-auto">
               <a href="#book">Start with {o.name}</a>
             </Button>
           </div>
@@ -183,7 +188,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
 // grow by one, because each plan includes the one before it.
 function Monthly() {
   return (
-    <div id="monthly" className="mt-20 scroll-mt-24 border-t-2 border-ink pt-8 md:mt-24">
+    <div id="monthly" className="mt-16 scroll-mt-28 md:mt-20">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-14">
         <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Monthly plans</p>
@@ -194,12 +199,12 @@ function Monthly() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-12 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
+      <Stagger className="mt-10 grid gap-5 md:grid-cols-3">
         {plans.map((p, i) => (
-          <article
+          <Rise
+            as="article"
             key={p.name}
-           
-            className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-8" : i === 1 ? "md:px-8" : "md:pl-8")}
+            className="flex min-w-0 flex-col rounded-[24px] border border-line/70 bg-white/70 p-6 shadow-[0_1px_0_rgb(255_255_255)_inset,0_30px_60px_-40px_rgb(15_26_42/0.35)] md:p-7"
           >
             <div className="flex items-end justify-between">
               <span aria-hidden className="flex items-end gap-1">
@@ -229,20 +234,20 @@ function Monthly() {
             </div>
             <div className="mt-auto pt-6">
               <p className="text-[0.88rem] text-muted">{p.terms}</p>
-              <Button asChild variant="outline" size="lg" className="mt-5 w-full sm:w-auto md:w-full">
+              <Button asChild variant="outline" size="lg" className="mt-5 w-full rounded-full sm:w-auto md:w-full">
                 <a href="#book">Talk about {p.name}</a>
               </Button>
             </div>
-          </article>
+          </Rise>
         ))}
-      </div>
+      </Stagger>
     </div>
   );
 }
 
 function AlaCarte() {
   return (
-    <div className="mt-20 grid gap-8 border-t-2 border-ink pt-8 md:mt-24 md:grid-cols-[15rem_1fr] md:gap-14">
+    <div className="mt-16 grid gap-8 rounded-[24px] border border-line/70 bg-white/50 p-6 md:mt-20 md:grid-cols-[15rem_1fr] md:gap-14 md:p-10">
       <div>
         <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">&Agrave; la carte</p>
         <h3 className="mt-2 text-[2.2rem] md:text-[2.6rem]">Need just one thing?</h3>

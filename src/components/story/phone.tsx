@@ -4,7 +4,7 @@
 // to fit whatever space it's given. Screens are realistic but brand-free UI.
 import { useRef } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CalendarCheck, Globe, Navigation, Phone as PhoneIcon, Search } from "lucide-react";
 import { PhoneFrame, Stars } from "./phone-frame";
 import { AdScreen, BookingScreen, MessagesScreen, MissedScreen, ReelScreen, SocialScreen, WebsiteScreen } from "./screens";

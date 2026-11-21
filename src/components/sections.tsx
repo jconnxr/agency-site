@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { faqs, promises, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { FadeUp, Panel, RevealHeading, Rise, SpotlightCard, Stagger } from "@/components/fx";
 
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.08em]";
 const link = "font-semibold underline decoration-2 underline-offset-[5px] transition-colors";
@@ -45,184 +46,97 @@ export function WhoFor() {
   ];
 
   return (
-    <section id="who" className="scroll-mt-16 bg-paper text-ink">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <h2 className="max-w-[18ch] text-[2.1rem] md:text-[3.2rem]">
-          Built for where your business is right now.
-        </h2>
+    <Panel id="who" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
+      <div className="mx-auto max-w-6xl">
+        <RevealHeading
+          text="Built for where your business is right now."
+          accent={2}
+          className="max-w-[18ch] text-[2.1rem] md:text-[3.2rem]"
+        />
 
-        <div className="mt-12 grid gap-14 md:mt-16 md:grid-cols-2 md:gap-0 md:divide-x md:divide-line">
+        <Stagger className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 md:gap-6">
           {groups.map((g, i) => (
-            <article key={g.title} className={cn("flex flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-md">
-                <Image
-                  src={g.photo.src}
-                  alt={g.photo.alt}
-                  fill
-                  sizes="(min-width: 768px) 540px, 100vw"
-                  className={cn("object-cover", g.photo.position)}
-                />
-              </div>
-              <h3 className="mt-7 text-[1.7rem] md:text-[2rem]">{g.title}</h3>
-              <p className="mt-3 text-[1.06rem] text-muted">{g.lede}</p>
-              <p className={cn(label, "mt-7 text-muted")}>Sound familiar?</p>
-              <ul className="mt-3 border-t border-line">
-                {g.pains.map((t) => (
-                  <li key={t} className="flex gap-3 border-b border-line py-3">
-                    <span aria-hidden className="font-mono text-clay-ink">
-                      &ndash;
-                    </span>
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-auto flex flex-wrap items-end justify-between gap-x-6 gap-y-3 pt-7">
-                <p>
-                  <span className="block font-semibold">{g.fit}</span>
-                  <span className="text-[0.95rem] text-muted">{g.price}</span>
-                </p>
-                <a href="#packages" className={cn(link, "decoration-line hover:decoration-clay")}>
-                  See packages
-                </a>
-              </div>
-            </article>
+            <Rise key={g.title} className={cn(i === 1 && "md:translate-y-10")}>
+              <SpotlightCard as="article" className="flex h-full flex-col p-3 md:p-4">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[16px]">
+                  <Image
+                    src={g.photo.src}
+                    alt={g.photo.alt}
+                    fill
+                    sizes="(min-width: 768px) 540px, 100vw"
+                    className={cn("object-cover", g.photo.position)}
+                  />
+                  <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(10_17_32/0.75))]" />
+                  <span className="glass absolute bottom-3 left-3 rounded-full bg-[rgb(10_17_32/0.5)] px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/85">
+                    {i === 0 ? "New business" : "Established"}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col px-3 pb-3 md:px-4 md:pb-4">
+                  <h3 className="mt-6 text-[1.7rem] md:text-[2rem]">{g.title}</h3>
+                  <p className="mt-3 text-[1.06rem] text-white/60">{g.lede}</p>
+                  <p className={cn(label, "mt-7 text-white/45")}>Sound familiar?</p>
+                  <ul className="mt-3 flex flex-col gap-2">
+                    {g.pains.map((t) => (
+                      <li key={t} className="flex gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5">
+                        <span aria-hidden className="font-mono text-clay-glow">
+                          &ndash;
+                        </span>
+                        <span className="text-white/85">{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto flex flex-wrap items-end justify-between gap-x-6 gap-y-3 pt-7">
+                    <p>
+                      <span className="block font-semibold">{g.fit}</span>
+                      <span className="text-[0.95rem] text-white/55">{g.price}</span>
+                    </p>
+                    <a href="#packages" className={cn(link, "decoration-white/25 hover:decoration-clay-glow")}>
+                      See packages
+                    </a>
+                  </div>
+                </div>
+              </SpotlightCard>
+            </Rise>
           ))}
-        </div>
+        </Stagger>
       </div>
-    </section>
-  );
-}
-
-// What you get: an index of services, then a strip of photos.
-const services = [
-  { tier: "Launch", title: "A website that gets calls", body: "Fast, mobile-first, and built around one job: getting people to call or book." },
-  { tier: "Get Found", title: "Show up on Google Maps", body: "Weekly posts, fresh photos, review replies and consistent listings everywhere people search." },
-  { tier: "Launch Pro", title: "Online booking", body: "Customers pick a time themselves. No more phone tag." },
-  { tier: "Get Leads", title: "Social, handled", body: "Three posts a week on two platforms, planned and designed for you." },
-  { tier: "Automate", title: "Never miss a lead", body: "Missed calls get a text back, leads get an instant reply, and customers get reminders." },
-  { tier: "Get Leads", title: "Ads you can measure", body: "Meta or Google ads with call and form tracking, so you see your cost per lead." },
-  { tier: "Full Department", title: "Photo, video and drone", body: "A monthly half-day shoot cut into 8–12 clips, plus quarterly drone footage of your work." },
-];
-
-const strip = [
-  { src: "/images/local-search-plaza.webp", alt: "A hand holding a phone showing a map and business listing on a brick-storefront street", label: "Google Maps", pos: "object-[50%_45%]" },
-  { src: "/images/auto-shop-counter.webp", alt: "A phone showing a text conversation, propped against the register on an auto shop counter", label: "Text-back", pos: "object-[45%_55%]" },
-  { src: "/images/chef-filming.webp", alt: "Someone filming a chef plating a dish with a phone on a handheld gimbal", label: "Social", pos: "object-[50%_40%]" },
-  { src: "/images/aerial-roof.webp", alt: "Aerial drone photo of a brick home and its roof in an Oklahoma subdivision at golden hour", label: "Drone", pos: "object-[50%_45%]" },
-];
-
-export function Showcase() {
-  return (
-    <section id="what" className="scroll-mt-16 border-y border-line bg-card text-ink">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-16">
-          <h2 className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
-            Everything a local business needs online.
-          </h2>
-          <p className="max-w-[44ch] text-[1.06rem] leading-relaxed text-muted md:self-end">
-            One team handles all of it, so your site, Google profile, booking and ads actually work together.
-          </p>
-        </div>
-
-        <ul className="mt-12 border-t-2 border-ink md:mt-16">
-          {services.map((s) => (
-            <li
-              key={s.title}
-             
-              className="grid gap-1.5 border-b border-line py-5 md:grid-cols-[17rem_1fr_9rem] md:items-baseline md:gap-10 md:py-6"
-            >
-              <h3 className="text-[1.25rem] md:text-[1.35rem]">{s.title}</h3>
-              <p className="text-muted">{s.body}</p>
-              <p className={cn(label, "order-first text-clay-ink md:order-none md:text-right")}>{s.tier}</p>
-            </li>
-          ))}
-        </ul>
-
-        <div className="-mx-5 mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0 md:pb-0">
-          {strip.map((p) => (
-            <figure key={p.src} className="w-[72%] shrink-0 snap-start md:w-auto">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-md">
-                <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 270px, 72vw" className={cn("object-cover", p.pos)} />
-              </div>
-              <figcaption className={cn(label, "mt-2.5 text-muted")}>{p.label}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const process = [
-  { title: "Free call and Presence Check", body: "We look at your Google listing, site, reviews and competitors, and tell you what's worth doing first, and what isn't.", time: "30 minutes" },
-  { title: "We launch it", body: "Fixed price, fixed date. You approve everything before it's public, and Site Care is free for 3 months.", time: "14 to 30 days" },
-  { title: "Grow monthly, if you want", body: "Step up to Get Found, Get Leads or Full Department. 3-month minimum, then month to month.", time: "Ongoing" },
-];
-
-export function HowItWorks() {
-  return (
-    <section id="how" className="scroll-mt-16 bg-night text-white">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <h2 className="max-w-[16ch] text-[2.1rem] md:text-[3.2rem]">
-          From first call to customers calling you.
-        </h2>
-        <ol className="mt-12 border-t border-night-line md:mt-16">
-          {process.map((s, i) => (
-            <li
-              key={s.title}
-             
-              className="grid gap-2 border-b border-night-line py-7 md:grid-cols-[5rem_17rem_1fr_9rem] md:items-baseline md:gap-10 md:py-9"
-            >
-              <span className="font-mono text-[0.9rem] text-clay-glow">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="text-[1.45rem] md:text-[1.6rem]">{s.title}</h3>
-              <p className="max-w-[52ch] text-white/70">{s.body}</p>
-              <p className={cn(label, "text-white/50 md:text-right")}>{s.time}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
+    </Panel>
   );
 }
 
 export function Promises() {
   return (
-    <section aria-labelledby="promises-title" className="bg-paper text-ink">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
-        <h2 id="promises-title" className="text-[1.8rem] md:text-[2.4rem]">
-          What we promise
-        </h2>
-        <div className="mt-10 grid border-t-2 border-ink sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-0 lg:divide-x lg:divide-line">
+    <Panel aria-labelledby="promises-title" surface="bare" inner="px-2 py-24 md:px-6 md:py-32">
+      <div className="mx-auto max-w-6xl">
+        <RevealHeading id="promises-title" text="What we promise" accent={1} className="text-[2rem] md:text-[2.8rem]" />
+        <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {promises.map((p, i) => (
-            <div
-              key={p.title}
-             
-              className={cn("border-b border-line py-7 lg:border-b-0", i === 0 ? "lg:pr-7" : i === 3 ? "lg:pl-7" : "lg:px-7")}
-            >
-              <h3 className="text-[1.2rem]">{p.title}</h3>
-              <p className="mt-3 text-[0.97rem] text-muted">{p.body}</p>
-            </div>
+            <Rise key={p.title} className={cn(i % 2 === 1 && "lg:translate-y-8")}>
+              <SpotlightCard className="h-full p-6">
+                <span className="font-mono text-[0.8rem] text-clay-glow">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-6 text-[1.25rem]">{p.title}</h3>
+                <p className="mt-3 text-[0.97rem] text-white/60">{p.body}</p>
+              </SpotlightCard>
+            </Rise>
           ))}
-        </div>
+        </Stagger>
       </div>
-    </section>
+    </Panel>
   );
 }
 
 export function Faq() {
   return (
-    <section id="faq" className="scroll-mt-16 border-t border-line bg-paper text-ink">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 md:grid-cols-[1fr_1.6fr] md:gap-16 md:px-8 md:py-28">
-        <div className="md:sticky md:top-28 md:self-start">
-          <h2 className="text-[2.1rem] md:text-[3rem]">
-            Questions we get a lot
-          </h2>
-          <p className="mt-5 text-muted">
+    <Panel id="faq" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.6fr] md:gap-16">
+        <div className="md:sticky md:top-32 md:self-start">
+          <RevealHeading text="Questions we get a lot" accent={2} className="text-[2.1rem] md:text-[3rem]" />
+          <p className="mt-5 text-white/60">
             Something else on your mind? Ask on the call
             {site.email ? (
               <>
                 , or email{" "}
-                <a href={`mailto:${site.email}`} className={cn(link, "text-ink decoration-line hover:decoration-clay")}>
+                <a href={`mailto:${site.email}`} className={cn(link, "text-white decoration-white/25 hover:decoration-clay-glow")}>
                   {site.email}
                 </a>
               </>
@@ -230,16 +144,18 @@ export function Faq() {
             .
           </p>
         </div>
-        <Accordion type="single" collapsible defaultValue="q0" className="border-t-2 border-ink">
-          {faqs.map((f, i) => (
-            <AccordionItem key={f.q} value={`q${i}`}>
-              <AccordionTrigger>{f.q}</AccordionTrigger>
-              <AccordionContent>{f.a}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <FadeUp>
+          <Accordion type="single" collapsible defaultValue="q0" className="flex flex-col gap-2.5">
+            {faqs.map((f, i) => (
+              <AccordionItem key={f.q} value={`q${i}`} className="glass rounded-[18px] border-0 px-5 data-[state=open]:bg-white/[0.07] md:px-6">
+                <AccordionTrigger>{f.q}</AccordionTrigger>
+                <AccordionContent>{f.a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </FadeUp>
       </div>
-    </section>
+    </Panel>
   );
 }
 
@@ -254,7 +170,8 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-night text-white/70">
+    <footer className="relative -mt-10 px-3 pb-3 text-white/70 sm:px-4 sm:pb-4 md:-mt-16 md:px-6 md:pb-6">
+      <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#0e1729,#080d18)] md:rounded-[32px]">
       {/* Sunset drone shot behind the closing call to action, fading into the footer */}
       <div className="absolute inset-x-0 top-0 h-[380px] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] md:h-[290px] md:[mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
         <Image
@@ -266,12 +183,12 @@ export function Footer() {
         />
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,18,32,0.62)_0%,rgba(11,18,32,0.25)_50%,rgba(11,18,32,0)_100%)]" />
       </div>
-      <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8">
+      <div className="relative mx-auto max-w-6xl px-5 pt-24 md:px-8 md:pt-28">
         <div className="flex flex-col justify-between gap-8 border-b border-night-line pb-14 md:flex-row md:items-end">
-          <h2 className="max-w-[16ch] text-[2.2rem] text-white md:text-[3.2rem]">Ready to be the one they find first?</h2>
+          <RevealHeading text="Ready to be the one they find first?" accent={1} className="max-w-[16ch] text-[2.2rem] text-white md:text-[3.2rem]" />
           <a
             href="#book"
-            className="inline-flex h-14 items-center self-start rounded-sm bg-clay px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow md:self-auto"
+            className="inline-flex h-14 items-center self-start rounded-full bg-clay shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow md:self-auto"
           >
             Book a free 30-minute call
           </a>
@@ -317,6 +234,7 @@ export function Footer() {
           </p>
           <p>Based in {site.city}</p>
         </div>
+      </div>
       </div>
     </footer>
   );

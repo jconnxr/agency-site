@@ -257,3 +257,28 @@ export const faqs = [
     a: "We're based here and come to you for shoots and setup across the metro, including Edmond, Norman, Moore, Midwest City and Yukon.",
   },
 ];
+
+// The 14-day Launch Essentials build, day by day (sticky section on the homepage).
+// DRAFT: check these against how builds actually run before going live.
+export const launchDays = [
+  {
+    day: 1,
+    title: "Kickoff",
+    body: "We collect your logo, photos, services and hours, and get your domain and Google Business Profile in your name.",
+  },
+  {
+    day: 3,
+    title: "Google profile set up",
+    body: "Your Google Business Profile gets your services, hours and photos, and goes to Google for verification.",
+  },
+  {
+    day: 7,
+    title: "Your first look",
+    body: "You get a working draft of the site to try on your phone. Tell us what to change. Nothing goes public until you approve it.",
+  },
+  {
+    day: 14,
+    title: "You're live",
+    body: "Site, Google profile and professional email are live. Site Care is free for the first 3 months.",
+  },
+];

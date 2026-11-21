@@ -2,7 +2,7 @@
 
 // Controls for the phone story: previous/next buttons, a clickable progress bar
 // with a step counter, and a one-time "scroll to follow along" hint.
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { steps } from "./steps";

@@ -7,11 +7,12 @@
 // visitor takes over, and stops at the last step.
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AUTOPLAY_MS, FollowHint, NextButton, PlayToggle, PrevButton, StepProgress } from "./controls";
 import { Phone } from "./phone";
+import { RevealHeading, useReduced } from "@/components/fx";
 import { steps, type OwnerEvent } from "./steps";
 
 const n = steps.length;
@@ -19,7 +20,8 @@ const n = steps.length;
 export function Story() {
   const stage = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const reduce = useReducedMotion();
+  // Hydration-safe: false until mounted, so server and client markup match.
+  const reduce = useReduced();
   // Mostly on screen? Drives autoplay, the arrow keys and the mobile banners.
   const [inView, setInView] = useState(false);
   // Autoplay runs until the first interaction or the last step; never with reduced motion.
@@ -118,12 +120,12 @@ export function Story() {
   );
 
   return (
-    <section id="story" aria-labelledby="story-title" className="relative scroll-mt-16 bg-night text-white">
-      <div className="mx-auto max-w-6xl border-t border-night-line px-5 pt-14 md:px-8 md:pt-20">
+    <section id="story" aria-labelledby="story-title" className="relative -mt-10 scroll-mt-24 px-3 text-white sm:px-4 md:-mt-16 md:px-6">
+      <div className="glass relative mx-auto max-w-[1440px] rounded-[28px] bg-[linear-gradient(180deg,rgb(17_26_43/0.94),rgb(10_17_32/0.96))] md:rounded-[32px]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-64 rounded-t-[inherit] bg-[radial-gradient(60%_100%_at_50%_0%,rgb(111_116_255/0.12),transparent)]" />
+      <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8 md:pt-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <h2 id="story-title" className="text-[1.9rem] md:text-[2.8rem]">
-            Watch a customer find you.
-          </h2>
+          <RevealHeading id="story-title" text="Watch a customer find you." accent={1} className="text-[1.9rem] md:text-[2.8rem]" />
           <p className="font-mono text-[0.75rem] uppercase tracking-[0.08em] text-white/50">
             Example &middot; the business shown is made up
           </p>
@@ -210,7 +212,7 @@ export function Story() {
         {/* Owner's side, desktop: the five latest events, with the controls fixed
             at the bottom of the column, level with the phone's bottom edge */}
         <aside className="order-3 hidden md:flex md:h-[702px] md:max-h-full md:flex-col md:self-center">
-          <div aria-hidden className="rounded-lg border border-night-line bg-night-2 p-3.5">
+          <div aria-hidden className="glass rounded-[20px] bg-white/[0.03] p-3.5">
             <p className="flex items-center justify-between px-0.5 font-mono text-[0.66rem] uppercase tracking-[0.08em] text-white/45">
               <span>Your phone</span>
               <span>Example</span>
@@ -229,18 +231,21 @@ export function Story() {
 
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:px-8 md:pb-28">
         <div className="border-t border-night-line pt-12 md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-16 md:pt-16">
-          <h2 className="max-w-[20ch] text-[1.9rem] md:text-[3rem]">
-            That&rsquo;s the whole system. We set it up and keep it running.
-          </h2>
+          <RevealHeading
+            text="That’s the whole system. We set it up and keep it running."
+            accent={1}
+            className="max-w-[20ch] text-[1.9rem] md:text-[3rem]"
+          />
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-0">
             <a
               href="#book"
-              className="inline-flex h-14 items-center rounded-sm bg-clay px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow"
+              className="inline-flex h-14 items-center rounded-full bg-clay px-7 shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow"
             >
               Book a free 30-minute call
             </a>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

@@ -5,20 +5,19 @@ import Script from "next/script";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { interests, site } from "@/lib/site";
+import { FadeUp, Panel, RevealHeading } from "@/components/fx";
 
 export function Book() {
   return (
-    <section id="book" className="scroll-mt-16 border-t border-line bg-paper text-ink">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <div className="max-w-[60ch]">
-          <h2 className="text-[2.1rem] md:text-[3.2rem]">
-            Book a free <span className="whitespace-nowrap">30-minute</span> call
-          </h2>
-          <p className="mt-5 text-[1.06rem] leading-relaxed text-muted">
+    <Panel id="book" surface="glow" className="scroll-mt-24" inner="px-4 py-20 md:px-12 md:py-28">
+      <div className="mx-auto max-w-6xl">
+        <div className="max-w-[60ch] px-1">
+          <RevealHeading text="Book a free 30-minute call" accent={1} className="text-[2.1rem] md:text-[3.2rem]" />
+          <p className="mt-5 text-[1.06rem] leading-relaxed text-white/65">
             {site.axiomFormKey || site.formspreeId ? (
               <>
                 Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
@@ -29,8 +28,8 @@ export function Book() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.45fr_1fr] lg:gap-10">
-          <div className="overflow-hidden rounded-md border border-line bg-white">
+        <FadeUp className="mt-12 grid gap-6 lg:grid-cols-[1.45fr_1fr] lg:gap-8">
+          <div className="overflow-hidden rounded-[24px] bg-white shadow-[0_0_0_1px_rgb(255_255_255/0.12),0_40px_80px_-30px_rgb(0_0_0/0.8)]">
             {/* Calendly inline widget: scheduling happens right on the page */}
             <div
               className="calendly-inline-widget h-[700px] min-w-[320px]"
@@ -45,9 +44,9 @@ export function Book() {
             </p>
           </div>
           {site.axiomFormKey || site.formspreeId ? <ContactForm /> : <NoFormCard />}
-        </div>
+        </FadeUp>
       </div>
-    </section>
+    </Panel>
   );
 }
 
@@ -65,12 +64,13 @@ type FormValues = z.infer<typeof schema>;
 // so visitors never fill in a form that can't send.
 function NoFormCard() {
   return (
-    <div className="flex flex-col gap-4 self-start border-l-[3px] border-clay bg-card p-6 md:p-8">
+    <div className="glass flex flex-col gap-4 self-start rounded-[24px] p-6 md:p-8">
+      <span aria-hidden className="h-1 w-10 rounded-full bg-clay-glow" />
       <h3 className="text-[1.5rem]">Rather we call you?</h3>
-      <p className="text-muted">
+      <p className="text-white/65">
         Pick any open time and choose &ldquo;phone call&rdquo;. We&rsquo;ll call the number you leave, look over your Google listing and website with you, and tell you plainly what would bring in more calls.
       </p>
-      <p className="text-muted">
+      <p className="text-white/65">
         Want the free Online Presence Check? Mention it in the booking notes and we&rsquo;ll send it within 24 hours.
       </p>
     </div>
@@ -146,7 +146,7 @@ function ContactForm() {
   }
 
   return (
-    <div className="rounded-md border border-line bg-card p-6 md:p-8">
+    <div className="glass rounded-[24px] p-6 md:p-8">
       <AnimatePresence mode="wait" initial={false}>
         {status === "sent" ? (
           <motion.div
@@ -159,8 +159,8 @@ function ContactForm() {
           >
             <CheckCircle2 className="size-10 text-go" aria-hidden />
             <h3 className="text-[1.5rem]">Message sent</h3>
-            <p className="text-muted">We&rsquo;ll reply within one business day.</p>
-            <Button variant="outline" onClick={() => setStatus("idle")}>
+            <p className="text-white/65">We&rsquo;ll reply within one business day.</p>
+            <Button variant="outline" className="rounded-full border-white/40 text-white hover:bg-white hover:text-ink" onClick={() => setStatus("idle")}>
               Send another message
             </Button>
           </motion.div>
@@ -219,7 +219,7 @@ function ContactForm() {
                 )}
               </p>
             )}
-            <Button type="submit" size="lg" disabled={isSubmitting}>
+            <Button type="submit" size="lg" className="rounded-full hover:bg-clay-glow" disabled={isSubmitting}>
               {isSubmitting ? "Sending…" : "Send message"}
             </Button>
           </motion.form>
@@ -230,14 +230,14 @@ function ContactForm() {
 }
 
 const inputCls =
-  "h-12 w-full rounded-sm border border-line bg-white px-4 text-ink placeholder:text-muted focus:border-ink focus:outline-none";
+  "h-12 w-full rounded-xl border border-white/12 bg-white/[0.05] px-4 text-white placeholder:text-white/40 focus:border-clay-glow focus:outline-none [&>option]:text-ink";
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
-    <label className="grid gap-2 text-[0.95rem] font-medium">
+    <label className="grid gap-2 text-[0.95rem] font-medium text-white/85">
       {label}
       {children}
-      {error && <span className="text-sm font-normal text-clay-ink">{error}</span>}
+      {error && <span className="text-sm font-normal text-clay-glow">{error}</span>}
     </label>
   );
 }

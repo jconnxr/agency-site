@@ -13,14 +13,8 @@ export const site = {
   // every Call / Text link hides itself while this is empty.
   phone: "+14059850806",
   calendlyUrl: "https://calendly.com/jnjsystems/free-website-google-profile-call",
-  // The contact form sends leads straight into the Axiom CRM. Paste the form
-  // key from the CRM (Settings -> Forms, starts with fk_) here, or set
-  // NEXT_PUBLIC_AXIOM_FORM_KEY in Vercel. It's public and safe to commit.
-  crmUrl: "https://app.axiommediagroupokc.com",
-  axiomFormKey: process.env.NEXT_PUBLIC_AXIOM_FORM_KEY || "",
-  // Older option: a free Formspree form ID (the part after /f/). Used only
-  // when no CRM form key is set.
-  formspreeId: process.env.NEXT_PUBLIC_FORMSPREE_ID || "",
+  // Both forms (intake modal and the contact form) post to /api/intake, which
+  // emails each lead (Resend) and forwards it to the CRM webhook. See README.
 };
 
 // Runs along the services ribbon under the hero.
@@ -208,20 +202,7 @@ export const addons = [
   { name: "Headshots and team photos", price: "From $300" },
 ];
 
-// Options in the contact form's "What are you interested in?" menu
-export const interests = [
-  "Not sure yet",
-  "Free Online Presence Check",
-  "A website",
-  "Google Business Profile setup or cleanup",
-  "Online booking on my site",
-  "Launch",
-  "Get Found",
-  "Get Leads",
-  "Full Department",
-  "Automate",
-  "Something à la carte",
-] as const;
+// The contact form's "What are you interested in?" options live in src/lib/intake.ts.
 
 export const faqs = [
   {

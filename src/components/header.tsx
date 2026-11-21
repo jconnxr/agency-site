@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
-import { IntakeTrigger } from "@/components/intake";
 
 const links = [
   { href: "#story", label: "How it works" },
@@ -35,9 +34,8 @@ export function Header() {
             </a>
           ))}
           <Button asChild size="sm" className="rounded-full shadow-[0_8px_24px_-8px_rgb(232_105_63/0.8)] hover:bg-clay-glow">
-            <IntakeTrigger source="Header: Book a call">
-              <a href="#book">Book a call</a>
-            </IntakeTrigger>
+            {/* Straight to the Calendly section; package buttons open the intake instead */}
+            <a href="#book">Book a call</a>
           </Button>
         </nav>
 
@@ -86,9 +84,9 @@ export function Header() {
                       ))}
                     </nav>
                     <Button asChild size="lg" className="mt-6 w-full rounded-full">
-                      <IntakeTrigger source="Mobile menu: Book a call" onOpen={() => setOpen(false)}>
-                        <a href="#book">Book a free call</a>
-                      </IntakeTrigger>
+                      <a href="#book" onClick={() => setOpen(false)}>
+                        Book a free call
+                      </a>
                     </Button>
                   </motion.div>
                 </Dialog.Content>

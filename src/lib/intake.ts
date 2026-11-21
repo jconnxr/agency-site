@@ -1,5 +1,6 @@
-// Intake modal: options, which services each package button pre-checks, and the
-// schema shared by the modal (per-step validation) and POST /api/intake.
+// Intake modal + contact form: options, which services each package button
+// pre-checks, and the schemas shared by the browser (per-step validation) and
+// POST /api/intake.
 import { z } from "zod";
 
 export const intakeServices = [
@@ -14,7 +15,14 @@ export const intakeServices = [
 export type IntakeService = (typeof intakeServices)[number];
 
 export const timelines = ["As soon as possible", "Within a month", "1–3 months", "Just exploring"] as const;
-export const budgets = ["Under $750", "$750–$1,500", "$1,500–$3,000", "$3,000+", "Not sure yet"] as const;
+
+// Step 3 asks this first; the budget ranges shown depend on the answer.
+export const engagements = ["One-time project", "Ongoing monthly help"] as const;
+export type Engagement = (typeof engagements)[number];
+export const budgetsFor: Record<Engagement, readonly string[]> = {
+  "One-time project": ["Under $750", "$750–$1,500", "$1,500–$3,000", "$3,000+", "Not sure"],
+  "Ongoing monthly help": ["Under $400/mo", "$400–$1,500/mo", "$1,500–$3,500/mo", "$3,500+/mo", "Not sure"],
+};
 
 // What each package or CTA pre-checks in step 1. Anything not listed opens with nothing checked.
 export const packageServices: Record<string, IntakeService[]> = {
@@ -26,6 +34,8 @@ export const packageServices: Record<string, IntakeService[]> = {
   "Quick Wins": ["Automation"],
   "Full Systems": ["Automation"],
 };
+/** Buttons that name a specific package or offer (used in the email subject). */
+export const packageSources = [...Object.keys(packageServices), "Founding client spot", "À la carte"];
 
 const urlish = z
   .string()
@@ -33,40 +43,103 @@ const urlish = z
   .max(200)
   .refine((v) => v === "" || /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(v), "Enter a web address, like yourbusiness.com");
 
-export const intakeSteps = [
-  z.object({
-    services: z.array(z.enum(intakeServices)).min(1, "Pick at least one."),
-  }),
-  z.object({
+const phone = z
+  .string()
+  .trim()
+  .max(40)
+  .refine((v) => v.replace(/\D/g, "").length >= 10, "Enter a phone number with area code.");
+
+// Step bodies, kept plain so they can be merged; cross-field checks live in refineBudget.
+const stepShapes = [
+  { services: z.array(z.enum(intakeServices)).min(1, "Pick at least one.") },
+  {
     business: z.string().trim().min(2, "Enter your business name.").max(120),
     industry: z.string().trim().min(2, "What kind of business is it?").max(80),
     city: z.string().trim().min(2, "Enter your city.").max(80),
     website: urlish.optional().default(""),
-  }),
-  z.object({
+  },
+  {
+    // Same order as on screen, so the first error found is the first one shown
+    engagement: z.enum(engagements, { message: "Pick one-time or monthly." }),
+    budget: z.string({ message: "Pick a budget range." }).min(1, "Pick a budget range."),
     timeline: z.enum(timelines, { message: "Pick a timeline." }),
-    budget: z.enum(budgets, { message: "Pick a budget range." }),
-  }),
-  z.object({
+  },
+  {
     name: z.string().trim().min(2, "Enter your name.").max(80),
-    email: z.string().trim().email("Enter an email we can reply to."),
-    phone: z
-      .string()
-      .trim()
-      .refine((v) => v.replace(/\D/g, "").length >= 10, "Enter a phone number with area code."),
-  }),
+    email: z.string().trim().email("Enter an email we can reply to.").max(160),
+    phone,
+  },
 ] as const;
 
-export const intakeSchema = intakeSteps[0]
-  .merge(intakeSteps[1])
-  .merge(intakeSteps[2])
-  .merge(intakeSteps[3])
-  .extend({
-    // Which button opened the modal (e.g. "Launch Pro", "Hero CTA"); for context only
+/** The budget has to be one of the ranges for the chosen engagement. */
+function refineBudget(v: { engagement?: Engagement; budget?: string }, ctx: z.RefinementCtx) {
+  if (v.engagement && v.budget && !budgetsFor[v.engagement].includes(v.budget)) {
+    ctx.addIssue({ code: "custom", path: ["budget"], message: "Pick a budget range." });
+  }
+}
+
+/** Field names per step (for clearing errors and focusing the first problem). */
+export const stepFields = stepShapes.map((s) => Object.keys(s));
+
+/** Per-step validators for the modal. */
+export const intakeSteps = stepShapes.map((s, i) =>
+  i === 2 ? z.object(s).superRefine(refineBudget) : z.object(s)
+);
+
+// Spam checks shared by both forms: a field people never see (honeypot), and how
+// long the form was open, measured in the browser (faster than a person could
+// fill it in means a bot). Elapsed time, not a timestamp, so clock skew can't matter.
+export const HONEYPOT = "company_url";
+export const MIN_FILL_MS = 3000;
+const spam = {
+  company_url: z.string().max(500).optional().default(""),
+  elapsedMs: z.number().nonnegative().optional(),
+};
+
+export const intakeSchema = z
+  .object({
+    kind: z.literal("intake").default("intake"),
+    ...stepShapes[0],
+    ...stepShapes[1],
+    ...stepShapes[2],
+    ...stepShapes[3],
+    // Which button opened the modal (e.g. "Launch Pro", "Hero: Book a call")
     source: z.string().trim().max(80).optional().default(""),
-    // Spam trap: people never see it, bots fill it in
-    company_url: z.string().max(0).optional().default(""),
-  });
+    ...spam,
+  })
+  .superRefine(refineBudget);
+
+// The short form next to the Calendly embed
+export const contactInterests = [
+  "Not sure yet",
+  "Free Online Presence Check",
+  "A website",
+  "Google Business Profile setup or cleanup",
+  "Online booking on my site",
+  "Launch",
+  "Get Found",
+  "Get Leads",
+  "Full Department",
+  "Automate",
+  "Something à la carte",
+] as const;
+
+export const contactSchema = z.object({
+  kind: z.literal("contact"),
+  source: z.literal("contact-form"),
+  name: z.string().trim().min(2, "Enter your name.").max(80),
+  business: z.string().trim().min(2, "Enter your business name.").max(120),
+  email: z.string().trim().email("Enter an email we can reply to.").max(160),
+  phone: z.string().trim().max(40).optional().default(""),
+  interest: z.enum(contactInterests),
+  message: z.string().trim().max(1000, "Keep it under 1,000 characters.").optional().default(""),
+  ...spam,
+});
+
+export const submissionSchema = z.union([contactSchema, intakeSchema]);
 
 export type IntakeInput = z.input<typeof intakeSchema>;
 export type Intake = z.output<typeof intakeSchema>;
+export type ContactInput = z.input<typeof contactSchema>;
+export type Contact = z.output<typeof contactSchema>;
+export type Submission = z.output<typeof submissionSchema>;

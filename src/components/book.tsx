@@ -8,7 +8,8 @@ import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { interests, site } from "@/lib/site";
+import { site } from "@/lib/site";
+import { contactInterests as interests, contactSchema } from "@/lib/intake";
 import { FadeUp, Panel, RevealHeading } from "@/components/fx";
 
 export function Book() {
@@ -18,13 +19,7 @@ export function Book() {
         <div className="max-w-[60ch] px-1">
           <RevealHeading text="Book a free 30-minute call" accent={1} className="text-[2.1rem] md:text-[3.2rem]" />
           <p className="mt-5 text-[1.06rem] leading-relaxed text-white/65">
-            {site.axiomFormKey || site.formspreeId ? (
-              <>
-                Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
-              </>
-            ) : (
-              <>Pick a time below and choose a phone call or Zoom. Want the free Online Presence Check first? Mention it when you book and we&rsquo;ll send it within 24 hours.</>
-            )}
+            Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
           </p>
         </div>
 
@@ -43,44 +38,21 @@ export function Book() {
               </a>
             </p>
           </div>
-          {site.axiomFormKey || site.formspreeId ? <ContactForm /> : <NoFormCard />}
+          <ContactForm />
         </FadeUp>
       </div>
     </Panel>
   );
 }
 
-const schema = z.object({
-  name: z.string().trim().min(2, "Enter your name."),
-  business: z.string().trim().min(2, "Enter your business name."),
-  email: z.string().trim().email("Enter an email we can reply to."),
-  phone: z.string().trim().optional(),
-  interest: z.enum(interests),
-  message: z.string().trim().max(1000, "Keep it under 1,000 characters.").optional(),
-});
-type FormValues = z.infer<typeof schema>;
-
-// Shown instead of the form until a CRM form key (or Formspree ID) is set,
-// so visitors never fill in a form that can't send.
-function NoFormCard() {
-  return (
-    <div className="glass flex flex-col gap-4 self-start rounded-[24px] p-6 md:p-8">
-      <span aria-hidden className="h-1 w-10 rounded-full bg-clay-glow" />
-      <h3 className="text-[1.5rem]">Rather we call you?</h3>
-      <p className="text-white/65">
-        Pick any open time and choose &ldquo;phone call&rdquo;. We&rsquo;ll call the number you leave, look over your Google listing and website with you, and tell you plainly what would bring in more calls.
-      </p>
-      <p className="text-white/65">
-        Want the free Online Presence Check? Mention it in the booking notes and we&rsquo;ll send it within 24 hours.
-      </p>
-    </div>
-  );
-}
+// Same rules the server applies (src/lib/intake.ts), minus the fields we add on send.
+const schema = contactSchema.pick({ name: true, business: true, email: true, phone: true, interest: true, message: true });
+type FormValues = z.input<typeof schema>;
 
 function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
   const [errorText, setErrorText] = useState<string | null>(null);
-  // When the form appeared: the CRM uses it as spam protection.
+  // When the form appeared, for the server's "filled in too fast" spam check
   const started = useRef(0);
   const [trap, setTrap] = useState("");
   useEffect(() => {
@@ -96,48 +68,25 @@ function ContactForm() {
   async function onSubmit(values: FormValues) {
     setStatus("idle");
     setErrorText(null);
-    if (site.axiomFormKey) {
-      // Axiom CRM: creates the lead, logs it and adds a "call back" task for today.
-      const message = [`Interested in: ${values.interest}`, values.message].filter(Boolean).join("\n\n");
-      try {
-        const res = await fetch(`${site.crmUrl}/api/forms/${site.axiomFormKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            name: values.name,
-            business: values.business,
-            email: values.email,
-            phone: values.phone ?? "",
-            message,
-            website: trap,
-            _t: String(started.current),
-            _page: window.location.href,
-          }),
-        });
-        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-        if (!res.ok || !data.ok) {
-          setErrorText(data.error ?? null);
-          setStatus("error");
-          return;
-        }
-        reset();
-        setStatus("sent");
-      } catch {
-        setStatus("error");
-      }
-      return;
-    }
-    if (!site.formspreeId) {
-      setStatus("error");
-      return;
-    }
+    // Same endpoint as the intake modal: logged, emailed and sent to the CRM.
     try {
-      const res = await fetch(`https://formspree.io/f/${site.formspreeId}`, {
+      const res = await fetch("/api/intake/", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          kind: "contact",
+          source: "contact-form",
+          company_url: trap,
+          elapsedMs: Date.now() - started.current,
+        }),
       });
-      if (!res.ok) throw new Error("send failed");
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) {
+        setErrorText(data.error ?? null);
+        setStatus("error");
+        return;
+      }
       reset();
       setStatus("sent");
     } catch {
@@ -201,7 +150,7 @@ function ContactForm() {
             </Field>
             {/* Spam trap: hidden from people, bots fill it in. */}
             <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
-              <input name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+              <input name="company_url" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
             </div>
             {status === "error" && (
               <p role="alert" className="rounded-sm bg-clay-soft px-4 py-3 text-[0.95rem] text-ink">

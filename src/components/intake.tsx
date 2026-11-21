@@ -10,11 +10,14 @@ import { useForm, type FieldPath } from "react-hook-form";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, CalendarDays, Check, Loader2, X } from "lucide-react";
 import {
-  budgets,
+  budgetsFor,
+  engagements,
   intakeServices,
   intakeSteps,
   packageServices,
+  stepFields,
   timelines,
+  type Engagement,
   type IntakeInput,
   type IntakeService,
 } from "@/lib/intake";
@@ -88,7 +91,7 @@ function scrollToBooking() {
 /* Provider + modal                                                    */
 /* ------------------------------------------------------------------ */
 
-const STEPS = ["Services", "Your business", "Timeline", "Contact"] as const;
+const STEPS = ["Services", "Your business", "Budget", "Contact"] as const;
 
 const defaults: IntakeInput = {
   services: [],
@@ -97,7 +100,8 @@ const defaults: IntakeInput = {
   city: site.city,
   website: "",
   timeline: undefined as unknown as IntakeInput["timeline"],
-  budget: undefined as unknown as IntakeInput["budget"],
+  engagement: undefined as unknown as IntakeInput["engagement"],
+  budget: "",
   name: "",
   email: "",
   phone: "",
@@ -112,6 +116,8 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorText, setErrorText] = useState("");
   const goingToBook = useRef(false);
+  // When the modal opened, for the server's "filled in too fast" spam check
+  const openedAt = useRef(0);
 
   const form = useForm<IntakeInput>({ defaultValues: defaults, shouldFocusError: false });
   const { register, setValue, getValues, setError, clearErrors, reset, watch, formState } = form;
@@ -126,6 +132,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
       setStatus("idle");
       setDir(1);
       setStep(0);
+      openedAt.current = Date.now();
       setIsOpen(true);
     },
     [status, reset, setValue, clearErrors]
@@ -147,7 +154,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
 
   function validate(i: number) {
     const schema = intakeSteps[i];
-    const fields = Object.keys(schema.shape) as FieldPath<IntakeInput>[];
+    const fields = stepFields[i] as FieldPath<IntakeInput>[];
     clearErrors(fields);
     const r = schema.safeParse(getValues());
     if (r.success) return true;
@@ -181,7 +188,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/intake/", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(getValues()),
+        body: JSON.stringify({ ...getValues(), kind: "intake", elapsedMs: Date.now() - openedAt.current }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (!res.ok || !data.ok) throw new Error(data.error || "send failed");
@@ -199,6 +206,17 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
 
   const ctx = useMemo(() => ({ open }), [open]);
   const errors = formState.errors;
+  const engagement = watch("engagement") as Engagement | undefined;
+  // A budget picked for one engagement type doesn't carry over to the other
+  const lastEngagement = useRef(engagement);
+  useEffect(() => {
+    if (lastEngagement.current && engagement !== lastEngagement.current) setValue("budget", "");
+    lastEngagement.current = engagement;
+  }, [engagement, setValue]);
+  const bookInstead = () => {
+    goingToBook.current = true;
+    setIsOpen(false);
+  };
   const progress = status === "sent" ? 1 : (step + 1) / STEPS.length;
   const name = watch("name");
 
@@ -305,6 +323,16 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
                                   register={register}
                                   error={errors.services?.message}
                                 />
+                                <p className="mt-6 text-[0.92rem] text-white/55">
+                                  Rather talk first?{" "}
+                                  <button
+                                    type="button"
+                                    onClick={bookInstead}
+                                    className="font-semibold text-white underline decoration-white/30 underline-offset-4 transition-colors hover:decoration-clay-glow"
+                                  >
+                                    Skip, just book a call
+                                  </button>
+                                </p>
                               </>
                             )}
                             {step === 1 && (
@@ -340,9 +368,30 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
                             )}
                             {step === 2 && (
                               <>
-                                <StepHeading ref={headingRef} title="Timeline and budget" sub="A rough idea is fine. It helps us suggest the right starting point." />
+                                <StepHeading ref={headingRef} title="Budget and timeline" sub="A rough idea is fine. It helps us suggest the right starting point." />
+                                <ChipGroup legend="One-time project or ongoing monthly help?" name="engagement" type="radio" options={engagements} register={register} error={errors.engagement?.message} />
+                                {/* Budget ranges appear once they've picked, and match the choice */}
+                                <AnimatePresence initial={false} mode="wait">
+                                  {engagement && (
+                                    <motion.div
+                                      key={engagement}
+                                      initial={{ opacity: 0, y: 8 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -4 }}
+                                      transition={{ duration: 0.2 }}
+                                    >
+                                      <ChipGroup
+                                        legend={engagement === "Ongoing monthly help" ? "Monthly budget" : "Project budget"}
+                                        name="budget"
+                                        type="radio"
+                                        options={budgetsFor[engagement]}
+                                        register={register}
+                                        error={errors.budget?.message}
+                                      />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                                 <ChipGroup legend="When do you want to get started?" name="timeline" type="radio" options={timelines} register={register} error={errors.timeline?.message} />
-                                <ChipGroup legend="Budget range" name="budget" type="radio" options={budgets} register={register} error={errors.budget?.message} />
                               </>
                             )}
                             {step === 3 && (
@@ -368,14 +417,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
                                 {status === "error" && (
                                   <p role="alert" className="mt-5 rounded-xl border border-clay-glow/40 bg-clay/15 px-4 py-3 text-[0.92rem] text-white/90">
                                     {errorText || "Your answers didn’t send."} Try again, or{" "}
-                                    <button
-                                      type="button"
-                                      className="font-semibold underline underline-offset-4"
-                                      onClick={() => {
-                                        goingToBook.current = true;
-                                        setIsOpen(false);
-                                      }}
-                                    >
+                                    <button type="button" className="font-semibold underline underline-offset-4" onClick={bookInstead}>
                                       pick a call time instead
                                     </button>
                                     .
@@ -513,7 +555,7 @@ function ChipGroup({
   error,
 }: {
   legend: string;
-  name: "services" | "timeline" | "budget";
+  name: "services" | "timeline" | "engagement" | "budget";
   type: "checkbox" | "radio";
   options: readonly string[];
   register: ReturnType<typeof useForm<IntakeInput>>["register"];

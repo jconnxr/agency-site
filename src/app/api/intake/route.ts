@@ -1,30 +1,62 @@
 import { NextResponse } from "next/server";
-import { intakeSchema } from "@/lib/intake";
+import { HONEYPOT, MIN_FILL_MS, contactSchema, intakeSchema } from "@/lib/intake";
+import { deliver, type Lead } from "@/lib/server/deliver";
+import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 
-// Intake modal submissions. For now they're validated and logged server-side
-// (visible in `vercel logs` / the Vercel dashboard). Connect the CRM here later.
+// Intake modal and contact form submissions.
+// 1. Rate limit per IP, then drop obvious bots (honeypot, filled in too fast).
+// 2. Validate with the same schema the browser uses.
+// 3. Log the full submission (always), then email it via Resend and POST it to
+//    the CRM webhook in parallel. A failed CRM post never blocks the email, and
+//    the visitor gets a success either way: the log keeps every lead.
 export async function POST(req: Request) {
-  let body: unknown;
+  const limit = rateLimit(clientIp(req));
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many submissions from this connection. Please try again in a few minutes, or book a call below." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
+  let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    const parsed = await req.json();
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("not an object");
+    body = parsed as Record<string, unknown>;
   } catch {
     return NextResponse.json({ ok: false, error: "Couldn't read the form." }, { status: 400 });
   }
 
-  const parsed = intakeSchema.safeParse(body);
-  if (!parsed.success) {
-    // Spam trap filled in: pretend it worked so bots don't retry
-    if (body && typeof body === "object" && "company_url" in body && (body as { company_url?: unknown }).company_url) {
-      return NextResponse.json({ ok: true });
-    }
+  // Bots: answer like a success so they don't retry, but deliver nothing.
+  const elapsed = typeof body.elapsedMs === "number" ? body.elapsedMs : undefined;
+  if (body[HONEYPOT] || (elapsed !== undefined && elapsed < MIN_FILL_MS)) {
+    console.warn("[intake] dropped as spam", JSON.stringify({ honeypot: !!body[HONEYPOT], elapsedMs: elapsed }));
+    return NextResponse.json({ ok: true });
+  }
+
+  const schema = body.kind === "contact" ? contactSchema : intakeSchema;
+  const result = schema.safeParse(body);
+  if (!result.success) {
     return NextResponse.json(
-      { ok: false, error: "Some answers need another look.", issues: parsed.error.flatten().fieldErrors },
+      { ok: false, error: "Some answers need another look.", issues: result.error.flatten().fieldErrors },
       { status: 422 }
     );
   }
 
-  const { company_url: _trap, ...lead } = parsed.data;
-  console.log("[intake] new submission", JSON.stringify({ receivedAt: new Date().toISOString(), ...lead }));
+  // Spam-check fields stay here; the log, email and CRM get the lead only
+  const { company_url: _trap, elapsedMs: _elapsed, ...lead } = result.data;
+  const receivedAt = new Date().toISOString();
+  console.log("[intake] new submission", JSON.stringify({ receivedAt, ...lead }));
+
+  const outcome = await deliver(lead as Lead, receivedAt);
+  for (const [dest, r] of Object.entries(outcome)) {
+    if (r.ok) console.log(`[intake] ${dest}: sent`);
+    else if ("skipped" in r && r.skipped) console.log(`[intake] ${dest}: skipped (${r.error})`);
+    else console.error(`[intake] ${dest}: FAILED (${r.error})`);
+  }
+  if (!outcome.email.ok && !outcome.crm.ok) {
+    console.error("[intake] NOT DELIVERED anywhere; the submission above is the only copy");
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -43,7 +43,7 @@ export function Packages() {
                 <dd className="mt-1.5">{launch.note}</dd>
               </div>
               <div className="rounded-2xl border border-clay/25 bg-clay-soft/40 p-4">
-                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found bundle</dt>
+                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found: Google + AI bundle</dt>
                 <dd className="mt-1.5">{launch.bundle}</dd>
               </div>
             </dl>
@@ -74,7 +74,7 @@ export function Packages() {
 function Path() {
   const steps = [
     { label: "Launch", href: "#launch" },
-    { label: "Get Found", href: "#monthly" },
+    { label: "Get Found: Google + AI", href: "#monthly" },
     { label: "Get Leads", href: "#monthly" },
     { label: "Full Department", href: "#monthly" },
   ];
@@ -221,7 +221,7 @@ function Monthly() {
               </span>
               <span className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Step {i + 1}</span>
             </div>
-            <h4 className="mt-5 font-wide text-[1.6rem] font-extrabold">{p.name}</h4>
+            <h4 className="mt-5 font-wide text-[1.6rem] font-extrabold">{p.name.replace(" + ", "\u00a0+\u00a0")}</h4>
             <p className="mt-2 min-h-[3em] font-semibold leading-snug">&ldquo;{p.problem}&rdquo;</p>
             <p className="text-[0.92rem] text-muted">Best for: {p.bestFor}</p>
             <p className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">

@@ -11,6 +11,7 @@ export const intakeServices = [
   "Ads",
   "Automation",
   "Photo & Drone",
+  "AI Search Visibility",
 ] as const;
 export type IntakeService = (typeof intakeServices)[number];
 
@@ -28,7 +29,7 @@ export const budgetsFor: Record<Engagement, readonly string[]> = {
 export const packageServices: Record<string, IntakeService[]> = {
   "Launch Essentials": ["Website", "Google Business Profile"],
   "Launch Pro": ["Website", "Google Business Profile", "Online Booking", "Social Media"],
-  "Get Found": ["Google Business Profile"],
+  "Get Found: Google + AI": ["Google Business Profile", "AI Search Visibility"],
   "Get Leads": ["Ads", "Social Media"],
   "Full Department": ["Ads", "Social Media", "Photo & Drone"],
   "Quick Wins": ["Automation"],
@@ -117,7 +118,8 @@ export const contactInterests = [
   "Google Business Profile setup or cleanup",
   "Online booking on my site",
   "Launch",
-  "Get Found",
+  "Get Found: Google + AI",
+  "AI search visibility",
   "Get Leads",
   "Full Department",
   "Automate",

@@ -1,5 +1,6 @@
 // All the business details live here, so swapping the placeholder name
-// or changing prices is a one-file edit. Packages mirror the Offer Sheet (v2).
+// or changing prices is a one-file edit. Packages mirror the Offer Sheet (v3): the
+// prices match PACKAGE_PRICES in axiom-platform (src/lib/crm/deals.ts, Build F).
 
 export const site = {
   name: "Axiom Media Group",
@@ -24,6 +25,7 @@ export const services = [
   "Online booking",
   "Review requests",
   "Local listings",
+  "AI search visibility",
   "Facebook & Instagram",
   "Meta & Google ads",
   "Photo & video",
@@ -70,6 +72,7 @@ export const launch = {
         "Google Business Profile set up and verified",
         "Your domain plus professional email (you@yourbusiness.com)",
         "Built with your existing logo",
+        "Built AI-ready: your services, prices and common questions written out plainly, so Google and AI tools like ChatGPT can answer for you",
       ],
     },
     {
@@ -85,11 +88,12 @@ export const launch = {
         "Facebook and Instagram set up to match your brand",
         "Logo cleanup and a simple brand kit",
         "Review link plus a printed QR card for the counter or truck",
+        "Built AI-ready, plus Bing Places and Apple Maps set up to match your Google listing",
       ],
     },
   ] satisfies Option[],
-  note: "Both include 3 months of Site Care free: hosting, updates and small edits. After that it's $99/mo, or included in Get Found.",
-  bundle: "Sign 6 months of Get Found and Launch Pro drops to $1,500.",
+  note: "Both include 3 months of Site Care free: hosting, updates and small edits. After that it's $99/mo, or included in Get Found: Google + AI.",
+  bundle: "Sign 6 months of Get Found: Google + AI and Launch Pro drops to $1,500.",
 };
 
 export const automate = {
@@ -141,15 +145,17 @@ export type Plan = {
 
 export const plans: Plan[] = [
   {
-    name: "Get Found",
-    problem: "We're online, but nobody sees us on Google.",
+    name: "Get Found: Google + AI",
+    problem: "We're online, but nobody finds us on Google or in AI answers.",
     bestFor: "6 months to 3 years in business",
-    price: "$397",
+    price: "$497",
     priceNote: "/mo",
     includes: [
       "Google Business Profile managed: weekly posts, new photos, replies to every review",
       "Automatic review requests by text after each job",
       "Consistent listings on Apple Maps, Bing, Yelp, BBB and more",
+      "A monthly AI check: whether ChatGPT, Gemini, Perplexity and Claude name you, and what they get wrong",
+      "One FAQ or pricing update on your site each month, so AI answers quote you correctly",
       "Site Care: hosting, security and up to 1 hour of edits a month",
       "Monthly report in plain numbers",
     ],
@@ -161,7 +167,7 @@ export const plans: Plan[] = [
     bestFor: "Steady businesses ready to run ads",
     price: "$1,500",
     priceNote: "/mo + ad spend",
-    base: "Get Found",
+    base: "Get Found: Google + AI",
     includes: [
       "Ads on Meta or Google: setup, creative and weekly optimization",
       "A landing page for each offer",
@@ -191,6 +197,8 @@ export const plans: Plan[] = [
 ];
 
 export const addons = [
+  { name: "AI Visibility Setup (30 days, with a before-and-after AI check)", price: "$450" },
+  { name: "AI Visibility Report, monthly (with Site Care)", price: "$149/mo" },
   { name: "Google Business Profile setup only", price: "$300" },
   { name: "Online booking or CRM setup on an existing site", price: "$350" },
   { name: "Logo and simple brand kit", price: "$400" },
@@ -211,7 +219,11 @@ export const faqs = [
   },
   {
     q: "What happens after Launch?",
-    a: "Your first 3 months of Site Care (hosting, updates, small edits) are free. After that it's $99 a month, or you move to Get Found, which includes Site Care.",
+    a: "Your first 3 months of Site Care (hosting, updates, small edits) are free. After that it's $99 a month, or you move to Get Found: Google + AI, which includes Site Care.",
+  },
+  {
+    q: "Can you get my business recommended by ChatGPT?",
+    a: "Nobody can promise what an AI tool will say. What we can do is make it easy to get right: AI answers pull from your website, Google, Bing, Apple Maps, Yelp and Facebook, so we write your services, prices and common questions out plainly on your site and make every listing match. Then we check what ChatGPT, Gemini, Perplexity and Claude say about you. The AI Visibility Setup is $450 one-time, and Get Found: Google + AI keeps it up every month.",
   },
   {
     q: "What's the free Online Presence Check?",

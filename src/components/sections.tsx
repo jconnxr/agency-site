@@ -17,7 +17,7 @@ export function WhoFor() {
       lede: "You need customers to find you and book you, without paying agency prices.",
       pains: [
         "No website yet, or one you're embarrassed to send people to",
-        "Not showing up on Google Maps when people search",
+        "Not showing up on Google Maps or in AI answers when people search",
         "Booking by text and phone tag",
       ],
       fit: "Most start with Launch",
@@ -36,8 +36,8 @@ export function WhoFor() {
         "Ads that cost money but you can't tell what they bring in",
         "Missed calls and reviews you never asked for",
       ],
-      fit: "Most start with Get Found or Get Leads",
-      price: "from $397 a month",
+      fit: "Most start with Get Found: Google + AI or Get Leads",
+      price: "from $497 a month",
       photo: {
         src: "/images/contractor-truck.webp",
         alt: "A contractor sitting in his work truck, smiling at a message on his phone",

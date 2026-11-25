@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { faqs, promises, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { IntakeTrigger } from "@/components/intake";
+import { phoneDisplay, telHref } from "@/lib/contact";
 import { FadeUp, Panel, RevealHeading, Rise, SpotlightCard, Stagger } from "@/components/fx";
 
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.08em]";
@@ -164,6 +165,7 @@ const footerLinks = [
   { href: "#story", label: "How it works" },
   { href: "#who", label: "Who it's for" },
   { href: "#what", label: "What you get" },
+  { href: "#ai-search", label: "AI search" },
   { href: "#packages", label: "Packages" },
   { href: "#book", label: "Book a call" },
   { href: "#faq", label: "Questions" },
@@ -201,10 +203,16 @@ export function Footer() {
           <div>
             <p className="font-wide text-xl font-extrabold text-white">{site.name}</p>
             <p className="mt-3 max-w-[40ch] text-[0.95rem]">
-              Websites, Google profiles, booking, social and ads for local businesses in {site.city}.
+              Websites, Google Business Profiles, AI search visibility, online booking, social media and ads for local
+              businesses in {site.city} and the surrounding metro.
             </p>
+            {telHref ? (
+              <a href={telHref} className="mt-5 block font-semibold text-white hover:text-clay-glow">
+                {phoneDisplay}
+              </a>
+            ) : null}
             {site.email ? (
-              <a href={`mailto:${site.email}`} className="mt-5 inline-block font-semibold text-clay-glow hover:text-white">
+              <a href={`mailto:${site.email}`} className="mt-2 inline-block font-semibold text-clay-glow hover:text-white">
                 {site.email}
               </a>
             ) : null}

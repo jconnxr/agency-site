@@ -38,7 +38,7 @@ const shareImageAlt = "Axiom Media Group: websites, Google profiles and ads for 
 export const metadata: Metadata = {
   title: `${site.name} | Websites, Google profiles and ads for Oklahoma City businesses`,
   description:
-    "We set up the online side of your business and keep it bringing in customers: websites, Google Business Profiles, online booking, social media and ads in Oklahoma City.",
+    "We set up the online side of your business and keep it bringing in customers: websites, Google Business Profiles, AI search visibility, online booking, social media and ads in Oklahoma City.",
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
   // Link previews (iMessage, Facebook, LinkedIn, X). The card is a fixed,

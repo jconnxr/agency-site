@@ -134,7 +134,7 @@ function Composition() {
       {/* Blue glow behind the phone */}
       <motion.div
         aria-hidden
-        className="absolute left-1/2 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-brand-glow)_55%,transparent),color-mix(in_srgb,var(--color-brand)_18%,transparent)_55%,transparent)]"
+        className="absolute left-1/2 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-brand-glow)_65%,transparent),color-mix(in_srgb,var(--color-brand)_26%,transparent)_55%,transparent)]"
         style={glow}
       />
 
@@ -187,7 +187,7 @@ function StatChip({
     <motion.div
       style={style}
       className={cn(
-        "glass absolute z-30 rounded-2xl bg-[rgb(14_22_38/0.55)] px-3.5 py-2.5 sm:px-4 sm:py-3",
+        "glass absolute z-30 rounded-2xl bg-[color-mix(in_srgb,var(--color-panel)_55%,transparent)] px-3.5 py-2.5 sm:px-4 sm:py-3",
         // Deeper chips read as closer: a touch bigger and brighter
         depth > 25 ? "scale-100" : "scale-[0.92] opacity-90",
         pos

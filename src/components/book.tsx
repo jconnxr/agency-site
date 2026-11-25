@@ -153,7 +153,7 @@ function ContactForm() {
               <input name="company_url" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
             </div>
             {status === "error" && (
-              <p role="alert" className="rounded-sm bg-brand-soft px-4 py-3 text-[0.95rem] text-ink">
+              <p role="alert" className="rounded-sm border-l-4 border-error bg-error-soft px-4 py-3 text-[0.95rem] text-ink">
                 {errorText ?? "The message didn’t go through."}{" "}
                 {site.email ? (
                   <>
@@ -186,7 +186,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
     <label className="grid gap-2 text-[0.95rem] font-medium text-white/85">
       {label}
       {children}
-      {error && <span className="text-sm font-normal text-brand-glow">{error}</span>}
+      {error && <span className="text-sm font-normal text-error-glow">{error}</span>}
     </label>
   );
 }

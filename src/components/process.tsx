@@ -121,7 +121,7 @@ export function HowItWorks() {
 
 function StepCard({ step, i }: { step: (typeof process)[number]; i: number }) {
   return (
-    <article className="glass rounded-[22px] bg-[rgb(16_25_44/0.7)] p-6">
+    <article className="glass rounded-[22px] bg-[color-mix(in_srgb,var(--color-panel)_70%,transparent)] p-6">
       <p className="flex items-center justify-between">
         <span className="font-mono text-[0.85rem] text-brand-glow">{String(i + 1).padStart(2, "0")}</span>
         <span className={cn(eyebrow, "rounded-full border border-white/10 px-2.5 py-1 text-white/55")}>{step.time}</span>
@@ -136,7 +136,7 @@ function HubTile({ static: isStatic }: { static?: boolean }) {
   return (
     <div className={cn("relative", !isStatic && "-translate-x-1/2 -translate-y-1/2")}>
       <span aria-hidden className="absolute inset-[-40%] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-brand-glow)_55%,transparent),transparent)]" />
-      <div className="glass relative grid size-28 place-items-center rounded-[30px] bg-[linear-gradient(160deg,color-mix(in_srgb,var(--color-brand)_14%,var(--color-abyss)),rgb(14_20_36/0.95))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_0_60px_-6px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent),0_30px_60px_-20px_rgb(0_0_0/0.8)] md:size-32">
+      <div className="glass relative grid size-28 place-items-center rounded-[30px] bg-[linear-gradient(160deg,color-mix(in_srgb,var(--color-brand)_14%,var(--color-abyss)),color-mix(in_srgb,var(--color-panel)_95%,transparent))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_0_60px_-6px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent),0_30px_60px_-20px_rgb(0_0_0/0.8)] md:size-32">
         <svg viewBox="0 0 28 28" className="size-12 md:size-14" aria-label="Axiom Media Group">
           <rect x="2" y="16" width="7" height="10" fill="rgb(255 255 255 / 0.35)" />
           <rect x="10.5" y="10" width="7" height="16" fill="rgb(255 255 255 / 0.75)" />
@@ -206,7 +206,7 @@ function DayCard({ d, i, active }: { d: (typeof launchDays)[number]; i: number; 
   const Visual = visuals[i];
   return (
     <motion.article
-      className="glass w-full rounded-[26px] bg-[rgb(14_22_40/0.6)] p-5 md:p-7"
+      className="glass w-full rounded-[26px] bg-[color-mix(in_srgb,var(--color-panel)_60%,transparent)] p-5 md:p-7"
       initial={reduce ? false : { opacity: 0.25, scale: 0.94, y: 30 }}
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ amount: 0.55 }}
@@ -233,7 +233,7 @@ function DayCard({ d, i, active }: { d: (typeof launchDays)[number]; i: number; 
   );
 }
 
-const panel = "rounded-[18px] border border-white/10 bg-[rgb(8_13_25/0.7)] p-4";
+const panel = "rounded-[18px] border border-white/10 bg-[color-mix(in_srgb,var(--color-panel)_70%,transparent)] p-4";
 const Ex = () => <span className="font-mono text-[0.58rem] uppercase tracking-[0.1em] text-white/40">Example</span>;
 
 function Ticks({ items }: { items: { icon: typeof Check; label: string }[] }) {

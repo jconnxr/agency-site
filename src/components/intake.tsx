@@ -255,7 +255,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
                 <motion.div
                   data-intake
                   data-lenis-prevent
-                  className="glass fixed inset-x-2 bottom-2 z-[61] flex max-h-[calc(100svh-1rem)] flex-col overflow-hidden rounded-[26px] bg-[linear-gradient(180deg,rgb(18_27_46/0.97),rgb(10_16_30/0.98))] text-white shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_12%,transparent),0_0_80px_-20px_color-mix(in_srgb,var(--color-brand-glow)_40%,transparent),0_40px_120px_-30px_rgb(0_0_0/0.9)] sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:max-h-[min(720px,calc(100svh-3rem))] sm:w-[min(600px,calc(100vw-3rem))] sm:-translate-x-1/2 sm:-translate-y-1/2"
+                  className="glass fixed inset-x-2 bottom-2 z-[61] flex max-h-[calc(100svh-1rem)] flex-col overflow-hidden rounded-[26px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] text-white shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_12%,transparent),0_0_80px_-20px_color-mix(in_srgb,var(--color-brand-glow)_40%,transparent),0_40px_120px_-30px_rgb(0_0_0/0.9)] sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:max-h-[min(720px,calc(100svh-3rem))] sm:w-[min(600px,calc(100vw-3rem))] sm:-translate-x-1/2 sm:-translate-y-1/2"
                   initial={{ opacity: 0, y: 24, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -415,7 +415,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
                                   </div>
                                 </div>
                                 {status === "error" && (
-                                  <p role="alert" className="mt-5 rounded-xl border border-brand-glow/40 bg-brand/15 px-4 py-3 text-[0.92rem] text-white/90">
+                                  <p role="alert" className="mt-5 rounded-xl border border-error-glow/50 bg-error-glow/10 px-4 py-3 text-[0.92rem] text-white/90">
                                     {errorText || "Your answers didn’t send."} Try again, or{" "}
                                     <button type="button" className="font-semibold underline underline-offset-4" onClick={bookInstead}>
                                       pick a call time instead
@@ -528,7 +528,7 @@ function Confirmation({
 const inputCls = (bad: boolean) =>
   cn(
     "h-12 w-full rounded-xl border bg-white/[0.05] px-4 text-white placeholder:text-white/35 transition-colors focus:bg-white/[0.08] focus:outline-none",
-    bad ? "border-brand-glow/70" : "border-white/12 focus:border-brand-glow"
+    bad ? "border-error-glow/80" : "border-white/12 focus:border-brand-glow"
   );
 
 function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
@@ -539,7 +539,7 @@ function Field({ label, hint, error, children }: { label: string; hint?: string;
         {hint && <span className="text-[0.8rem] font-normal text-white/40">{hint}</span>}
       </span>
       {children}
-      {error && <span className="text-[0.85rem] font-normal text-brand-glow">{error}</span>}
+      {error && <span className="text-[0.85rem] font-normal text-error-glow">{error}</span>}
     </label>
   );
 }
@@ -577,7 +577,7 @@ function ChipGroup({
         ))}
       </div>
       {error && (
-        <p id={`${id}-err`} className="mt-3 text-[0.85rem] text-brand-glow">
+        <p id={`${id}-err`} className="mt-3 text-[0.85rem] text-error-glow">
           {error}
         </p>
       )}

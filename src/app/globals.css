@@ -9,19 +9,29 @@
     brand-glow  #738EFF  accent on dark backgrounds (5.6:1 on night)
     brand-pale  #B4C3FF  bright highlights on dark (map routes, progress ends)
     brand-soft  #E3E4FC  pale tint behind small notes on paper
+  Navy #12182B is the page base (night, and abyss on the homepage). Panels on it
+  are a step lighter: panel #1A2238, panel-2 #1E2742.
+  Errors have their own red: error #DC2626 on light, error-glow #F87171 on dark.
   Green is only for success states ("Booked").
   The older names (paper, sky, flag, wheat...) map onto the new palette so
   sections that haven't been redesigned yet still match.
 */
 @theme {
   --color-night: #12182b;
-  --color-night-2: #1a2238;
+  --color-night-2: var(--color-panel);
   --color-night-line: rgb(255 255 255 / 0.1);
   --color-brand: #464ceb;
   --color-brand-ink: #4046d8;
   --color-brand-glow: #738eff;
   --color-brand-pale: #b4c3ff;
   --color-brand-soft: #e3e4fc;
+  /* Panels on the navy base: one step lighter, then one more. */
+  --color-panel: #1a2238;
+  --color-panel-2: #1e2742;
+  /* Errors only. Red on light, light red on dark. */
+  --color-error: #dc2626;
+  --color-error-glow: #f87171;
+  --color-error-soft: #fdecec;
   --color-go: #2f8f5b;
   --color-go-glow: #4cc38a;
 
@@ -133,7 +143,7 @@
 @keyframes story-grow { from { transform: scaleX(0); } }
 @keyframes story-arrive {
   from { opacity: 0; transform: translateY(-8px); box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 0%, transparent); }
-  60% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-brand) 18%, transparent); }
+  60% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-brand) 28%, transparent); }
   to { opacity: 1; transform: none; box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 0%, transparent); }
 }
 .story-caret { opacity: 0; }
@@ -192,8 +202,8 @@
    paper look. Everything that moves here uses transform or opacity.
    ===================================================================== */
 @theme {
-  --color-abyss: #060a14;
-  --color-abyss-2: #0a1120;
+  --color-abyss: var(--color-night);
+  --color-abyss-2: var(--color-panel);
   --color-violet-glow: #6f74ff;
   --color-cream: #f6f0e4;
   --font-serif: var(--font-instrument), "Iowan Old Style", Georgia, serif;
@@ -219,7 +229,7 @@
 }
 .home-bg .glow-brand {
   width: 70vmax; height: 70vmax; left: -18vmax; top: -24vmax;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 30%, transparent), color-mix(in srgb, var(--color-brand) 10%, transparent) 55%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 40%, transparent), color-mix(in srgb, var(--color-brand) 16%, transparent) 55%, transparent);
   animation: drift-a 26s ease-in-out infinite alternate;
 }
 .home-bg .glow-violet {
@@ -229,7 +239,7 @@
 }
 .home-bg .glow-low {
   width: 56vmax; height: 56vmax; left: 20vw; bottom: -30vmax;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 16%, transparent), transparent 70%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 22%, transparent), transparent 70%);
   animation: drift-c 38s ease-in-out infinite alternate;
 }
 .home-bg .grid {

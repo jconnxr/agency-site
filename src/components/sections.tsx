@@ -68,8 +68,8 @@ export function WhoFor() {
                     sizes="(min-width: 768px) 540px, 100vw"
                     className={cn("object-cover", g.photo.position)}
                   />
-                  <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(10_17_32/0.75))]" />
-                  <span className="glass absolute bottom-3 left-3 rounded-full bg-[rgb(10_17_32/0.5)] px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/85">
+                  <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,color-mix(in_srgb,var(--color-panel)_75%,transparent))]" />
+                  <span className="glass absolute bottom-3 left-3 rounded-full bg-[color-mix(in_srgb,var(--color-panel)_50%,transparent)] px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/85">
                     {i === 0 ? "New business" : "Established"}
                   </span>
                 </div>
@@ -174,7 +174,7 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="relative -mt-10 px-3 pb-3 text-white/70 sm:px-4 sm:pb-4 md:-mt-16 md:px-6 md:pb-6">
-      <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#0e1729,#080d18)] md:rounded-[32px]">
+      <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] md:rounded-[32px]">
       {/* Sunset drone shot behind the closing call to action, fading into the footer */}
       <div className="absolute inset-x-0 top-0 h-[380px] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] md:h-[290px] md:[mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
         <Image

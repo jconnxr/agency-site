@@ -109,7 +109,7 @@ function Chip({ className, children }: { className?: string; children: React.Rea
     <span
       aria-hidden
       className={cn(
-        "glass absolute z-10 flex items-center gap-1.5 rounded-full bg-[rgb(18_27_46/0.85)] px-3 py-1.5 text-[0.78rem] font-semibold text-white shadow-[0_14px_30px_-10px_rgb(0_0_0/0.8)]",
+        "glass absolute z-10 flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--color-panel-2)_85%,transparent)] px-3 py-1.5 text-[0.78rem] font-semibold text-white shadow-[0_14px_30px_-10px_rgb(0_0_0/0.8)]",
         className
       )}
     >
@@ -152,7 +152,7 @@ const Example = ({ className }: { className?: string }) => (
 );
 
 /** Common "screen" surface for the mini UIs */
-const screen = "relative overflow-hidden rounded-[16px] border border-white/10 bg-[rgb(8_13_25/0.7)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]";
+const screen = "relative overflow-hidden rounded-[16px] border border-white/10 bg-[color-mix(in_srgb,var(--color-panel)_70%,transparent)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]";
 
 /* ------------------------------------------------------------------ */
 /* Mini UIs                                                            */
@@ -319,7 +319,7 @@ function SocialStack() {
       {posts.map((p, i) => (
         <motion.div
           key={p.img}
-          className="absolute w-[6.5rem] rounded-xl border border-white/15 bg-[#131c2e] p-1.5 shadow-[0_18px_30px_-12px_rgb(0_0_0/0.8)]"
+          className="absolute w-[6.5rem] rounded-xl border border-white/15 bg-panel-2 p-1.5 shadow-[0_18px_30px_-12px_rgb(0_0_0/0.8)]"
           initial={reduce ? false : { rotate: 0, x: 0, opacity: i === 2 ? 1 : 0 }}
           animate={inView || reduce ? { rotate: p.r, x: p.x, opacity: 1 } : undefined}
           transition={{ delay: 0.2 + i * 0.12, type: "spring", stiffness: 160, damping: 18 }}

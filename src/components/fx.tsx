@@ -43,11 +43,11 @@ type Surface = "dark" | "cream" | "glow" | "bare";
 
 const surfaces: Record<Surface, string> = {
   // Elevated navy card, a touch lighter than the page
-  dark: "glass bg-[linear-gradient(180deg,rgb(17_26_43/0.92),rgb(10_17_32/0.94))] text-white",
+  dark: "glass bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] text-white",
   // The one warm "island" mid-page
   cream: "bg-cream text-ink shadow-[0_-30px_80px_-30px_rgb(0_0_0/0.6),0_40px_80px_-40px_rgb(0_0_0/0.7)]",
   // Elevated dark panel with a glowing blue/violet rim
-  glow: "glow-border bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-brand-glow)_10%,transparent),transparent_60%),linear-gradient(180deg,#0e1729,#0a1120)] text-white shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_8%,transparent),0_0_80px_-20px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_-30px_80px_-30px_rgb(0_0_0/0.7)]",
+  glow: "glow-border bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-brand-glow)_10%,transparent),transparent_60%),linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] text-white shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_8%,transparent),0_0_80px_-20px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_-30px_80px_-30px_rgb(0_0_0/0.7)]",
   bare: "text-white",
 };
 

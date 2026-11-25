@@ -84,7 +84,7 @@ export function AiSearch() {
 // A mock AI chat. Purely illustrative, so it says "Example" and uses no real names.
 function ChatExample() {
   return (
-    <div className="glass relative rounded-[24px] bg-[rgb(10_17_32/0.55)] p-5 md:p-6">
+    <div className="glass relative rounded-[24px] bg-[color-mix(in_srgb,var(--color-panel)_55%,transparent)] p-5 md:p-6">
       <div className="flex items-center justify-between">
         <span className={cn(eyebrow, "text-white/45")}>Example</span>
         <span className="flex flex-wrap justify-end gap-1.5">

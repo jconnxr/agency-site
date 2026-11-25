@@ -22,7 +22,7 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-3 top-3 z-40 text-white sm:inset-x-4 md:inset-x-6 md:top-4">
-      <div className="glass mx-auto flex h-14 max-w-[1280px] items-center justify-between rounded-full bg-[rgb(10_16_30/0.78)] pl-4 pr-2 md:h-16 md:pl-6">
+      <div className="glass mx-auto flex h-14 max-w-[1280px] items-center justify-between rounded-full bg-[color-mix(in_srgb,var(--color-panel)_78%,transparent)] pl-4 pr-2 md:h-16 md:pl-6">
         {/* The header is always a dark glass bar, so it always takes the white logo. */}
         <a href="#top" className="flex shrink-0 items-center">
           <Image
@@ -66,7 +66,7 @@ export function Header() {
                 </Dialog.Overlay>
                 <Dialog.Content asChild forceMount>
                   <motion.div
-                    className="glass fixed inset-x-3 top-3 z-50 rounded-[28px] bg-[rgb(12_19_34/0.92)] px-5 pb-6 pt-3 text-white"
+                    className="glass fixed inset-x-3 top-3 z-50 rounded-[28px] bg-[color-mix(in_srgb,var(--color-panel)_92%,transparent)] px-5 pb-6 pt-3 text-white"
                     initial={{ opacity: 0, y: -24, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -16, scale: 0.98 }}

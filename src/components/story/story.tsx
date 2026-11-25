@@ -122,7 +122,7 @@ export function Story() {
 
   return (
     <section id="story" aria-labelledby="story-title" className="relative -mt-10 scroll-mt-24 px-3 text-white sm:px-4 md:-mt-16 md:px-6">
-      <div className="glass relative mx-auto max-w-[1440px] rounded-[28px] bg-[linear-gradient(180deg,rgb(17_26_43/0.94),rgb(10_17_32/0.96))] md:rounded-[32px]">
+      <div className="glass relative mx-auto max-w-[1440px] rounded-[28px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] md:rounded-[32px]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-64 rounded-t-[inherit] bg-[radial-gradient(60%_100%_at_50%_0%,rgb(111_116_255/0.12),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8 md:pt-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -409,7 +409,7 @@ function OwnerRow({ event, live }: { event: OwnerEvent; live: boolean }) {
       className={cn(
         "flex items-center gap-3 rounded-md border px-3 py-2 transition-[border-color,box-shadow,background-color] duration-700",
         live
-          ? "border-brand-glow/60 bg-brand-glow/[0.08] shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-brand-glow)_10%,transparent),0_0_28px_-6px_color-mix(in_srgb,var(--color-brand-glow)_55%,transparent)]"
+          ? "border-brand-glow/70 bg-brand-glow/[0.12] shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-brand-glow)_16%,transparent),0_0_32px_-4px_color-mix(in_srgb,var(--color-brand-glow)_75%,transparent)]"
           : "border-night-line bg-white/[0.02]"
       )}
     >

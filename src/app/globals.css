@@ -11,7 +11,7 @@
     brand-soft  #E3E4FC  pale tint behind small notes on paper
   Navy #12182B is the page base (night, and abyss on the homepage). Panels on it
   are a step lighter: panel #1A2238, panel-2 #1E2742.
-  Errors have their own red: error #DC2626 on light, error-glow #F87171 on dark.
+  Errors have their own red: error #B91C1C on light, error-glow #F87171 on dark.
   Green is only for success states ("Booked").
   The older names (paper, sky, flag, wheat...) map onto the new palette so
   sections that haven't been redesigned yet still match.
@@ -29,7 +29,7 @@
   --color-panel: #1a2238;
   --color-panel-2: #1e2742;
   /* Errors only. Red on light, light red on dark. */
-  --color-error: #dc2626;
+  --color-error: #b91c1c;
   --color-error-glow: #f87171;
   --color-error-soft: #fdecec;
   --color-go: #2f8f5b;

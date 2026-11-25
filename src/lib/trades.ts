@@ -127,7 +127,7 @@ export const trades: Trade[] = [
     services: ["Consultations", "Services", "Same-week appointments"],
     booking: "Book an appointment",
     bookingDetail: "30 min",
-    accent: "#a8401f",
+    accent: "#4046d8",
   },
 ];
 

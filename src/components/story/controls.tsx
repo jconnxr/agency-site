@@ -13,7 +13,7 @@ export const AUTOPLAY_MS = 5000;
 const n = steps.length;
 
 const btn =
-  "inline-grid h-11 min-w-11 place-items-center rounded-sm border border-white/20 px-3 text-white transition-colors hover:border-clay-glow hover:text-clay-glow focus-visible:border-clay-glow disabled:pointer-events-none disabled:opacity-30";
+  "inline-grid h-11 min-w-11 place-items-center rounded-sm border border-white/20 px-3 text-white transition-colors hover:border-brand-glow hover:text-brand-glow focus-visible:border-brand-glow disabled:pointer-events-none disabled:opacity-30";
 
 export function PrevButton({ active, onPrev }: { active: number; onPrev: () => void }) {
   return (
@@ -73,13 +73,13 @@ export function StepProgress({
               <span
                 className={cn(
                   "relative block h-[3px] overflow-hidden transition-[background-color,transform] duration-300 group-hover:scale-y-[1.8]",
-                  i < active || (i === active && !filling) ? "bg-clay-glow" : "bg-white/15 group-hover:bg-white/45"
+                  i < active || (i === active && !filling) ? "bg-brand-glow" : "bg-white/15 group-hover:bg-white/45"
                 )}
               >
                 {i === active && filling && (
                   <span
                     key={fillKey}
-                    className="absolute inset-y-0 left-0 w-full origin-left bg-clay-glow"
+                    className="absolute inset-y-0 left-0 w-full origin-left bg-brand-glow"
                     style={{ animation: `dash-fill ${AUTOPLAY_MS}ms linear both` }}
                   />
                 )}
@@ -118,7 +118,7 @@ export function FollowHint({ show, label, className }: { show: boolean; label: s
       {show && (
         <motion.p
           aria-hidden
-          className={cn("flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.08em] text-clay-glow", className)}
+          className={cn("flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.08em] text-brand-glow", className)}
           initial={false}
           exit={{ opacity: 0, transition: { duration: reduce ? 0 : 0.3 } }}
         >

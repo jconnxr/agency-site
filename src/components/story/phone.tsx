@@ -141,7 +141,7 @@ function SearchScreen() {
             <MiniMap />
           </div>
           <div className="relative border-b border-[#eceef1] p-3">
-            <span className="story-tap pointer-events-none absolute inset-1 rounded-[8px] ring-2 ring-[#c4502b]" />
+            <span className="story-tap pointer-events-none absolute inset-1 rounded-[8px] ring-2 ring-brand" />
             <div className="flex gap-2.5">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13px] font-semibold">{demoBusiness.name}</p>
@@ -200,7 +200,7 @@ function MiniMap() {
         <circle cx="52" cy="66" r="5" fill="#9aa4b1" />
       </g>
       <g className="story-pin">
-        <path d="M120 10 c-8 0 -13 6 -13 12 c0 9 13 20 13 20 s13 -11 13 -20 c0 -6 -5 -12 -13 -12z" fill="#c4502b" />
+        <path d="M120 10 c-8 0 -13 6 -13 12 c0 9 13 20 13 20 s13 -11 13 -20 c0 -6 -5 -12 -13 -12z" fill="var(--color-brand)" />
         <circle cx="120" cy="22" r="4.5" fill="#fff" />
       </g>
     </svg>
@@ -238,7 +238,7 @@ function ListingScreen() {
               <span
                 className={cn(
                   "grid size-9 place-items-center rounded-full [&_svg]:size-4",
-                  a.on ? "bg-[#c4502b] text-white" : "border border-[#e3e6ea]"
+                  a.on ? "bg-brand text-white" : "border border-[#e3e6ea]"
                 )}
               >
                 {a.icon}
@@ -282,7 +282,7 @@ function Review({ fresh }: { fresh?: boolean }) {
     <div
       className={cn(
         "rounded-[8px] border p-2.5",
-        fresh ? "story-new border-[#c4502b]/40 bg-[#fdf3ef]" : "border-[#eceef1]"
+        fresh ? "story-new border-brand/40 bg-brand-soft" : "border-[#eceef1]"
       )}
     >
       <div className="flex items-center gap-2">

@@ -28,12 +28,12 @@ export function Book() {
             {/* Calendly inline widget: scheduling happens right on the page */}
             <div
               className="calendly-inline-widget h-[700px] min-w-[320px]"
-              data-url={`${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=c4502b`}
+              data-url={`${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=464ceb`}
             />
             <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="lazyOnload" />
             <p className="border-t border-line px-5 py-3 text-sm text-muted">
               Calendar not showing?{" "}
-              <a href={site.calendlyUrl} target="_blank" rel="noopener" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-clay">
+              <a href={site.calendlyUrl} target="_blank" rel="noopener" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-brand">
                 Open the booking page in a new tab
               </a>
             </p>
@@ -153,7 +153,7 @@ function ContactForm() {
               <input name="company_url" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
             </div>
             {status === "error" && (
-              <p role="alert" className="rounded-sm bg-clay-soft px-4 py-3 text-[0.95rem] text-ink">
+              <p role="alert" className="rounded-sm bg-brand-soft px-4 py-3 text-[0.95rem] text-ink">
                 {errorText ?? "The message didn’t go through."}{" "}
                 {site.email ? (
                   <>
@@ -168,7 +168,7 @@ function ContactForm() {
                 )}
               </p>
             )}
-            <Button type="submit" size="lg" className="rounded-full hover:bg-clay-glow" disabled={isSubmitting}>
+            <Button type="submit" size="lg" className="rounded-full hover:bg-brand-ink" disabled={isSubmitting}>
               {isSubmitting ? "Sending…" : "Send message"}
             </Button>
           </motion.form>
@@ -179,14 +179,14 @@ function ContactForm() {
 }
 
 const inputCls =
-  "h-12 w-full rounded-xl border border-white/12 bg-white/[0.05] px-4 text-white placeholder:text-white/40 focus:border-clay-glow focus:outline-none [&>option]:text-ink";
+  "h-12 w-full rounded-xl border border-white/12 bg-white/[0.05] px-4 text-white placeholder:text-white/40 focus:border-brand-glow focus:outline-none [&>option]:text-ink";
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="grid gap-2 text-[0.95rem] font-medium text-white/85">
       {label}
       {children}
-      {error && <span className="text-sm font-normal text-clay-glow">{error}</span>}
+      {error && <span className="text-sm font-normal text-brand-glow">{error}</span>}
     </label>
   );
 }

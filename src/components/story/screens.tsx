@@ -26,7 +26,7 @@ import { demoBusiness } from "./steps";
 
 const ink = "#1d232c";
 const sub = "#6b7480";
-const clay = "#c4502b";
+const brand = "var(--color-brand)";
 
 function Lines({ widths = ["100%", "70%"], tone = "#e3e6ea" }: { widths?: string[]; tone?: string }) {
   return (
@@ -42,7 +42,7 @@ function Avatar({ size = 32, dark }: { size?: number; dark?: boolean }) {
   return (
     <span
       className="grid shrink-0 place-items-center rounded-full font-bold text-white"
-      style={{ width: size, height: size, background: dark ? "#334155" : clay, fontSize: size * 0.34 }}
+      style={{ width: size, height: size, background: dark ? "#334155" : brand, fontSize: size * 0.34 }}
     >
       {demoBusiness.initials}
     </span>
@@ -75,7 +75,7 @@ export function WebsiteScreen() {
                 <span className="flex h-8 items-center justify-center gap-1 rounded-[3px] border border-white/60">
                   <Phone className="size-3" /> Call now
                 </span>
-                <span className="relative flex h-8 items-center justify-center rounded-[3px]" style={{ background: clay }}>
+                <span className="relative flex h-8 items-center justify-center rounded-[3px]" style={{ background: brand }}>
                   Book an inspection
                   <span className="story-tap pointer-events-none absolute -inset-1 rounded-[5px] ring-2 ring-white" />
                 </span>
@@ -88,7 +88,7 @@ export function WebsiteScreen() {
               { icon: <Timer />, t: "Same-week visits" },
               { icon: <ShieldCheck />, t: "Licensed & insured" },
             ].map((x) => (
-              <span key={x.t} className="flex flex-col items-center gap-1 px-1 py-3 [&_svg]:size-4 [&_svg]:text-[#c4502b]">
+              <span key={x.t} className="flex flex-col items-center gap-1 px-1 py-3 [&_svg]:size-4 [&_svg]:text-brand">
                 {x.icon}
                 {x.t}
               </span>
@@ -185,7 +185,7 @@ export function BookingScreen() {
           <span style={{ color: sub }}>Tue, Nov 11</span>
           <span className="font-mono font-semibold">10:30 AM</span>
         </div>
-        <span className="story-press flex h-10 items-center justify-center rounded-[6px] text-[12px] font-semibold text-white" style={{ background: clay }}>
+        <span className="story-press flex h-10 items-center justify-center rounded-[6px] text-[12px] font-semibold text-white" style={{ background: brand }}>
           Confirm booking
         </span>
       </div>
@@ -304,9 +304,9 @@ export function AdScreen() {
             </span>
             <span className="text-[10.5px] font-semibold">Book online in 30 seconds</span>
           </span>
-          <span className="relative rounded-[4px] px-3 py-2 text-[10px] font-semibold text-white" style={{ background: clay }}>
+          <span className="relative rounded-[4px] px-3 py-2 text-[10px] font-semibold text-white" style={{ background: brand }}>
             Book now
-            <span className="story-tap pointer-events-none absolute -inset-1 rounded-[6px] ring-2 ring-[#c4502b]" />
+            <span className="story-tap pointer-events-none absolute -inset-1 rounded-[6px] ring-2 ring-brand" />
           </span>
         </div>
         <div className="flex justify-around border-t border-[#eceef1] py-2 text-[9.5px]" style={{ color: sub }}>
@@ -334,13 +334,13 @@ export function AdScreen() {
 // Step 8: a profile with a steady grid of posts
 export function SocialScreen() {
   const tiles: ({ img: string; pos?: string } | { text: string; bg: string; fg: string })[] = [
-    { text: "Before / after", bg: clay, fg: "#fff" },
+    { text: "Before / after", bg: brand, fg: "#fff" },
     { img: "/images/aerial-roof.webp" },
     { img: "/images/contractor-truck.webp", pos: "object-[70%_40%]" },
     { img: "/images/drone-operator.webp", pos: "object-[55%_50%]" },
     { text: "3 signs your slab is moving", bg: ink, fg: "#fff" },
     { img: "/images/aerial-roof.webp", pos: "object-[20%_80%]" },
-    { text: "Free inspections", bg: "#f3ded3", fg: ink },
+    { text: "Free inspections", bg: "var(--color-brand-soft)", fg: ink },
     { img: "/images/contractor-truck.webp", pos: "object-[20%_60%]" },
     { img: "/images/drone-operator.webp", pos: "object-[80%_10%]" },
   ];
@@ -371,7 +371,7 @@ export function SocialScreen() {
       </div>
       <div className="mx-4 mt-3 grid grid-cols-2 gap-1.5 text-[10px] font-semibold">
         <span className="flex h-7 items-center justify-center rounded-[6px] bg-[#eef0f3]">Message</span>
-        <span className="flex h-7 items-center justify-center rounded-[6px] text-white" style={{ background: clay }}>
+        <span className="flex h-7 items-center justify-center rounded-[6px] text-white" style={{ background: brand }}>
           Book
         </span>
       </div>
@@ -389,7 +389,7 @@ export function SocialScreen() {
               </span>
             )}
             {i === 0 && (
-              <span className="absolute right-1 top-1 rounded-[2px] bg-white px-1 font-mono text-[7px] font-semibold" style={{ color: clay }}>
+              <span className="absolute right-1 top-1 rounded-[2px] bg-white px-1 font-mono text-[7px] font-semibold" style={{ color: brand }}>
                 NEW
               </span>
             )}

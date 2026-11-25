@@ -34,7 +34,7 @@ export function HowItWorks() {
     <Panel id="how" surface="glow" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
-          <p className={cn(eyebrow, "text-clay-glow")}>Getting started</p>
+          <p className={cn(eyebrow, "text-brand-glow")}>Getting started</p>
           <RevealHeading
             text="From first call to customers calling you."
             accent={2}
@@ -59,7 +59,7 @@ export function HowItWorks() {
                     viewport={{ once: true, amount: 0.4 }}
                     transition={{ duration: 1.2, delay: 0.3 + i * 0.25, ease }}
                   />
-                  <path d={d} fill="none" stroke="#ffb08f" strokeWidth="2" strokeLinecap="round" strokeDasharray="10 230" className="route-run" style={{ animationDelay: `${i * -1.6}s` }} />
+                  <path d={d} fill="none" stroke="var(--color-brand-pale)" strokeWidth="2" strokeLinecap="round" strokeDasharray="10 230" className="route-run" style={{ animationDelay: `${i * -1.6}s` }} />
                 </g>
               );
             })}
@@ -67,7 +67,7 @@ export function HowItWorks() {
               {/* userSpaceOnUse: the vertical spoke to step 03 has a zero-width bounding box,
                   which makes an objectBoundingBox gradient render nothing */}
               <linearGradient id="spoke" gradientUnits="userSpaceOnUse" x1="150" y1="150" x2="850" y2="600">
-                <stop offset="0" stopColor="rgb(232 105 63 / 0.9)" />
+                <stop offset="0" stopColor="color-mix(in srgb, var(--color-brand-glow) 90%, transparent)" />
                 <stop offset="1" stopColor="rgb(111 116 255 / 0.6)" />
               </linearGradient>
             </defs>
@@ -96,7 +96,7 @@ export function HowItWorks() {
           <ol className="relative mx-auto mt-10 max-w-xl pl-10">
             <motion.span
               aria-hidden
-              className="absolute bottom-6 left-[13px] top-2 w-px origin-top bg-[linear-gradient(180deg,#e8693f,rgb(111_116_255/0.6))]"
+              className="absolute bottom-6 left-[13px] top-2 w-px origin-top bg-[linear-gradient(180deg,var(--color-brand-glow),rgb(111_116_255/0.6))]"
               initial={reduce ? false : { scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -104,7 +104,7 @@ export function HowItWorks() {
             />
             {process.map((s, i) => (
               <li key={s.title} className="relative pb-6 last:pb-0">
-                <span aria-hidden className="absolute -left-10 top-5 grid size-7 place-items-center rounded-full border border-clay-glow/60 bg-abyss font-mono text-[0.7rem] text-clay-glow shadow-[0_0_16px_rgb(232_105_63/0.5)]">
+                <span aria-hidden className="absolute -left-10 top-5 grid size-7 place-items-center rounded-full border border-brand-glow/60 bg-abyss font-mono text-[0.7rem] text-brand-glow shadow-[0_0_16px_color-mix(in_srgb,var(--color-brand-glow)_50%,transparent)]">
                   {i + 1}
                 </span>
                 <FadeUp delay={i * 0.1}>
@@ -123,7 +123,7 @@ function StepCard({ step, i }: { step: (typeof process)[number]; i: number }) {
   return (
     <article className="glass rounded-[22px] bg-[rgb(16_25_44/0.7)] p-6">
       <p className="flex items-center justify-between">
-        <span className="font-mono text-[0.85rem] text-clay-glow">{String(i + 1).padStart(2, "0")}</span>
+        <span className="font-mono text-[0.85rem] text-brand-glow">{String(i + 1).padStart(2, "0")}</span>
         <span className={cn(eyebrow, "rounded-full border border-white/10 px-2.5 py-1 text-white/55")}>{step.time}</span>
       </p>
       <h3 className="mt-4 text-[1.35rem] leading-[1.1]">{step.title}</h3>
@@ -135,12 +135,12 @@ function StepCard({ step, i }: { step: (typeof process)[number]; i: number }) {
 function HubTile({ static: isStatic }: { static?: boolean }) {
   return (
     <div className={cn("relative", !isStatic && "-translate-x-1/2 -translate-y-1/2")}>
-      <span aria-hidden className="absolute inset-[-40%] rounded-full bg-[radial-gradient(closest-side,rgb(232_105_63/0.55),transparent)]" />
-      <div className="glass relative grid size-28 place-items-center rounded-[30px] bg-[linear-gradient(160deg,rgb(40_28_36/0.9),rgb(14_20_36/0.95))] shadow-[0_0_0_1px_rgb(232_105_63/0.35),0_0_60px_-6px_rgb(232_105_63/0.7),0_30px_60px_-20px_rgb(0_0_0/0.8)] md:size-32">
+      <span aria-hidden className="absolute inset-[-40%] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-brand-glow)_55%,transparent),transparent)]" />
+      <div className="glass relative grid size-28 place-items-center rounded-[30px] bg-[linear-gradient(160deg,color-mix(in_srgb,var(--color-brand)_14%,var(--color-abyss)),rgb(14_20_36/0.95))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_0_60px_-6px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent),0_30px_60px_-20px_rgb(0_0_0/0.8)] md:size-32">
         <svg viewBox="0 0 28 28" className="size-12 md:size-14" aria-label="Axiom Media Group">
           <rect x="2" y="16" width="7" height="10" fill="rgb(255 255 255 / 0.35)" />
           <rect x="10.5" y="10" width="7" height="16" fill="rgb(255 255 255 / 0.75)" />
-          <rect x="19" y="3" width="7" height="23" fill="#e8693f" />
+          <rect x="19" y="3" width="7" height="23" fill="var(--color-brand-glow)" />
         </svg>
       </div>
     </div>
@@ -165,7 +165,7 @@ export function LaunchTimeline() {
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         {/* Pinned side */}
         <div className="lg:sticky lg:top-32 lg:self-start">
-          <p className={cn(eyebrow, "text-clay-glow")}>Launch Essentials</p>
+          <p className={cn(eyebrow, "text-brand-glow")}>Launch Essentials</p>
           <RevealHeading text="Live in 14 days." accent={2} className="mt-4 text-[2.4rem] md:text-[3.6rem]" />
           <p className="mt-5 max-w-[42ch] text-[1.06rem] leading-relaxed text-white/65">
             How a build usually runs, counted from the day we get your info. If we miss the date, your next 3 months of
@@ -174,7 +174,7 @@ export function LaunchTimeline() {
 
           <ol className="relative mt-10 hidden pl-6 lg:block">
             <span aria-hidden className="absolute bottom-2 left-0 top-2 w-px bg-white/10" />
-            <motion.span aria-hidden className="absolute bottom-2 left-0 top-2 w-px origin-top bg-clay-glow" style={{ scaleY: bar }} />
+            <motion.span aria-hidden className="absolute bottom-2 left-0 top-2 w-px origin-top bg-brand-glow" style={{ scaleY: bar }} />
             {launchDays.map((d, i) => (
               <li
                 key={d.day}
@@ -214,13 +214,13 @@ function DayCard({ d, i, active }: { d: (typeof launchDays)[number]; i: number; 
     >
       <div className="flex items-baseline justify-between">
         <p className="font-wide text-[2.6rem] font-extrabold leading-none text-white md:text-[3.2rem]">
-          <span className="font-mono text-[0.8rem] font-normal uppercase tracking-[0.1em] text-clay-glow">Day </span>
+          <span className="font-mono text-[0.8rem] font-normal uppercase tracking-[0.1em] text-brand-glow">Day </span>
           {d.day}
         </p>
         <span
           className={cn(
             "size-2.5 rounded-full transition-[opacity,transform] duration-500",
-            active ? "scale-100 bg-clay-glow opacity-100 shadow-[0_0_12px_#e8693f]" : "scale-75 bg-white/30 opacity-60"
+            active ? "scale-100 bg-brand-glow opacity-100 shadow-[0_0_12px_var(--color-brand-glow)]" : "scale-75 bg-white/30 opacity-60"
           )}
         />
       </div>
@@ -291,18 +291,18 @@ const visuals = [
   function Draft() {
     return (
       <div className={cn(panel, "grid grid-cols-[7rem_1fr] gap-4")}>
-        <div className="rounded-[16px] border border-white/15 bg-[#111a2b] p-2">
-          <span className="block h-16 rounded-lg bg-[linear-gradient(135deg,rgb(232_105_63/0.5),rgb(111_116_255/0.3))]" />
+        <div className="rounded-[16px] border border-white/15 bg-night-2 p-2">
+          <span className="block h-16 rounded-lg bg-[linear-gradient(135deg,color-mix(in_srgb,var(--color-brand-glow)_50%,transparent),rgb(111_116_255/0.3))]" />
           <span className="mt-2 block h-1.5 w-[80%] rounded bg-white/25" />
           <span className="mt-1 block h-1.5 w-[55%] rounded bg-white/10" />
-          <span className="mt-2 block h-4 w-[60%] rounded-full bg-clay" />
+          <span className="mt-2 block h-4 w-[60%] rounded-full bg-brand" />
         </div>
         <div className="flex flex-col gap-2">
           <p className="flex justify-between text-[0.8rem] font-semibold text-white/80">
             Draft for your review <Ex />
           </p>
           <span className="flex items-start gap-2 rounded-xl bg-white/[0.05] px-3 py-2 text-[0.8rem] text-white/75">
-            <MessageCircle className="mt-0.5 size-3.5 shrink-0 text-clay-glow" /> Can we swap the top photo?
+            <MessageCircle className="mt-0.5 size-3.5 shrink-0 text-brand-glow" /> Can we swap the top photo?
           </span>
           <span className="mt-auto inline-flex items-center gap-1.5 self-start rounded-full bg-go px-3 py-1.5 text-[0.75rem] font-semibold text-white">
             <Check className="size-3" strokeWidth={3} /> Approve

@@ -3,22 +3,25 @@
 /*
   Brand tokens.
   Dark "night" sections for the phone story, warm paper for everything else.
-  One accent, Oklahoma red clay, in three strengths:
-    clay       #C4502B  fills (white text on it passes AA)
-    clay-ink   #A8401F  clay text on paper (5.4:1)
-    clay-glow  #E8693F  clay on night backgrounds (5.8:1)
+  One accent, the flyer blue, in these strengths:
+    brand       #464CEB  fills, and accent text on light backgrounds (white on it: 6.0:1)
+    brand-ink   #4046D8  hover on fills, about 8% darker
+    brand-glow  #738EFF  accent on dark backgrounds (5.6:1 on night)
+    brand-pale  #B4C3FF  bright highlights on dark (map routes, progress ends)
+    brand-soft  #E3E4FC  pale tint behind small notes on paper
   Green is only for success states ("Booked").
   The older names (paper, sky, flag, wheat...) map onto the new palette so
   sections that haven't been redesigned yet still match.
 */
 @theme {
-  --color-night: #0b1220;
-  --color-night-2: #111a2b;
+  --color-night: #12182b;
+  --color-night-2: #1a2238;
   --color-night-line: rgb(255 255 255 / 0.1);
-  --color-clay: #c4502b;
-  --color-clay-ink: #a8401f;
-  --color-clay-glow: #e8693f;
-  --color-clay-soft: #f3ded3;
+  --color-brand: #464ceb;
+  --color-brand-ink: #4046d8;
+  --color-brand-glow: #738eff;
+  --color-brand-pale: #b4c3ff;
+  --color-brand-soft: #e3e4fc;
   --color-go: #2f8f5b;
   --color-go-glow: #4cc38a;
 
@@ -33,8 +36,8 @@
   --color-sky-deep: #d9d0bf;
   --color-flag: #1b2a44;
   --color-flag-dark: #121d31;
-  --color-wheat: var(--color-clay);
-  --color-wheat-soft: var(--color-clay-soft);
+  --color-wheat: var(--color-brand);
+  --color-wheat-soft: var(--color-brand-soft);
 
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
   --font-sans: var(--font-archivo), system-ui, sans-serif;
@@ -77,13 +80,24 @@
   p {
     text-wrap: pretty;
   }
+  /* Focus ring: brand blue on light surfaces, the light blue on dark ones, so it
+     always clears 3:1 against what's behind it. The nearest surface wins. */
+  :root,
+  .bg-paper, .bg-card, .bg-cream, .bg-white, [class*="bg-cream/"], [class*="bg-white/5"], [class*="bg-white/7"], [class*="bg-white/9"] {
+    --focus-ring: var(--color-brand);
+  }
+  :root:has(.home),
+  .bg-night, .bg-abyss, .glass, header, footer {
+    --focus-ring: var(--color-brand-glow);
+  }
   :focus-visible {
-    outline: 3px solid var(--color-clay-glow);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
     border-radius: 2px;
   }
   ::selection {
-    background: var(--color-wheat-soft);
+    background: var(--color-brand);
+    color: #fff;
   }
 }
 
@@ -118,9 +132,9 @@
 @keyframes story-tap { 0% { opacity: 0; transform: scale(1.03); } 40% { opacity: 1; transform: scale(1); } 100% { opacity: 0.85; } }
 @keyframes story-grow { from { transform: scaleX(0); } }
 @keyframes story-arrive {
-  from { opacity: 0; transform: translateY(-8px); box-shadow: 0 0 0 0 rgb(196 80 43 / 0); }
-  60% { box-shadow: 0 0 0 5px rgb(196 80 43 / 0.18); }
-  to { opacity: 1; transform: none; box-shadow: 0 0 0 0 rgb(196 80 43 / 0); }
+  from { opacity: 0; transform: translateY(-8px); box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 0%, transparent); }
+  60% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-brand) 18%, transparent); }
+  to { opacity: 1; transform: none; box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 0%, transparent); }
 }
 .story-caret { opacity: 0; }
 .story-tap { opacity: 0; }
@@ -134,13 +148,13 @@
 
 /* Steps 3-9 */
 @keyframes story-scroll { from { transform: translateY(0); } to { transform: translateY(-64px); } }
-@keyframes story-pick { from { background: #fff; color: #1d232c; border-color: #e3e6ea; } to { background: #c4502b; color: #fff; border-color: transparent; } }
+@keyframes story-pick { from { background: #fff; color: #1d232c; border-color: #e3e6ea; } to { background: var(--color-brand); color: #fff; border-color: transparent; } }
 @keyframes story-press { 0%, 100% { transform: none; } 50% { transform: scale(0.96); filter: brightness(1.1); } }
 @keyframes story-banner { from { opacity: 0; transform: translateY(-110%); } to { opacity: 1; transform: none; } }
 @keyframes story-newtile { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
 @keyframes story-kenburns { from { transform: scale(1.02); } to { transform: scale(1.14) translateY(-2%); } }
 @keyframes story-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.story-pick { background: #c4502b; }
+.story-pick { background: var(--color-brand); }
 .story-screen[data-active="true"] .story-scroll { animation: story-scroll 1s cubic-bezier(.4,0,.2,1) 0.9s both; }
 .story-screen[data-active="true"] .story-pick { animation: story-pick 0.35s ease-out 0.9s both; }
 .story-screen[data-active="true"] .story-press { animation: story-press 0.45s ease-in-out 1.7s both; }
@@ -203,9 +217,9 @@
   border-radius: 9999px;
   will-change: transform;
 }
-.home-bg .glow-rust {
+.home-bg .glow-brand {
   width: 70vmax; height: 70vmax; left: -18vmax; top: -24vmax;
-  background: radial-gradient(closest-side, rgb(232 105 63 / 0.30), rgb(196 80 43 / 0.10) 55%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 30%, transparent), color-mix(in srgb, var(--color-brand) 10%, transparent) 55%, transparent);
   animation: drift-a 26s ease-in-out infinite alternate;
 }
 .home-bg .glow-violet {
@@ -215,7 +229,7 @@
 }
 .home-bg .glow-low {
   width: 56vmax; height: 56vmax; left: 20vw; bottom: -30vmax;
-  background: radial-gradient(closest-side, rgb(232 105 63 / 0.16), transparent 70%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-glow) 16%, transparent), transparent 70%);
   animation: drift-c 38s ease-in-out infinite alternate;
 }
 .home-bg .grid {
@@ -262,14 +276,14 @@
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   pointer-events: none;
 }
-/* Elevated dark panel with a rust-to-violet glowing rim */
+/* Elevated dark panel with a blue-to-violet glowing rim */
 .glow-border::before {
-  background: linear-gradient(140deg, rgb(232 105 63 / 0.7), rgb(255 255 255 / 0.08) 35%, rgb(255 255 255 / 0.04) 65%, rgb(111 116 255 / 0.55));
+  background: linear-gradient(140deg, color-mix(in srgb, var(--color-brand-glow) 70%, transparent), rgb(255 255 255 / 0.08) 35%, rgb(255 255 255 / 0.04) 65%, rgb(111 116 255 / 0.55));
 }
 
 }
 
-/* Rust marquee band */
+/* Brand marquee band */
 @keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
 .marquee-track { animation: marquee 38s linear infinite; }
 

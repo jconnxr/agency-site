@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     "We set up the online side of your business and keep it bringing in customers: websites, Google Business Profiles, AI search visibility, online booking, social media and ads in Oklahoma City.",
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
+  icons: {
+    icon: [
+      { url: "/brand/AMG-favicon.svg", type: "image/svg+xml" },
+      { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/brand/AMG-app-icon-navy-rounded.png", sizes: "1024x1024", type: "image/png" }],
+  },
   // Link previews (iMessage, Facebook, LinkedIn, X). The card is a fixed,
   // designed image so no photo on the page gets picked up instead.
   openGraph: {

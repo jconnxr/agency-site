@@ -116,7 +116,7 @@ export function Sandbox() {
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
         <div className="grid gap-10 md:grid-cols-[1fr_340px] md:gap-14 lg:grid-cols-[1fr_370px]">
           <div className="md:pt-6">
-            <p className="font-mono text-[0.72rem] uppercase tracking-[0.1em] text-clay-glow">Try it with your business</p>
+            <p className="font-mono text-[0.72rem] uppercase tracking-[0.1em] text-brand-glow">Try it with your business</p>
             <h2 id="try-title" className="mt-3 text-[2rem] leading-[1.05] md:text-[2.9rem]">
               See it with your name on it.
             </h2>
@@ -134,7 +134,7 @@ export function Sandbox() {
                   maxLength={40}
                   autoComplete="organization"
                   enterKeyHint="done"
-                  className="mt-2 block h-12 w-full rounded-sm border border-white/20 bg-night-2 px-3.5 text-[16px] text-white placeholder:text-white/35 focus:border-clay-glow focus:outline-none"
+                  className="mt-2 block h-12 w-full rounded-sm border border-white/20 bg-night-2 px-3.5 text-[16px] text-white placeholder:text-white/35 focus:border-brand-glow focus:outline-none"
                 />
               </label>
               <label className="block">
@@ -143,7 +143,7 @@ export function Sandbox() {
                   <select
                     value={tradeId}
                     onChange={(e) => changeTrade(e.target.value)}
-                    className="block h-12 w-full appearance-none rounded-sm border border-white/20 bg-night-2 px-3.5 pr-10 text-[16px] text-white focus:border-clay-glow focus:outline-none"
+                    className="block h-12 w-full appearance-none rounded-sm border border-white/20 bg-night-2 px-3.5 pr-10 text-[16px] text-white focus:border-brand-glow focus:outline-none"
                   >
                     {trades.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -175,7 +175,7 @@ export function Sandbox() {
                   onKeyDown={(e) => onTabKey(e, i)}
                   className={cn(
                     "-mb-px min-h-12 border-b-2 px-1 text-[0.95rem] font-semibold transition-colors",
-                    tab === t.id ? "border-clay-glow text-white" : "border-transparent text-white/55 hover:text-white"
+                    tab === t.id ? "border-brand-glow text-white" : "border-transparent text-white/55 hover:text-white"
                   )}
                 >
                   {t.label}
@@ -183,8 +183,8 @@ export function Sandbox() {
               ))}
             </div>
             <p className="mt-4 text-[0.95rem] text-white/70">{current.hint}</p>
-            <p className="mt-3 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-glow">
-              <span aria-hidden className="size-1.5 rounded-full bg-clay-glow" />
+            <p className="mt-3 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.08em] text-brand-glow">
+              <span aria-hidden className="size-1.5 rounded-full bg-brand-glow" />
               Sample: this is a demo, not your real listing.
             </p>
           </div>

@@ -28,8 +28,8 @@ export function Hero() {
         <div className="relative z-10">
           <p className="glass inline-flex items-center gap-2.5 rounded-full py-1.5 pl-2.5 pr-4 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-white/70">
             <span className="relative flex size-2" aria-hidden>
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-clay-glow opacity-60 motion-reduce:hidden" />
-              <span className="relative inline-flex size-2 rounded-full bg-clay-glow" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-glow opacity-60 motion-reduce:hidden" />
+              <span className="relative inline-flex size-2 rounded-full bg-brand-glow" />
             </span>
             {site.city} &middot; taking new clients
           </p>
@@ -43,7 +43,7 @@ export function Hero() {
                     className={cn(
                       "hero-word",
                       last &&
-                        "pr-1 font-serif text-[1.18em] font-normal italic leading-[0.9] tracking-[-0.01em] text-clay-glow [font-stretch:100%]"
+                        "pr-1 font-serif text-[1.18em] font-normal italic leading-[0.9] tracking-[-0.01em] text-brand-glow [font-stretch:100%]"
                     )}
                     style={{ animationDelay: `${0.08 + i * 0.06}s` }}
                   >
@@ -63,7 +63,7 @@ export function Hero() {
             <IntakeTrigger source="Hero: Book a call">
             <a
               href="#book"
-              className="group relative inline-flex h-14 items-center rounded-full bg-clay px-7 text-[1.05rem] font-semibold text-white shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7),inset_0_1px_0_rgb(255_255_255/0.25)] transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-clay-glow"
+              className="group relative inline-flex h-14 items-center rounded-full bg-brand px-7 text-[1.05rem] font-semibold text-white shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent),inset_0_1px_0_rgb(255_255_255/0.25)] transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-brand-ink"
             >
               Book a free 30-minute call
             </a>
@@ -131,10 +131,10 @@ function Composition() {
         <MetroMap />
       </motion.div>
 
-      {/* Rust glow behind the phone */}
+      {/* Blue glow behind the phone */}
       <motion.div
         aria-hidden
-        className="absolute left-1/2 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(232_105_63/0.55),rgb(196_80_43/0.18)_55%,transparent)]"
+        className="absolute left-1/2 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-brand-glow)_55%,transparent),color-mix(in_srgb,var(--color-brand)_18%,transparent)_55%,transparent)]"
         style={glow}
       />
 
@@ -204,7 +204,7 @@ function StatChip({
 /* ------------------------------------------------------------------ */
 
 const notes = [
-  { app: "Bookings", icon: CalendarCheck, tint: "bg-clay", text: "New booking: Thu 2:00pm" },
+  { app: "Bookings", icon: CalendarCheck, tint: "bg-brand", text: "New booking: Thu 2:00pm" },
   { app: "Google", icon: Star, tint: "bg-[#3b6cf6]", text: "New 5★ Google review" },
   { app: "Phone", icon: MapPin, tint: "bg-go", text: "Call from Google Maps" },
   { app: "Website", icon: FileText, tint: "bg-[#7b5cf0]", text: "New quote request from your website" },
@@ -244,7 +244,7 @@ function HeroPhone() {
       aria-hidden
       className="relative aspect-[290/600] w-full rounded-[2.6rem] bg-[#141c2c] p-[0.5rem] shadow-[0_50px_100px_-30px_rgb(0_0_0/0.9),0_0_0_1px_rgb(255_255_255/0.14),inset_0_1px_0_rgb(255_255_255/0.2)]"
     >
-      <div className="relative h-full overflow-hidden rounded-[2.15rem] bg-[radial-gradient(120%_70%_at_30%_0%,#3a2030,transparent_60%),radial-gradient(90%_60%_at_90%_100%,rgb(232_105_63/0.45),transparent_70%),linear-gradient(180deg,#121a2c,#0b1120)]">
+      <div className="relative h-full overflow-hidden rounded-[2.15rem] bg-[radial-gradient(120%_70%_at_30%_0%,color-mix(in_srgb,var(--color-brand)_22%,var(--color-night)),transparent_60%),radial-gradient(90%_60%_at_90%_100%,color-mix(in_srgb,var(--color-brand-glow)_45%,transparent),transparent_70%),linear-gradient(180deg,#121a2c,#0b1120)]">
         {/* status bar + island */}
         <div className="flex items-center justify-between px-6 pt-3 text-[0.62rem] font-semibold text-white/85">
           <span>9:41</span>
@@ -305,7 +305,7 @@ function FloatingBooking() {
   return (
     <div className="rounded-[1.3rem] border border-white/60 bg-white/[0.93] p-3.5 text-ink shadow-[0_40px_80px_-20px_rgb(0_0_0/0.75),0_0_0_1px_rgb(255_255_255/0.4)] backdrop-blur-xl sm:p-4">
       <div className="flex items-center gap-2.5">
-        <span className="grid size-8 shrink-0 place-items-center rounded-[0.6rem] bg-clay text-white shadow-[0_6px_16px_-6px_rgb(196_80_43/0.9)]">
+        <span className="grid size-8 shrink-0 place-items-center rounded-[0.6rem] bg-brand text-white shadow-[0_6px_16px_-6px_color-mix(in_srgb,var(--color-brand)_90%,transparent)]">
           <CalendarCheck className="size-4" strokeWidth={2.4} />
         </span>
         <div className="min-w-0 flex-1">
@@ -322,7 +322,7 @@ function FloatingBooking() {
             key={i}
             className={cn(
               "grid h-6 place-items-center rounded-md font-mono text-[0.58rem]",
-              i === 3 ? "bg-clay font-semibold text-white" : "bg-ink/[0.05] text-muted"
+              i === 3 ? "bg-brand font-semibold text-white" : "bg-ink/[0.05] text-muted"
             )}
           >
             {d}
@@ -381,7 +381,7 @@ function MetroMap() {
           </g>
           <path
             d="M18 168 C 50 160, 80 176, 112 166 S 160 158, 186 170 S 226 178, 250 168"
-            stroke="rgb(232 105 63 / 0.4)"
+            stroke="color-mix(in srgb, var(--color-brand-glow) 40%, transparent)"
             strokeWidth="1.2"
           />
           <g stroke="rgb(255 255 255 / 0.24)" strokeWidth="0.9">
@@ -415,11 +415,11 @@ function MetroMap() {
         <g fill="none" strokeLinecap="round">
           {routes.map((d, i) => (
             <g key={d}>
-              <path d={d} stroke="rgb(232 105 63 / 0.22)" strokeWidth="0.8" strokeDasharray="2 3" />
+              <path d={d} stroke="color-mix(in srgb, var(--color-brand-glow) 22%, transparent)" strokeWidth="0.8" strokeDasharray="2 3" />
               <path
                 d={d}
                 className="route-run"
-                stroke="rgb(255 160 120 / 0.95)"
+                stroke="color-mix(in srgb, var(--color-brand-pale) 95%, transparent)"
                 strokeWidth="1.4"
                 strokeDasharray="16 224"
                 style={{ animationDelay: `${i * -0.95}s` }}
@@ -429,8 +429,8 @@ function MetroMap() {
         </g>
         {towns.map((t, i) => (
           <g key={t.name} transform={`translate(${t.x} ${t.y})`}>
-            <circle r="8" className="okc-pulse" style={{ animationDelay: `${i * 0.6}s` }} fill="rgb(232 105 63 / 0.4)" />
-            <circle r={t === hub ? 3.4 : 2.4} fill="#ffb08f" />
+            <circle r="8" className="okc-pulse" style={{ animationDelay: `${i * 0.6}s` }} fill="color-mix(in srgb, var(--color-brand-glow) 40%, transparent)" />
+            <circle r={t === hub ? 3.4 : 2.4} fill="var(--color-brand-pale)" />
             <circle r={t === hub ? 1.4 : 1} fill="#fff" />
           </g>
         ))}

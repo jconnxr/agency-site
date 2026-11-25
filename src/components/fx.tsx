@@ -26,7 +26,7 @@ export function useReduced() {
 export function Backdrop() {
   return (
     <div aria-hidden className="home-bg">
-      <div className="glow glow-rust" />
+      <div className="glow glow-brand" />
       <div className="glow glow-violet" />
       <div className="glow glow-low" />
       <div className="grid" />
@@ -46,8 +46,8 @@ const surfaces: Record<Surface, string> = {
   dark: "glass bg-[linear-gradient(180deg,rgb(17_26_43/0.92),rgb(10_17_32/0.94))] text-white",
   // The one warm "island" mid-page
   cream: "bg-cream text-ink shadow-[0_-30px_80px_-30px_rgb(0_0_0/0.6),0_40px_80px_-40px_rgb(0_0_0/0.7)]",
-  // Elevated dark panel with a glowing rust/violet rim
-  glow: "glow-border bg-[radial-gradient(120%_80%_at_50%_0%,rgb(232_105_63/0.10),transparent_60%),linear-gradient(180deg,#0e1729,#0a1120)] text-white shadow-[0_0_0_1px_rgb(232_105_63/0.08),0_0_80px_-20px_rgb(232_105_63/0.35),0_-30px_80px_-30px_rgb(0_0_0/0.7)]",
+  // Elevated dark panel with a glowing blue/violet rim
+  glow: "glow-border bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-brand-glow)_10%,transparent),transparent_60%),linear-gradient(180deg,#0e1729,#0a1120)] text-white shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-brand-glow)_8%,transparent),0_0_80px_-20px_color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),0_-30px_80px_-30px_rgb(0_0_0/0.7)]",
   bare: "text-white",
 };
 
@@ -98,7 +98,7 @@ export function RevealHeading({
   as = "h2",
   text,
   accent = 0,
-  accentClass = "text-clay-glow",
+  accentClass = "text-brand-glow",
   className,
   id,
 }: {
@@ -223,7 +223,7 @@ const SPOT = 420;
 export function SpotlightCard({
   as = "div",
   className,
-  spot = "rgb(232 105 63 / 0.22)",
+  spot = "color-mix(in srgb, var(--color-brand-glow) 22%, transparent)",
   children,
   ...rest
 }: {
@@ -273,7 +273,7 @@ export function SpotlightCard({
 }
 
 /* ------------------------------------------------------------------ */
-/* Rust marquee band                                                   */
+/* Brand marquee band                                                  */
 /* ------------------------------------------------------------------ */
 
 export function Marquee({ items, className }: { items: string[]; className?: string }) {
@@ -291,7 +291,7 @@ export function Marquee({ items, className }: { items: string[]; className?: str
   );
   return (
     <div className={cn("relative z-10 overflow-hidden", className)}>
-      <div className="relative -mx-4 -rotate-[1.5deg] bg-[linear-gradient(90deg,#b8461f,#d65a2e_40%,#e8693f_60%,#c4502b)] py-4 text-white shadow-[0_20px_60px_-20px_rgb(196_80_43/0.7),inset_0_1px_0_rgb(255_255_255/0.25)] md:py-5">
+      <div className="relative -mx-4 -rotate-[1.5deg] bg-[linear-gradient(90deg,var(--color-brand-ink),var(--color-brand)_40%,var(--color-brand-glow)_60%,var(--color-brand))] py-4 text-white shadow-[0_20px_60px_-20px_color-mix(in_srgb,var(--color-brand)_70%,transparent),inset_0_1px_0_rgb(255_255_255/0.25)] md:py-5">
         <p className="sr-only">Services: {items.join(", ")}</p>
         <div className="marquee-track flex w-max">
           {row(true)}

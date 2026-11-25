@@ -20,7 +20,7 @@ const ease = [0.2, 0.8, 0.2, 1] as const;
 type Service = { tier: string; title: string; body: string };
 const services: Record<string, Service> = {
   site: { tier: "Launch", title: "A website that gets calls", body: "Fast, mobile-first, and built around one job: getting people to call or book." },
-  maps: { tier: "Get Found", title: "Show up on Google Maps", body: "Weekly posts, fresh photos, review replies and consistent listings everywhere people search." },
+  maps: { tier: "Get Found: Google + AI", title: "Show up on Google Maps", body: "Weekly posts, fresh photos, review replies and consistent listings everywhere people search." },
   booking: { tier: "Launch Pro", title: "Online booking", body: "Customers pick a time themselves. No more phone tag." },
   social: { tier: "Get Leads", title: "Social, handled", body: "Three posts a week on two platforms, planned and designed for you." },
   leads: { tier: "Automate", title: "Never miss a lead", body: "Missed calls get a text back, leads get an instant reply, and customers get reminders." },

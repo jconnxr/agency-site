@@ -263,7 +263,7 @@ function Trust() {
   const rows = [
     {
       t: "Local to Oklahoma City",
-      b: "We're based here and come to you across the metro, including Edmond, Norman, Moore, Midwest City and Yukon.",
+      b: "We're based here and come to you across the metro: Oklahoma City, Midwest City, Edmond, Moore, Norman, Yukon, Mustang and Del City.",
     },
     { t: owned.title, b: owned.body },
     { t: `Founding clients: the first ${founding.spots}`, b: founding.body },

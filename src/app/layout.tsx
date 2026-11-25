@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   icons: {
     icon: [
-      { url: "/brand/AMG-favicon.svg", type: "image/svg+xml" },
+      { url: "/brand/AMG-app-icon-navy-rounded.svg", type: "image/svg+xml" },
       { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [{ url: "/brand/AMG-app-icon-navy-rounded.png", sizes: "1024x1024", type: "image/png" }],

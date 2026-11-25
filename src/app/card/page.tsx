@@ -34,7 +34,7 @@ export default function CardPage() {
       <header className="bg-night text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-8">
           <a href={`${mainSite}/?src=card`} className="flex shrink-0 items-center">
-            <Image src="/brand/AMG-full-logo-white.svg" alt={site.name} width={418} height={156} priority className="h-[30px] w-auto md:h-[38px]" />
+            <Image src="/brand/AMG-header-white.svg" alt={site.name} width={414} height={113} priority className="h-[30px] w-auto md:h-[38px]" />
           </a>
           {telHref && (
             <a href={telHref} data-track="Tapped call" data-where="header" className="font-mono text-[0.8rem] text-white/75 hover:text-white">

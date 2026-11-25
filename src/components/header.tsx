@@ -26,10 +26,10 @@ export function Header() {
         {/* The header is always a dark glass bar, so it always takes the white logo. */}
         <a href="#top" className="flex shrink-0 items-center">
           <Image
-            src="/brand/AMG-full-logo-white.svg"
+            src="/brand/AMG-header-white.svg"
             alt="Axiom Media Group"
-            width={418}
-            height={156}
+            width={414}
+            height={113}
             priority
             className="h-[30px] w-auto md:h-[38px]"
           />
@@ -74,7 +74,7 @@ export function Header() {
                   >
                     <div className="flex items-center justify-between">
                       <Dialog.Title>
-                        <Image src="/brand/AMG-full-logo-white.svg" alt={site.name} width={418} height={156} className="h-[30px] w-auto" />
+                        <Image src="/brand/AMG-header-white.svg" alt={site.name} width={414} height={113} className="h-[30px] w-auto" />
                       </Dialog.Title>
                       <Dialog.Close className="grid size-11 place-items-center" aria-label="Close menu">
                         <X className="size-6" />

@@ -16,7 +16,7 @@ export function Packages() {
           <RevealHeading
             text="Five packages. Each one solves one problem."
             accent={2}
-            accentClass="text-clay-ink"
+            accentClass="text-brand"
             className="text-[2.1rem] md:text-[3.2rem]"
           />
           <div className="md:pt-3">
@@ -42,8 +42,8 @@ export function Packages() {
                 <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Included</dt>
                 <dd className="mt-1.5">{launch.note}</dd>
               </div>
-              <div className="rounded-2xl border border-clay/25 bg-clay-soft/40 p-4">
-                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-ink">Launch + Get Found: Google + AI bundle</dt>
+              <div className="rounded-2xl border border-brand/25 bg-brand-soft/40 p-4">
+                <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-brand">Launch + Get Found: Google + AI bundle</dt>
                 <dd className="mt-1.5">{launch.bundle}</dd>
               </div>
             </dl>
@@ -84,7 +84,7 @@ function Path() {
       <ol className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 font-semibold">
         {steps.map((s, i) => (
           <li key={s.label} className="flex items-center gap-2.5">
-            <a href={s.href} className="underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay">
+            <a href={s.href} className="underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-brand">
               {s.label}
             </a>
             {i < steps.length - 1 && (
@@ -97,7 +97,7 @@ function Path() {
       </ol>
       <p className="mt-1.5 text-[0.95rem] text-muted">
         Plus{" "}
-        <a href="#automate" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay">
+        <a href="#automate" className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-brand">
           Automate
         </a>{" "}
         whenever busywork piles up.
@@ -108,14 +108,14 @@ function Path() {
 
 function Founding() {
   return (
-    <FadeUp className="relative mt-14 grid gap-5 overflow-hidden rounded-[24px] bg-[radial-gradient(80%_140%_at_0%_0%,rgb(232_105_63/0.35),transparent_60%),linear-gradient(135deg,#111a2b,#0b1220)] p-6 text-white shadow-[0_30px_60px_-30px_rgb(15_26_42/0.6)] md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:p-8">
+    <FadeUp className="relative mt-14 grid gap-5 overflow-hidden rounded-[24px] bg-[radial-gradient(80%_140%_at_0%_0%,color-mix(in_srgb,var(--color-brand-glow)_35%,transparent),transparent_60%),linear-gradient(135deg,var(--color-night-2),var(--color-night))] p-6 text-white shadow-[0_30px_60px_-30px_rgb(15_26_42/0.6)] md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:p-8">
       <div>
-        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-clay-glow">
+        <p className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-brand-glow">
           Founding client offer &middot; first {founding.spots} clients
         </p>
         <p className="mt-2 max-w-[70ch] text-[1.02rem] leading-relaxed">{founding.body}</p>
       </div>
-      <Button asChild className="self-start rounded-full hover:bg-clay-glow md:self-auto">
+      <Button asChild className="self-start rounded-full hover:bg-brand-ink md:self-auto">
         <IntakeTrigger source="Founding client spot"><a href="#book">Ask about a founding spot</a></IntakeTrigger>
       </Button>
     </FadeUp>
@@ -165,7 +165,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
         <article key={o.name} className={cn("flex min-w-0 flex-col", i === 0 ? "md:pr-10" : "md:pl-10")}>
           <h4 className="font-wide text-[1.35rem] font-bold">{o.name}</h4>
           {o.liveBy && (
-            <p className="mt-1 font-mono text-[0.72rem] uppercase tracking-[0.06em] text-clay-ink">{o.liveBy}</p>
+            <p className="mt-1 font-mono text-[0.72rem] uppercase tracking-[0.06em] text-brand">{o.liveBy}</p>
           )}
           <p className="mt-4 font-wide text-[2.6rem] font-extrabold leading-none">{o.price}</p>
           <p className="mt-2 text-[0.92rem] text-muted">
@@ -175,7 +175,7 @@ function Options({ options, notes = {} }: { options: Option[]; notes?: Record<nu
           <ul className="mt-6 space-y-2.5 border-t border-line pt-5 text-[0.98rem]">
             {o.includes.map((inc) => (
               <li key={inc} className="flex gap-3">
-                <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-clay" />
+                <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-brand" />
                 <span>{inc}</span>
               </li>
             ))}
@@ -216,7 +216,7 @@ function Monthly() {
             <div className="flex items-end justify-between">
               <span aria-hidden className="flex items-end gap-1">
                 {[0, 1, 2].map((b) => (
-                  <span key={b} className={cn("w-2.5", b <= i ? "bg-clay" : "bg-line")} style={{ height: 8 + b * 7 }} />
+                  <span key={b} className={cn("w-2.5", b <= i ? "bg-brand" : "bg-line")} style={{ height: 8 + b * 7 }} />
                 ))}
               </span>
               <span className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Step {i + 1}</span>
@@ -233,7 +233,7 @@ function Monthly() {
               <ul className="space-y-2.5 text-[0.96rem]">
                 {p.includes.map((inc) => (
                   <li key={inc} className="flex gap-3">
-                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-clay" />
+                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-brand" />
                     <span>{inc}</span>
                   </li>
                 ))}
@@ -262,7 +262,7 @@ function AlaCarte() {
         <IntakeTrigger source="À la carte">
         <a
           href="#book"
-          className="mt-4 inline-block font-semibold underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-clay"
+          className="mt-4 inline-block font-semibold underline decoration-line decoration-2 underline-offset-[5px] hover:decoration-brand"
         >
           Ask about a one-off
         </a>

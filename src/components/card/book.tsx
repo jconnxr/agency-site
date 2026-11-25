@@ -21,7 +21,7 @@ export function CalendlyEmbed() {
         io.disconnect();
         const q = new URLSearchParams({
           hide_gdpr_banner: "1",
-          primary_color: "c4502b",
+          primary_color: "464ceb",
           utm_source: source(),
           utm_medium: "card-page",
         });
@@ -59,7 +59,7 @@ export function CalendlyEmbed() {
           rel="noopener"
           data-track="Tapped book"
           data-where="calendly fallback link"
-          className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-clay"
+          className="font-semibold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-brand"
         >
           Open the booking page
         </a>

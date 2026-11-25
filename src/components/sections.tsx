@@ -68,8 +68,8 @@ export function WhoFor() {
                     sizes="(min-width: 768px) 540px, 100vw"
                     className={cn("object-cover", g.photo.position)}
                   />
-                  <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(10_17_32/0.75))]" />
-                  <span className="glass absolute bottom-3 left-3 rounded-full bg-[rgb(10_17_32/0.5)] px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/85">
+                  <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,color-mix(in_srgb,var(--color-panel)_75%,transparent))]" />
+                  <span className="glass absolute bottom-3 left-3 rounded-full bg-[color-mix(in_srgb,var(--color-panel)_50%,transparent)] px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/85">
                     {i === 0 ? "New business" : "Established"}
                   </span>
                 </div>
@@ -80,7 +80,7 @@ export function WhoFor() {
                   <ul className="mt-3 flex flex-col gap-2">
                     {g.pains.map((t) => (
                       <li key={t} className="flex gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5">
-                        <span aria-hidden className="font-mono text-clay-glow">
+                        <span aria-hidden className="font-mono text-brand-glow">
                           &ndash;
                         </span>
                         <span className="text-white/85">{t}</span>
@@ -92,7 +92,7 @@ export function WhoFor() {
                       <span className="block font-semibold">{g.fit}</span>
                       <span className="text-[0.95rem] text-white/55">{g.price}</span>
                     </p>
-                    <a href="#packages" className={cn(link, "decoration-white/25 hover:decoration-clay-glow")}>
+                    <a href="#packages" className={cn(link, "decoration-white/25 hover:decoration-brand-glow")}>
                       See packages
                     </a>
                   </div>
@@ -115,7 +115,7 @@ export function Promises() {
           {promises.map((p, i) => (
             <Rise key={p.title} className={cn(i % 2 === 1 && "lg:translate-y-8")}>
               <SpotlightCard className="h-full p-6">
-                <span className="font-mono text-[0.8rem] text-clay-glow">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-[0.8rem] text-brand-glow">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="mt-6 text-[1.25rem]">{p.title}</h3>
                 <p className="mt-3 text-[0.97rem] text-white/60">{p.body}</p>
               </SpotlightCard>
@@ -138,7 +138,7 @@ export function Faq() {
             {site.email ? (
               <>
                 , or email{" "}
-                <a href={`mailto:${site.email}`} className={cn(link, "text-white decoration-white/25 hover:decoration-clay-glow")}>
+                <a href={`mailto:${site.email}`} className={cn(link, "text-white decoration-white/25 hover:decoration-brand-glow")}>
                   {site.email}
                 </a>
               </>
@@ -174,7 +174,7 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="relative -mt-10 px-3 pb-3 text-white/70 sm:px-4 sm:pb-4 md:-mt-16 md:px-6 md:pb-6">
-      <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#0e1729,#080d18)] md:rounded-[32px]">
+      <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] md:rounded-[32px]">
       {/* Sunset drone shot behind the closing call to action, fading into the footer */}
       <div className="absolute inset-x-0 top-0 h-[380px] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] md:h-[290px] md:[mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
         <Image
@@ -184,7 +184,7 @@ export function Footer() {
           sizes="100vw"
           className="object-cover object-[62%_20%] md:object-[50%_12%]"
         />
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,18,32,0.62)_0%,rgba(11,18,32,0.25)_50%,rgba(11,18,32,0)_100%)]" />
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-night)_62%,transparent)_0%,color-mix(in_srgb,var(--color-night)_25%,transparent)_50%,color-mix(in_srgb,var(--color-night)_0%,transparent)_100%)]" />
       </div>
       <div className="relative mx-auto max-w-6xl px-5 pt-24 md:px-8 md:pt-28">
         <div className="flex flex-col justify-between gap-8 border-b border-night-line pb-14 md:flex-row md:items-end">
@@ -192,7 +192,7 @@ export function Footer() {
           <IntakeTrigger source="Footer: Book a call">
           <a
             href="#book"
-            className="inline-flex h-14 items-center self-start rounded-full bg-clay shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow md:self-auto"
+            className="inline-flex h-14 items-center self-start rounded-full bg-brand shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-brand-ink md:self-auto"
           >
             Book a free 30-minute call
           </a>
@@ -201,18 +201,24 @@ export function Footer() {
 
         <div className="grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-wide text-xl font-extrabold text-white">{site.name}</p>
+            <Image
+              src="/brand/AMG-stacked-white.svg"
+              alt={site.name}
+              width={229}
+              height={151}
+              className="-ml-3 h-[84px] w-auto md:h-[96px]"
+            />
             <p className="mt-3 max-w-[40ch] text-[0.95rem]">
               Websites, Google Business Profiles, AI search visibility, online booking, social media and ads for local
               businesses in {site.city} and the surrounding metro.
             </p>
             {telHref ? (
-              <a href={telHref} className="mt-5 block font-semibold text-white hover:text-clay-glow">
+              <a href={telHref} className="mt-5 block font-semibold text-white hover:text-brand-glow">
                 {phoneDisplay}
               </a>
             ) : null}
             {site.email ? (
-              <a href={`mailto:${site.email}`} className="mt-2 inline-block font-semibold text-clay-glow hover:text-white">
+              <a href={`mailto:${site.email}`} className="mt-2 inline-block font-semibold text-brand-glow hover:text-white">
                 {site.email}
               </a>
             ) : null}

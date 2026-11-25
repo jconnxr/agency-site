@@ -122,7 +122,7 @@ export function Story() {
 
   return (
     <section id="story" aria-labelledby="story-title" className="relative -mt-10 scroll-mt-24 px-3 text-white sm:px-4 md:-mt-16 md:px-6">
-      <div className="glass relative mx-auto max-w-[1440px] rounded-[28px] bg-[linear-gradient(180deg,rgb(17_26_43/0.94),rgb(10_17_32/0.96))] md:rounded-[32px]">
+      <div className="glass relative mx-auto max-w-[1440px] rounded-[28px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] md:rounded-[32px]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-64 rounded-t-[inherit] bg-[radial-gradient(60%_100%_at_50%_0%,rgb(111_116_255/0.12),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-5 pt-20 md:px-8 md:pt-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -229,7 +229,7 @@ export function Story() {
               </p>
               <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full origin-left rounded-full bg-clay-glow transition-transform duration-500"
+                  className="h-full origin-left rounded-full bg-brand-glow transition-transform duration-500"
                   style={{ transform: `scaleX(${(active + 1) / n})` }}
                 />
               </div>
@@ -256,7 +256,7 @@ export function Story() {
             <IntakeTrigger source="Story: Book a call">
             <a
               href="#book"
-              className="inline-flex h-14 items-center rounded-full bg-clay px-7 shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] text-[1.05rem] font-semibold text-white transition-colors hover:bg-clay-glow"
+              className="inline-flex h-14 items-center rounded-full bg-brand px-7 shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent)] text-[1.05rem] font-semibold text-white transition-colors hover:bg-brand-ink"
             >
               Book a free 30-minute call
             </a>
@@ -273,11 +273,11 @@ function Caption({ index }: { index: number }) {
   const s = steps[index];
   return (
     <>
-      <p className="flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-clay-glow">
+      <p className="flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-brand-glow">
         <span>
           {String(index + 1).padStart(2, "0")}/{String(n).padStart(2, "0")}
         </span>
-        <span aria-hidden className="h-px w-6 bg-clay-glow/50" />
+        <span aria-hidden className="h-px w-6 bg-brand-glow/50" />
         <span>{s.service}</span>
       </p>
       <p className="mt-2.5 font-wide text-[1.4rem] font-extrabold leading-[1.05] tracking-[-0.02em] md:mt-4 md:text-[2.2rem]">
@@ -332,7 +332,7 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
               {ev.kind === "alert" && ev.success ? (
                 <Check className="size-4 text-go-glow" strokeWidth={3} />
               ) : (
-                <span className="size-2 rounded-full bg-clay-glow" />
+                <span className="size-2 rounded-full bg-brand-glow" />
               )}
             </span>
             <div className="min-w-0 flex-1">
@@ -347,7 +347,7 @@ function MobileAlert({ active, engaged }: { active: number; engaged: boolean }) 
                 ) : ev.stars ? (
                   <span className="flex shrink-0">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="size-3 fill-clay text-clay" />
+                      <Star key={i} className="size-3 fill-brand text-brand" />
                     ))}
                   </span>
                 ) : null}
@@ -409,7 +409,7 @@ function OwnerRow({ event, live }: { event: OwnerEvent; live: boolean }) {
       className={cn(
         "flex items-center gap-3 rounded-md border px-3 py-2 transition-[border-color,box-shadow,background-color] duration-700",
         live
-          ? "border-clay-glow/60 bg-clay-glow/[0.08] shadow-[0_0_0_4px_rgb(232_105_63/0.10),0_0_28px_-6px_rgb(232_105_63/0.55)]"
+          ? "border-brand-glow/70 bg-brand-glow/[0.12] shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-brand-glow)_16%,transparent),0_0_32px_-4px_color-mix(in_srgb,var(--color-brand-glow)_75%,transparent)]"
           : "border-night-line bg-white/[0.02]"
       )}
     >
@@ -418,7 +418,7 @@ function OwnerRow({ event, live }: { event: OwnerEvent; live: boolean }) {
           <Check className="size-2.5" strokeWidth={4} />
         </span>
       ) : (
-        <span className={cn("size-2 shrink-0 rounded-full", live ? "bg-clay-glow" : "bg-white/25")} />
+        <span className={cn("size-2 shrink-0 rounded-full", live ? "bg-brand-glow" : "bg-white/25")} />
       )}
       <div className="min-w-0 flex-1">
         {event.kind === "count" ? (
@@ -436,7 +436,7 @@ function OwnerRow({ event, live }: { event: OwnerEvent; live: boolean }) {
               {event.stars && (
                 <span className="flex shrink-0">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-3 fill-clay-glow text-clay-glow" />
+                    <Star key={i} className="size-3 fill-brand-glow text-brand-glow" />
                   ))}
                 </span>
               )}

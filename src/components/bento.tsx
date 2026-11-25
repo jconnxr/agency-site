@@ -54,11 +54,11 @@ export function Showcase() {
           <Tile s={services.site} className="md:col-span-6 lg:col-span-7 lg:row-span-2" ui={<BrowserScore />} big
             chip={<Chip className="right-3 -top-3 rotate-[4deg] md:-right-4"><Check className="size-3.5 text-go-glow" strokeWidth={3} /> Mobile-first</Chip>} />
           <Tile s={services.maps} className="md:col-span-3 lg:col-span-5" ui={<MapsListing />}
-            chip={<Chip className="-bottom-3 left-3 -rotate-[3deg] md:-left-4"><Navigation className="size-3.5 text-clay-glow" /> Directions</Chip>} />
+            chip={<Chip className="-bottom-3 left-3 -rotate-[3deg] md:-left-4"><Navigation className="size-3.5 text-brand-glow" /> Directions</Chip>} />
           <Tile s={services.booking} className="md:col-span-3 lg:col-span-5" ui={<BookingSlots />} />
           <Tile s={services.social} className="md:col-span-2 lg:col-span-4" ui={<SocialStack />} />
           <Tile s={services.leads} className="md:col-span-2 lg:col-span-4" ui={<TextBack />}
-            chip={<Chip className="right-3 -top-3 rotate-[3deg] md:-right-2"><MessageSquare className="size-3.5 text-clay-glow" /> Auto-reply</Chip>} />
+            chip={<Chip className="right-3 -top-3 rotate-[3deg] md:-right-2"><MessageSquare className="size-3.5 text-brand-glow" /> Auto-reply</Chip>} />
           <Tile s={services.ads} className="md:col-span-2 lg:col-span-4" ui={<LeadsChart />} />
           <Tile s={services.shoot} className="md:col-span-6 lg:col-span-12" ui={<PhotoStrip />} wide />
         </Stagger>
@@ -92,7 +92,7 @@ function Tile({
         )}
       >
         <div className={cn(!wide && "order-2", "mt-5", wide && "mt-0 lg:order-none")}>
-          <p className={cn(eyebrow, "text-clay-glow")}>{s.tier}</p>
+          <p className={cn(eyebrow, "text-brand-glow")}>{s.tier}</p>
           <h3 className={cn("mt-2 text-white", big ? "text-[1.6rem] md:text-[2rem]" : "text-[1.3rem] md:text-[1.4rem]")}>{s.title}</h3>
           <p className="mt-2 max-w-[46ch] text-[0.98rem] text-white/60">{s.body}</p>
         </div>
@@ -109,7 +109,7 @@ function Chip({ className, children }: { className?: string; children: React.Rea
     <span
       aria-hidden
       className={cn(
-        "glass absolute z-10 flex items-center gap-1.5 rounded-full bg-[rgb(18_27_46/0.85)] px-3 py-1.5 text-[0.78rem] font-semibold text-white shadow-[0_14px_30px_-10px_rgb(0_0_0/0.8)]",
+        "glass absolute z-10 flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--color-panel-2)_85%,transparent)] px-3 py-1.5 text-[0.78rem] font-semibold text-white shadow-[0_14px_30px_-10px_rgb(0_0_0/0.8)]",
         className
       )}
     >
@@ -152,7 +152,7 @@ const Example = ({ className }: { className?: string }) => (
 );
 
 /** Common "screen" surface for the mini UIs */
-const screen = "relative overflow-hidden rounded-[16px] border border-white/10 bg-[rgb(8_13_25/0.7)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]";
+const screen = "relative overflow-hidden rounded-[16px] border border-white/10 bg-[color-mix(in_srgb,var(--color-panel)_70%,transparent)] shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]";
 
 /* ------------------------------------------------------------------ */
 /* Mini UIs                                                            */
@@ -186,7 +186,7 @@ function BrowserScore() {
           <span className="mt-1 h-2 w-[85%] rounded bg-white/[0.07]" />
           <span className="h-2 w-[78%] rounded bg-white/[0.07]" />
           <div className="mt-2 flex gap-2">
-            <span className="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full bg-clay px-3 text-[0.65rem] font-semibold text-white">
+            <span className="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full bg-brand px-3 text-[0.65rem] font-semibold text-white">
               <Phone className="size-3" /> Call now
             </span>
             <span className="hidden h-8 w-20 rounded-full border border-white/15 sm:block" />
@@ -256,7 +256,7 @@ function MapsListing() {
       </div>
       <div className="mt-3 flex items-center justify-between rounded-xl bg-white/[0.04] px-3 py-2.5">
         <span className="flex items-center gap-2 text-[0.78rem] text-white/65">
-          <Navigation className="size-3.5 text-clay-glow" /> Directions requests
+          <Navigation className="size-3.5 text-brand-glow" /> Directions requests
         </span>
         <span className="font-wide text-[1.15rem] font-extrabold text-white">
           <CountTo to={214} duration={2.4} />
@@ -289,7 +289,7 @@ function BookingSlots() {
             <span key={i} className="relative h-6 overflow-hidden rounded-md bg-white/[0.05]">
               {order >= 0 && (
                 <motion.span
-                  className="absolute inset-0 rounded-md bg-clay"
+                  className="absolute inset-0 rounded-md bg-brand"
                   initial={reduce ? false : { opacity: 0, scale: 0.6 }}
                   animate={inView || reduce ? { opacity: 1, scale: 1 } : undefined}
                   transition={{ delay: 0.3 + order * 0.22, type: "spring", stiffness: 420, damping: 24 }}
@@ -319,7 +319,7 @@ function SocialStack() {
       {posts.map((p, i) => (
         <motion.div
           key={p.img}
-          className="absolute w-[6.5rem] rounded-xl border border-white/15 bg-[#131c2e] p-1.5 shadow-[0_18px_30px_-12px_rgb(0_0_0/0.8)]"
+          className="absolute w-[6.5rem] rounded-xl border border-white/15 bg-panel-2 p-1.5 shadow-[0_18px_30px_-12px_rgb(0_0_0/0.8)]"
           initial={reduce ? false : { rotate: 0, x: 0, opacity: i === 2 ? 1 : 0 }}
           animate={inView || reduce ? { rotate: p.r, x: p.x, opacity: 1 } : undefined}
           transition={{ delay: 0.2 + i * 0.12, type: "spring", stiffness: 160, damping: 18 }}
@@ -340,9 +340,9 @@ function TextBack() {
   return (
     <Stagger className={cn(screen, "flex h-44 flex-col justify-end gap-2 p-3.5")} gap={0.35} delay={0.2}>
       <Rise className="flex items-center gap-2 self-start rounded-full bg-white/[0.06] px-3 py-1.5 text-[0.7rem] text-white/60">
-        <Phone className="size-3 text-clay-glow" /> Missed call · example
+        <Phone className="size-3 text-brand-glow" /> Missed call · example
       </Rise>
-      <Rise className="max-w-[85%] self-end rounded-2xl rounded-br-md bg-clay px-3 py-2 text-[0.74rem] leading-snug text-white">
+      <Rise className="max-w-[85%] self-end rounded-2xl rounded-br-md bg-brand px-3 py-2 text-[0.74rem] leading-snug text-white">
         Sorry we missed you! Want us to call back, or book online?
       </Rise>
       <Rise className="max-w-[60%] self-start rounded-2xl rounded-bl-md bg-white/10 px-3 py-2 text-[0.74rem] text-white/85">
@@ -366,8 +366,8 @@ function LeadsChart() {
       <svg viewBox="0 0 240 100" preserveAspectRatio="none" className="mt-2 h-[6.6rem] w-full overflow-visible">
         <defs>
           <linearGradient id="leads-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="rgb(232 105 63 / 0.35)" />
-            <stop offset="1" stopColor="rgb(232 105 63 / 0)" />
+            <stop offset="0" stopColor="color-mix(in srgb, var(--color-brand-glow) 35%, transparent)" />
+            <stop offset="1" stopColor="color-mix(in srgb, var(--color-brand-glow) 0%, transparent)" />
           </linearGradient>
         </defs>
         {[25, 50, 75].map((y) => (
@@ -383,7 +383,7 @@ function LeadsChart() {
         <motion.path
           d={d}
           fill="none"
-          stroke="#e8693f"
+          stroke="var(--color-brand-glow)"
           strokeWidth="2.5"
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"

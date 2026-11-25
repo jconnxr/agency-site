@@ -29,7 +29,7 @@ export function AiSearch() {
     <Panel id="ai-search" surface="glow" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[1.15fr_1fr] md:items-center md:gap-16">
         <div>
-          <p className={cn(eyebrow, "text-clay-glow")}>Google + AI search</p>
+          <p className={cn(eyebrow, "text-brand-glow")}>Google + AI search</p>
           <RevealHeading
             text="Customers are asking AI who to call."
             accent={2}
@@ -47,14 +47,14 @@ export function AiSearch() {
             <IntakeTrigger source="AI search: Ask about it">
               <a
                 href="#book"
-                className="inline-flex h-12 items-center rounded-full bg-clay px-6 font-semibold text-white shadow-[0_10px_40px_-8px_rgb(232_105_63/0.7)] transition-colors hover:bg-clay-glow"
+                className="inline-flex h-12 items-center rounded-full bg-brand px-6 font-semibold text-white shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent)] transition-colors hover:bg-brand-ink"
               >
                 Ask what AI says about you
               </a>
             </IntakeTrigger>
             <a
               href="#monthly"
-              className="font-semibold underline decoration-white/25 decoration-2 underline-offset-[5px] hover:decoration-clay-glow"
+              className="font-semibold underline decoration-white/25 decoration-2 underline-offset-[5px] hover:decoration-brand-glow"
             >
               See the plan
             </a>
@@ -70,7 +70,7 @@ export function AiSearch() {
         {points.map((p) => (
           <Rise key={p.title}>
             <SpotlightCard className="h-full p-6">
-              <Check aria-hidden className="size-5 text-clay-glow" />
+              <Check aria-hidden className="size-5 text-brand-glow" />
               <h3 className="mt-5 text-[1.25rem]">{p.title}</h3>
               <p className="mt-3 text-[0.97rem] text-white/60">{p.body}</p>
             </SpotlightCard>
@@ -84,7 +84,7 @@ export function AiSearch() {
 // A mock AI chat. Purely illustrative, so it says "Example" and uses no real names.
 function ChatExample() {
   return (
-    <div className="glass relative rounded-[24px] bg-[rgb(10_17_32/0.55)] p-5 md:p-6">
+    <div className="glass relative rounded-[24px] bg-[color-mix(in_srgb,var(--color-panel)_55%,transparent)] p-5 md:p-6">
       <div className="flex items-center justify-between">
         <span className={cn(eyebrow, "text-white/45")}>Example</span>
         <span className="flex flex-wrap justify-end gap-1.5">
@@ -101,12 +101,12 @@ function ChatExample() {
       </p>
 
       <div className="mt-4 flex gap-3">
-        <span className="mt-1 grid size-7 shrink-0 place-items-center rounded-full bg-clay/20 text-clay-glow">
+        <span className="mt-1 grid size-7 shrink-0 place-items-center rounded-full bg-brand/20 text-brand-glow">
           <Sparkles aria-hidden className="size-3.5" />
         </span>
         <div className="min-w-0 flex-1 space-y-3">
           <p className="text-[0.95rem] text-white/70">Here are a few well-reviewed options near Edmond:</p>
-          <div className="rounded-xl border border-clay/40 bg-clay/10 p-3.5">
+          <div className="rounded-xl border border-brand/40 bg-brand/10 p-3.5">
             <p className="font-semibold">Your business</p>
             <p className="mt-1 text-[0.88rem] text-white/60">Right services, right hours, right phone number, so the answer is accurate.</p>
           </div>

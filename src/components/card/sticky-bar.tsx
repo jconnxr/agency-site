@@ -29,7 +29,7 @@ export function StickyBar() {
           href="#book"
           data-track="Tapped book"
           data-where="sticky bar"
-          className="flex h-12 flex-1 items-center justify-center rounded-sm bg-clay font-semibold text-white"
+          className="flex h-12 flex-1 items-center justify-center rounded-sm bg-brand font-semibold text-white"
         >
           Book a call
         </a>

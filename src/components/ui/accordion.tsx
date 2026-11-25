@@ -32,7 +32,7 @@ export const AccordionTrigger = React.forwardRef<
       {children}
       <Plus
         aria-hidden
-        className="size-5 shrink-0 text-clay-glow transition-transform duration-200 group-data-[state=open]:rotate-45"
+        className="size-5 shrink-0 text-brand-glow transition-transform duration-200 group-data-[state=open]:rotate-45"
       />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>

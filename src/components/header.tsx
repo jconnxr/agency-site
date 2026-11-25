@@ -3,6 +3,7 @@
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
@@ -21,10 +22,17 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-3 top-3 z-40 text-white sm:inset-x-4 md:inset-x-6 md:top-4">
-      <div className="glass mx-auto flex h-14 max-w-[1280px] items-center justify-between rounded-full bg-[rgb(10_16_30/0.78)] pl-4 pr-2 md:h-16 md:pl-6">
-        <a href="#top" className="flex items-center gap-2.5 font-wide text-lg font-extrabold tracking-tight text-white">
-          <Logo />
-          {site.name}
+      <div className="glass mx-auto flex h-14 max-w-[1280px] items-center justify-between rounded-full bg-[color-mix(in_srgb,var(--color-panel)_78%,transparent)] pl-4 pr-2 md:h-16 md:pl-6">
+        {/* The header is always a dark glass bar, so it always takes the white logo. */}
+        <a href="#top" className="flex shrink-0 items-center">
+          <Image
+            src="/brand/AMG-header-white.svg"
+            alt="Axiom Media Group"
+            width={414}
+            height={113}
+            priority
+            className="h-[30px] w-auto md:h-[38px]"
+          />
         </a>
 
         <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
@@ -33,7 +41,7 @@ export function Header() {
               {l.label}
             </a>
           ))}
-          <Button asChild size="sm" className="rounded-full shadow-[0_8px_24px_-8px_rgb(232_105_63/0.8)] hover:bg-clay-glow">
+          <Button asChild size="sm" className="rounded-full shadow-[0_8px_24px_-8px_color-mix(in_srgb,var(--color-brand-glow)_80%,transparent)] hover:bg-brand-ink">
             {/* Straight to the Calendly section; package buttons open the intake instead */}
             <a href="#book">Book a call</a>
           </Button>
@@ -58,14 +66,16 @@ export function Header() {
                 </Dialog.Overlay>
                 <Dialog.Content asChild forceMount>
                   <motion.div
-                    className="glass fixed inset-x-3 top-3 z-50 rounded-[28px] bg-[rgb(12_19_34/0.92)] px-5 pb-6 pt-3 text-white"
+                    className="glass fixed inset-x-3 top-3 z-50 rounded-[28px] bg-[color-mix(in_srgb,var(--color-panel)_92%,transparent)] px-5 pb-6 pt-3 text-white"
                     initial={{ opacity: 0, y: -24, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -16, scale: 0.98 }}
                     transition={{ type: "spring", damping: 30, stiffness: 300 }}
                   >
                     <div className="flex items-center justify-between">
-                      <Dialog.Title className="font-wide text-lg font-extrabold">{site.name}</Dialog.Title>
+                      <Dialog.Title>
+                        <Image src="/brand/AMG-header-white.svg" alt={site.name} width={414} height={113} className="h-[30px] w-auto" />
+                      </Dialog.Title>
                       <Dialog.Close className="grid size-11 place-items-center" aria-label="Close menu">
                         <X className="size-6" />
                       </Dialog.Close>
@@ -96,16 +106,5 @@ export function Header() {
         </Dialog.Root>
       </div>
     </header>
-  );
-}
-
-// Placeholder mark: three rising tiers. Replace with the real logo.
-function Logo() {
-  return (
-    <svg viewBox="0 0 28 28" className="size-6" aria-hidden>
-      <rect x="2" y="16" width="7" height="10" fill="rgb(255 255 255 / 0.35)" />
-      <rect x="10.5" y="10" width="7" height="16" fill="rgb(255 255 255 / 0.7)" />
-      <rect x="19" y="3" width="7" height="23" fill="var(--color-clay-glow)" />
-    </svg>
   );
 }

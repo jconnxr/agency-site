@@ -85,7 +85,7 @@ export function formatEmail(s: Submission, receivedAt: string) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body style="margin:0;background:#f4f1ea;padding:24px;font-family:-apple-system,Segoe UI,Arial,sans-serif;color:#0f1a2a">
 <table role="presentation" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;border:1px solid #dcd4c5" cellpadding="0" cellspacing="0">
 <tr><td style="padding:24px 28px 8px">
-<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#a8401f">${s.kind === "contact" ? "Contact form" : "Intake form"} · ${esc(when)} Central</p>
+<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#464ceb">${s.kind === "contact" ? "Contact form" : "Intake form"} · ${esc(when)} Central</p>
 <h1 style="margin:8px 0 0;font-size:20px;line-height:1.3">${esc(subjectFor(s))}</h1>
 </td></tr>
 ${sections

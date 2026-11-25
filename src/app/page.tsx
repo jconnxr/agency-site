@@ -9,12 +9,15 @@ import { Book } from "@/components/book";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Backdrop, Marquee } from "@/components/fx";
 import { MotionRoot } from "@/components/motion-root";
+import { AiSearch } from "@/components/ai-search";
+import { StructuredData } from "@/components/structured-data";
 
-const marquee = ["Websites", "Google Business Profile", "Online Booking", "Reviews", "Social", "Ads", "Drone Shoots"];
+const marquee = ["Websites", "Google Business Profile", "AI Search", "Online Booking", "Reviews", "Social", "Ads", "Drone Shoots"];
 
 export default function Home() {
   return (
     <MotionRoot>
+      <StructuredData />
       <div className="home relative isolate overflow-x-clip">
       <Backdrop />
       <SmoothScroll />
@@ -31,6 +34,7 @@ export default function Home() {
         <Story />
         <WhoFor />
         <Showcase />
+        <AiSearch />
         <Packages />
         <HowItWorks />
         <LaunchTimeline />

@@ -11,7 +11,7 @@ import { FadeUp, Panel, RevealHeading, Rise, Stagger, eyebrow, useReduced } from
 const ease = [0.2, 0.8, 0.2, 1] as const;
 
 const process = [
-  { title: "Free call and Presence Check", body: "We look at your Google listing, site, reviews and competitors, and tell you what's worth doing first, and what isn't.", time: "30 minutes" },
+  { title: "Free call and Presence Check", body: "We look at your Google listing, site, reviews and competitors, plus what ChatGPT and other AI tools say about you, and tell you what's worth doing first, and what isn't.", time: "30 minutes" },
   { title: "We launch it", body: "Fixed price, fixed date. You approve everything before it's public, and Site Care is free for 3 months.", time: "14 to 30 days" },
   { title: "Grow monthly, if you want", body: "Step up to Get Found: Google + AI, Get Leads or Full Department. 3-month minimum, then month to month.", time: "Ongoing" },
 ];

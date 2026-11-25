@@ -19,7 +19,7 @@ export function Book() {
         <div className="max-w-[60ch] px-1">
           <RevealHeading text="Book a free 30-minute call" accent={1} className="text-[2.1rem] md:text-[3.2rem]" />
           <p className="mt-5 text-[1.06rem] leading-relaxed text-white/65">
-            Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? Choose it in the form and we&rsquo;ll send it within 24 hours.
+            Pick a time below. Rather type it out? Send the form and we&rsquo;ll reply within one business day. Want the free Online Presence Check first? It also shows what ChatGPT and other AI tools say about you. Choose it in the form and we&rsquo;ll send it within 24 hours.
           </p>
         </div>
 

@@ -221,7 +221,7 @@ function Monthly() {
               </span>
               <span className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">Step {i + 1}</span>
             </div>
-            <h4 className="mt-5 font-wide text-[1.6rem] font-extrabold">{p.name.replace(" + ", "\u00a0+\u00a0")}</h4>
+            <h4 className="mt-5 text-balance font-wide text-[1.6rem] font-extrabold">{p.name}</h4>
             <p className="mt-2 min-h-[3em] font-semibold leading-snug">&ldquo;{p.problem}&rdquo;</p>
             <p className="text-[0.92rem] text-muted">Best for: {p.bestFor}</p>
             <p className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -270,10 +270,13 @@ function AlaCarte() {
       </div>
       <ul className="border-t border-line md:border-t-0">
         {addons.map((a) => (
-          <li key={a.name} className="flex items-baseline gap-4 border-b border-line py-3.5">
-            <span>{a.name}</span>
-            <span aria-hidden className="flex-1 translate-y-[-4px] border-b border-dotted border-line" />
-            <span className="shrink-0 font-mono text-[0.92rem] font-medium">{a.price}</span>
+          <li key={a.name} className="border-b border-line py-3.5">
+            <div className="flex items-baseline gap-4">
+              <span>{a.name}</span>
+              <span aria-hidden className="flex-1 translate-y-[-4px] border-b border-dotted border-line" />
+              <span className="max-w-[9.5rem] shrink-0 text-right font-mono text-[0.92rem] font-medium sm:max-w-none">{a.price}</span>
+            </div>
+            {a.detail && <p className="mt-1 max-w-[52ch] text-[0.9rem] text-muted">{a.detail}</p>}
           </li>
         ))}
       </ul>

@@ -18,7 +18,7 @@ export function WhoFor() {
       lede: "You need customers to find you and book you, without paying agency prices.",
       pains: [
         "No website yet, or one you're embarrassed to send people to",
-        "Not showing up on Google Maps when people search",
+        "Not showing up on Google Maps or in AI answers when people search",
         "Booking by text and phone tag",
       ],
       fit: "Most start with Launch",

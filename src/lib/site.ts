@@ -1,5 +1,5 @@
 // All the business details live here, so swapping the placeholder name
-// or changing prices is a one-file edit. Packages mirror the Offer Sheet (v2).
+// or changing prices is a one-file edit. Packages mirror the Offer Sheet (v3).
 
 export const site = {
   name: "Axiom Media Group",

@@ -11,6 +11,7 @@ export const intakeServices = [
   "Ads",
   "Automation",
   "Photo & Drone",
+  "AI Search Visibility",
 ] as const;
 export type IntakeService = (typeof intakeServices)[number];
 

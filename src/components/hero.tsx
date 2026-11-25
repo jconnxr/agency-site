@@ -56,7 +56,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-[46ch] text-[1.06rem] leading-relaxed text-white/70 md:mt-8 md:text-lg">
-            Websites, Google Business Profiles, online booking, social media and ads for {site.city} businesses.
+            Websites, Google Business Profiles, AI search, online booking, social media and ads for {site.city} businesses.
             Start with the basics on day one, add a monthly team when you&rsquo;re ready.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 md:mt-10">

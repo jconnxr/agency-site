@@ -21,6 +21,9 @@ export const metadata: Metadata = {
 
 const essentials = launch.options[0];
 const getFound = plans[0];
+// The first 4 features, plus the monthly AI check so the card shows the AI side of the plan.
+const aiCheck = getFound.includes.find((f) => f.startsWith("Monthly AI check"));
+const getFoundItems = [...getFound.includes.slice(0, 4), ...(aiCheck ? [aiCheck] : [])];
 const owned = promises.find((p) => p.title === "You own everything")!;
 
 export default function CardPage() {
@@ -175,7 +178,7 @@ function WhatYouGet() {
             line="We keep it working"
             price={`${getFound.price}${getFound.priceNote}`}
             note={getFound.terms}
-            items={getFound.includes.slice(0, 4)}
+            items={getFoundItems}
             className="md:border-l md:border-line md:pl-10"
           />
         </div>

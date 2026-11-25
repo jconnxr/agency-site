@@ -21,7 +21,7 @@ export const engagements = ["One-time project", "Ongoing monthly help"] as const
 export type Engagement = (typeof engagements)[number];
 export const budgetsFor: Record<Engagement, readonly string[]> = {
   "One-time project": ["Under $750", "$750–$1,500", "$1,500–$3,000", "$3,000+", "Not sure"],
-  "Ongoing monthly help": ["Under $400/mo", "$400–$1,500/mo", "$1,500–$3,500/mo", "$3,500+/mo", "Not sure"],
+  "Ongoing monthly help": ["Under $500/mo", "$500–$2,000/mo", "$2,000–$5,000/mo", "$5,000+/mo", "Not sure"],
 };
 
 // What each package or CTA pre-checks in step 1. Anything not listed opens with nothing checked.

@@ -145,7 +145,7 @@ export type Plan = {
 export const plans: Plan[] = [
   {
     name: "Get Found: Google + AI",
-    problem: "We're online, but nobody sees us on Google.",
+    problem: "We're online, but nobody sees us on Google or ChatGPT.",
     bestFor: "6 months to 3 years in business",
     price: "$497",
     priceNote: "/mo",

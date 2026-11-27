@@ -32,7 +32,7 @@ export function AuditRequest() {
           <RevealHeading text="Get your top 5 fixes." accent={2} className="mt-4 text-[2.1rem] md:text-[3.2rem]" />
           <p className="mt-5 max-w-[46ch] text-[1.06rem] leading-relaxed text-white/65">
             Tell us where to look. We review your ads, product pages, checkout, email flows, site speed and AI shopping
-            visibility, and send the list in {auditTurnaround}. Pricing comes after the audit, only if you want it.
+            visibility, and send the list in {auditTurnaround}. Pricing after your free audit.
           </p>
           <div className="mt-8 flex flex-col gap-1">
             {telHref && (
@@ -229,7 +229,7 @@ function AuditForm() {
             <Button type="submit" size="lg" className="rounded-full hover:bg-brand-ink" disabled={isSubmitting}>
               {isSubmitting ? "Sending…" : "Get my free Store Audit"}
             </Button>
-            <p className="-mt-1 text-[0.88rem] text-white/50">Free. No pitch required. Pricing after your audit, if you want it.</p>
+            <p className="-mt-1 text-[0.88rem] text-white/50">Free. No pitch required. Pricing after your free audit.</p>
           </motion.form>
         )}
       </AnimatePresence>

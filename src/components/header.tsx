@@ -17,6 +17,7 @@ const homeLinks: NavLink[] = [
   { href: "#packages", label: "Packages" },
   { href: "#how", label: "Getting started" },
   { href: "#faq", label: "Questions" },
+  { href: "/partners/", label: "Partners" },
 ];
 
 /**
@@ -49,9 +50,9 @@ export function Header({
           />
         </a>
 
-        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
+        <nav aria-label="Main" className="hidden items-center gap-4 lg:flex xl:gap-7">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-[0.92rem] font-medium text-white/65 transition-colors hover:text-white">
+            <a key={l.href} href={l.href} className="whitespace-nowrap text-[0.86rem] font-medium text-white/65 transition-colors hover:text-white xl:text-[0.92rem]">
               {l.label}
             </a>
           ))}

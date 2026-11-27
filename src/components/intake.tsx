@@ -22,6 +22,7 @@ import {
   type IntakeService,
 } from "@/lib/intake";
 import { site } from "@/lib/site";
+import { attributionFields } from "@/lib/ref";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -188,7 +189,7 @@ export function IntakeProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/intake/", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...getValues(), kind: "intake", elapsedMs: Date.now() - openedAt.current }),
+        body: JSON.stringify({ ...getValues(), ...attributionFields(), kind: "intake", elapsedMs: Date.now() - openedAt.current }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (!res.ok || !data.ok) throw new Error(data.error || "send failed");

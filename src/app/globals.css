@@ -317,3 +317,55 @@
   .okc-pulse { animation: none !important; }
   .hero-word { animation: none !important; }
 }
+
+/* =====================================================================
+   /partners
+   ===================================================================== */
+
+/* Hero checklist: items fade up one by one on first paint (CSS, no JS) */
+@keyframes partner-tick { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.partner-tick { animation: partner-tick 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+/* Calculator and form sliders: brand fill up to the thumb (--fill), 44px tall hit area */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+.range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-brand-glow) var(--fill, 0%), rgb(255 255 255 / 0.12) var(--fill, 0%));
+}
+.range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-brand-glow) var(--fill, 0%), rgb(255 255 255 / 0.12) var(--fill, 0%));
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 0;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand-glow) 55%, transparent), 0 6px 16px rgb(0 0 0 / 0.5);
+}
+.range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 0;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand-glow) 55%, transparent), 0 6px 16px rgb(0 0 0 / 0.5);
+}
+.range:focus-visible { outline: none; }
+.range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--color-brand-glow), 0 0 0 7px rgb(255 255 255 / 0.9); }
+.range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--color-brand-glow), 0 0 0 7px rgb(255 255 255 / 0.9); }
+
+@media (prefers-reduced-motion: reduce) {
+  .partner-tick { animation: none !important; }
+}

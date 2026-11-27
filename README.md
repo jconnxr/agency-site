@@ -21,6 +21,29 @@ Not included yet: an MDX blog (add Velite once there's content to post) and Reac
 
 Everything a non-developer would change lives in `src/lib/site.ts`: the name, email, Calendly link, package prices and FAQ. Change it there, and the logo in `src/components/header.tsx`.
 
+Prices live in one place, the `prices` object near the top of `src/lib/site.ts`. The packages section, the Launch Pro payment plan (price ÷ 3), the bundle and its savings (Launch Pro minus the bundle price) and its payment plan (bundle ÷ 3), the FAQ answers, the hero chip, the `/partners` package cards and the partner calculator all read from it.
+
+## Partner program (`/partners`)
+
+The landing page for referral partners and their QR codes. Program facts (seats, fees, steps, FAQ) live in `src/lib/partners.ts`; prices come from `src/lib/site.ts`.
+
+- `?type=insurance|cpa|lender|cre|attorney|photographer` opens the page on that partner's tab (and keeps the address bar in step as the tab changes).
+- `?ref=<partner-slug>` works on every page. It's stored for 90 days (localStorage plus a first-party cookie, `src/lib/ref.ts`) and sent with every form (intake modal, contact form, partner form) and Calendly link (`utm_content=ref-<slug>`, keeping any UTMs the visitor arrived with). Lead emails show it under "Attribution".
+- To greet a partner's clients by name, add the slug to `partnerNames` in `src/lib/partners.ts`. Unlisted slugs show "a partner", never the raw slug.
+- Bank and credit union employees are locked to the client-discount option (no fee) in the seat picker, calculator and form.
+
+### Make a partner QR code
+
+```bash
+node scripts/make-partner-qr.mjs anderson-insurance insurance
+```
+
+Writes `public/qr/anderson-insurance-insurance.svg` (vector, for print) and a 3000px PNG, pointing at `https://axiommediagroupokc.com/partners?ref=anderson-insurance&type=insurance`. Slugs are lowercase letters, numbers and dashes.
+
+## Link preview images
+
+`node scripts/make-og-image.mjs` (after `npm run build`) renders `public/og-image.png` and `public/og-partners.png` from `scripts/og/*.html`.
+
 ## Run locally
 
 ```bash

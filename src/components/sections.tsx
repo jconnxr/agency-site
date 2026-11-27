@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { faqs, promises, site } from "@/lib/site";
+import { faqs, prices, promises, site, usd } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { IntakeTrigger } from "@/components/intake";
 import { phoneDisplay, telHref } from "@/lib/contact";
@@ -22,7 +22,7 @@ export function WhoFor() {
         "Booking by text and phone tag",
       ],
       fit: "Most start with Launch",
-      price: "from $750 one-time, live in 14 days",
+      price: `from ${usd(prices.launchEssentials)} one-time, live in 14 days`,
       photo: {
         src: "/images/barbershop-meeting.webp",
         alt: "Two people at a table in a barbershop looking over a website layout on a tablet",
@@ -38,7 +38,7 @@ export function WhoFor() {
         "Missed calls and reviews you never asked for",
       ],
       fit: "Most start with Get Found: Google + AI or Get Leads",
-      price: "from $497 a month",
+      price: `from ${usd(prices.getFound)} a month`,
       photo: {
         src: "/images/contractor-truck.webp",
         alt: "A contractor sitting in his work truck, smiling at a message on his phone",
@@ -127,18 +127,26 @@ export function Promises() {
   );
 }
 
-export function Faq() {
+export function Faq({
+  items = faqs,
+  heading = "Questions we get a lot",
+  askWhere = "on the call",
+}: {
+  items?: { q: string; a: string }[];
+  heading?: string;
+  askWhere?: string;
+} = {}) {
   return (
     <Panel id="faq" className="scroll-mt-24" inner="px-5 py-20 md:px-12 md:py-28">
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.6fr] md:gap-16">
         <div className="md:sticky md:top-32 md:self-start">
-          <RevealHeading text="Questions we get a lot" accent={2} className="text-[2.1rem] md:text-[3rem]" />
+          <RevealHeading text={heading} accent={2} className="text-[2.1rem] md:text-[3rem]" />
           <p className="mt-5 text-white/60">
-            Something else on your mind? Ask on the call
+            Something else on your mind? Ask {askWhere}
             {site.email ? (
               <>
                 , or email{" "}
-                <a href={`mailto:${site.email}`} className={cn(link, "text-white decoration-white/25 hover:decoration-brand-glow")}>
+                <a href={`mailto:${site.email}`} className={cn(link, "break-all text-white decoration-white/25 hover:decoration-brand-glow")}>
                   {site.email}
                 </a>
               </>
@@ -148,7 +156,7 @@ export function Faq() {
         </div>
         <FadeUp>
           <Accordion type="single" collapsible defaultValue="q0" className="flex flex-col gap-2.5">
-            {faqs.map((f, i) => (
+            {items.map((f, i) => (
               <AccordionItem key={f.q} value={`q${i}`} className="glass rounded-[18px] border-0 px-5 data-[state=open]:bg-white/[0.07] md:px-6">
                 <AccordionTrigger>{f.q}</AccordionTrigger>
                 <AccordionContent>{f.a}</AccordionContent>
@@ -161,6 +169,7 @@ export function Faq() {
   );
 }
 
+// Homepage anchors; other pages pass base="/" so they point back to the homepage.
 const footerLinks = [
   { href: "#story", label: "How it works" },
   { href: "#who", label: "Who it's for" },
@@ -171,7 +180,18 @@ const footerLinks = [
   { href: "#faq", label: "Questions" },
 ];
 
-export function Footer() {
+export function Footer({
+  base = "",
+  heading = "Ready to be the one they find first?",
+  cta,
+}: {
+  base?: string;
+  heading?: string;
+  /** A plain link CTA. Without it, the footer button opens the intake modal. */
+  cta?: { href: string; label: string };
+} = {}) {
+  const ctaCls =
+    "inline-flex h-14 items-center self-start rounded-full bg-brand shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-brand-ink md:self-auto";
   return (
     <footer className="relative -mt-10 px-3 pb-3 text-white/70 sm:px-4 sm:pb-4 md:-mt-16 md:px-6 md:pb-6">
       <div className="glass relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,var(--color-panel-2),var(--color-panel))] md:rounded-[32px]">
@@ -188,15 +208,18 @@ export function Footer() {
       </div>
       <div className="relative mx-auto max-w-6xl px-5 pt-24 md:px-8 md:pt-28">
         <div className="flex flex-col justify-between gap-8 border-b border-night-line pb-14 md:flex-row md:items-end">
-          <RevealHeading text="Ready to be the one they find first?" accent={1} className="max-w-[16ch] text-[2.2rem] text-white md:text-[3.2rem]" />
-          <IntakeTrigger source="Footer: Book a call">
-          <a
-            href="#book"
-            className="inline-flex h-14 items-center self-start rounded-full bg-brand shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-brand-glow)_70%,transparent)] px-7 text-[1.05rem] font-semibold text-white transition-colors hover:bg-brand-ink md:self-auto"
-          >
-            Book a free 30-minute call
-          </a>
-          </IntakeTrigger>
+          <RevealHeading text={heading} accent={1} className="max-w-[16ch] text-[2.2rem] text-white md:text-[3.2rem]" />
+          {cta ? (
+            <a href={cta.href} className={ctaCls}>
+              {cta.label}
+            </a>
+          ) : (
+            <IntakeTrigger source="Footer: Book a call">
+              <a href={`${base}#book`} className={ctaCls}>
+                Book a free 30-minute call
+              </a>
+            </IntakeTrigger>
+          )}
         </div>
 
         <div className="grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
@@ -218,7 +241,7 @@ export function Footer() {
               </a>
             ) : null}
             {site.email ? (
-              <a href={`mailto:${site.email}`} className="mt-2 inline-block font-semibold text-brand-glow hover:text-white">
+              <a href={`mailto:${site.email}`} className="mt-2 inline-block break-all font-semibold text-brand-glow hover:text-white">
                 {site.email}
               </a>
             ) : null}
@@ -228,11 +251,16 @@ export function Footer() {
             <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-[0.95rem] md:grid-cols-1">
               {footerLinks.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="hover:text-white">
+                  <a href={`${base}${l.href}`} className="hover:text-white">
                     {l.label}
                   </a>
                 </li>
               ))}
+              <li>
+                <a href="/partners/" className="hover:text-white">
+                  Partners
+                </a>
+              </li>
             </ul>
           </nav>
           <div>

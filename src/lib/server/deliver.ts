@@ -2,6 +2,7 @@
 // POST to the CRM webhook when one is configured. Each runs independently; a
 // failure in one never blocks the other, and both outcomes are logged.
 import { packageSources, type Submission as Parsed } from "@/lib/intake";
+import { partnerNames, seatById } from "@/lib/partners";
 
 /** A submission with the spam-check fields removed (distributes over the union). */
 type Submission = Parsed extends infer T ? (T extends unknown ? Omit<T, "company_url" | "elapsedMs"> : never) : never;
@@ -9,14 +10,52 @@ export type Lead = Submission;
 
 type Row = [label: string, value: string];
 
+/** Partner slug with its display name when we have one. */
+const refLabel = (ref: string) => (partnerNames[ref] ? `${partnerNames[ref].name} (${ref})` : ref);
+
 /** The package or offer in the subject line, falling back to a plain label. */
 function subjectFor(s: Submission) {
-  if (s.kind === "contact") return `New contact form: ${s.interest} · ${s.business}`;
+  const via = s.ref ? ` · via ${refLabel(s.ref)}` : "";
+  if (s.kind === "partner") return `New partner: ${seatById(s.partnerType)?.formLabel ?? s.partnerType} · ${s.firm}${via}`;
+  if (s.kind === "contact") return `New contact form: ${s.interest} · ${s.business}${via}`;
   const pkg = packageSources.includes(s.source) ? s.source : "General inquiry";
-  return `New intake: ${pkg} · ${s.business}`;
+  return `New intake: ${pkg} · ${s.business}${via}`;
+}
+
+/** Who referred them and how they arrived. Shown only when there's something to show. */
+function attributionSection(s: Submission): { title: string; rows: Row[] }[] {
+  const utm = Object.entries(s.utm ?? {}).filter(([, v]) => v) as Row[];
+  if (!s.ref && utm.length === 0) return [];
+  return [{ title: "Attribution", rows: [["Partner ref", s.ref ? refLabel(s.ref) : "None"], ...utm] }];
 }
 
 function rowsFor(s: Submission): { title: string; rows: Row[] }[] {
+  return [...baseRows(s), ...attributionSection(s)];
+}
+
+function baseRows(s: Submission): { title: string; rows: Row[] }[] {
+  if (s.kind === "partner") {
+    return [
+      {
+        title: "Partner",
+        rows: [
+          ["Name", s.name],
+          ["Firm", s.firm],
+          ["Type", seatById(s.partnerType)?.formLabel ?? s.partnerType],
+          ["Bank / CU employee", s.bankEmployee ? "Yes (discount option only, no fee)" : "No"],
+          ["Email", s.email],
+          ["Phone", s.phone],
+        ],
+      },
+      {
+        title: "Coffee",
+        rows: [
+          ["New business clients / month", String(s.clientsPerMonth)],
+          ["Best coffee spot or time", s.coffee || "Not given"],
+        ],
+      },
+    ];
+  }
   if (s.kind === "contact") {
     return [
       {
@@ -85,7 +124,7 @@ export function formatEmail(s: Submission, receivedAt: string) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body style="margin:0;background:#f4f1ea;padding:24px;font-family:-apple-system,Segoe UI,Arial,sans-serif;color:#0f1a2a">
 <table role="presentation" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;border:1px solid #dcd4c5" cellpadding="0" cellspacing="0">
 <tr><td style="padding:24px 28px 8px">
-<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#464ceb">${s.kind === "contact" ? "Contact form" : "Intake form"} · ${esc(when)} Central</p>
+<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#464ceb">${s.kind === "contact" ? "Contact form" : s.kind === "partner" ? "Partner form" : "Intake form"} · ${esc(when)} Central</p>
 <h1 style="margin:8px 0 0;font-size:20px;line-height:1.3">${esc(subjectFor(s))}</h1>
 </td></tr>
 ${sections

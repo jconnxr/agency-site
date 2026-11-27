@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!-- Source for public/og-partners.png (the /partners link preview card). Rendered by
+     scripts/make-og-image.mjs; the font URLs are filled in from the build. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: Archivo; src: url(__ARCHIVO__) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+  @font-face { font-family: Serif; src: url(__SERIF__) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: Plex; src: url(__PLEX__) format("woff2"); font-weight: 500; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #12182b; color: #fff; font-family: Archivo, sans-serif; position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+  .map { position: absolute; right: -90px; top: 15px; width: 600px; height: 600px; opacity: 0.75; }
+  .text { position: absolute; left: 96px; top: 0; bottom: 0; width: 900px; display: flex; flex-direction: column; justify-content: center; }
+  .label { font-family: Plex, monospace; font-weight: 500; font-size: 26px; letter-spacing: 0.12em; color: #738eff; display: flex; align-items: center; gap: 16px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: #738eff; box-shadow: 0 0 0 7px rgb(115 142 255 / 0.25); }
+  h1 { margin: 30px 0 0; font-weight: 800; font-stretch: 125%; font-size: 112px; line-height: 0.98; letter-spacing: -0.02em; }
+  p { margin: 34px 0 0; font-size: 36px; line-height: 1.3; font-weight: 400; color: rgb(255 255 255 / 0.78); max-width: 34ch; }
+  .accent { font-family: Serif, Georgia, serif; font-size: 1.12em; font-style: italic; font-weight: 400; font-stretch: 100%; color: #738eff; letter-spacing: -0.01em; }
+  .logo { height: 46px; width: auto; }
+  .sep { width: 1px; height: 30px; background: rgb(255 255 255 / 0.25); }
+  .rule { position: absolute; left: 96px; right: 96px; bottom: 56px; height: 1px; background: rgb(255 255 255 / 0.1); }
+</style>
+</head>
+<body>
+  <!-- Same hairline OKC metro sketch as the hero, faint, on the right -->
+  <svg class="map" viewBox="0 0 300 300">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="rgb(255 255 255 / 0.13)" stroke-width="0.8">
+        <path d="M100 98 c8 -9 24 -8 28 2 c4 10 -6 18 -16 17 c-10 -1 -18 -9 -12 -19z" />
+        <path d="M68 146 c4 -6 13 -6 15 0 c2 6 -3 10 -9 10 c-5 0 -9 -5 -6 -10z" />
+        <path d="M222 262 c10 -10 30 -6 34 4 c3 9 -10 14 -20 16 c-12 2 -22 -10 -14 -20z" />
+      </g>
+      <path d="M18 168 C 50 160, 80 176, 112 166 S 160 158, 186 170 S 226 178, 250 168" stroke="rgb(115 142 255 / 0.3)" stroke-width="1.1" />
+      <g stroke="rgb(255 255 255 / 0.17)" stroke-width="0.9">
+        <path d="M168 0 L160 60 L152 150 L152 230 L157 300" />
+        <path d="M0 152 L120 152 L190 156 L300 158" />
+        <path d="M48 300 L118 205 L126 140 L132 112 L176 92 L300 44" />
+        <path d="M118 202 L230 198" />
+      </g>
+      <path d="M70 172 C 66 120, 96 78, 150 70 S 232 74, 252 96" stroke="rgb(255 255 255 / 0.1)" stroke-width="0.8" stroke-dasharray="3 3" />
+    </g>
+    <g fill="rgb(115 142 255 / 0.55)">
+      <circle cx="158" cy="52" r="2.2" /><circle cx="52" cy="150" r="2.2" /><circle cx="146" cy="152" r="3" />
+      <circle cx="222" cy="150" r="2.2" /><circle cx="152" cy="222" r="2.2" /><circle cx="156" cy="272" r="2.2" />
+    </g>
+  </svg>
+
+  <div class="text">
+    <div class="label"><img class="logo" src="__LOGO__" alt="" /><span class="sep"></span>REFERRAL PARTNERS · OKC</div>
+    <h1>Your clients<br />open <span class="accent">stronger.</span></h1>
+    <p>For OKC agents, CPAs, lenders and brokers: we get new businesses found before opening day</p>
+  </div>
+</body>
+</html>

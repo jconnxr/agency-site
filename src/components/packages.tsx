@@ -45,6 +45,7 @@ export function Packages() {
               <div className="rounded-2xl border border-brand/25 bg-brand-soft/40 p-4">
                 <dt className="font-mono text-[0.7rem] uppercase tracking-[0.08em] text-brand">Launch + Get Found: Google + AI bundle</dt>
                 <dd className="mt-1.5">{launch.bundle}</dd>
+                <dd className="mt-1.5 font-semibold">{launch.bundleSplit}</dd>
               </div>
             </dl>
           }

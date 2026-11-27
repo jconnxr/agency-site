@@ -250,6 +250,23 @@ export const addons: { name: string; price: string; detail?: string }[] = [
   { name: "Headshots and team photos", price: "From $300" },
 ];
 
+// E-commerce Growth (/ecommerce). Not shown anywhere while a price is null: the
+// page says "Pricing after your free audit" instead.
+// TODO: prices pending Austin's approval (see Offer Sheet v3)
+export const ecommerce: {
+  name: string;
+  options: { name: string; price: number | null; priceNote: string }[];
+} = {
+  name: "E-commerce Growth",
+  options: [
+    { name: "Ads & Creative management", price: null, priceNote: "/mo + ad spend, paid to Meta" },
+    { name: "Email & SMS automation (Klaviyo)", price: null, priceNote: "setup + /mo" },
+    { name: "Landing page", price: null, priceNote: "per page" },
+    { name: "AI Shopping Visibility", price: null, priceNote: "one-time" },
+    { name: "Back-end automation", price: null, priceNote: "quoted by scope" },
+  ],
+};
+
 // The contact form's "What are you interested in?" options live in src/lib/intake.ts.
 
 export const faqs = [

@@ -10,12 +10,16 @@ export type Lead = Submission;
 
 type Row = [label: string, value: string];
 
+/** "ecommerce" for Store Audit requests, "partner" for partner sign-ups, "local" for everything else. */
+const leadType = (s: Submission) => (s.kind === "ecommerce" ? "ecommerce" : s.kind === "partner" ? "partner" : "local");
+
 /** Partner slug with its display name when we have one. */
 const refLabel = (ref: string) => (partnerNames[ref] ? `${partnerNames[ref].name} (${ref})` : ref);
 
 /** The package or offer in the subject line, falling back to a plain label. */
 function subjectFor(s: Submission) {
   const via = s.ref ? ` · via ${refLabel(s.ref)}` : "";
+  if (s.kind === "ecommerce") return `New e-commerce Store Audit request: ${s.storeUrl}${via}`;
   if (s.kind === "partner") return `New partner: ${seatById(s.partnerType)?.formLabel ?? s.partnerType} · ${s.firm}${via}`;
   if (s.kind === "contact") return `New contact form: ${s.interest} · ${s.business}${via}`;
   const pkg = packageSources.includes(s.source) ? s.source : "General inquiry";
@@ -26,7 +30,7 @@ function subjectFor(s: Submission) {
 function attributionSection(s: Submission): { title: string; rows: Row[] }[] {
   const utm = Object.entries(s.utm ?? {}).filter(([, v]) => v) as Row[];
   if (!s.ref && utm.length === 0) return [];
-  return [{ title: "Attribution", rows: [["Partner ref", s.ref ? refLabel(s.ref) : "None"], ...utm] }];
+  return [{ title: "Attribution", rows: [["Ref", s.ref ? refLabel(s.ref) : "None"], ...utm] }];
 }
 
 function rowsFor(s: Submission): { title: string; rows: Row[] }[] {
@@ -34,6 +38,27 @@ function rowsFor(s: Submission): { title: string; rows: Row[] }[] {
 }
 
 function baseRows(s: Submission): { title: string; rows: Row[] }[] {
+  if (s.kind === "ecommerce") {
+    return [
+      {
+        title: "Contact",
+        rows: [
+          ["Lead type", "E-commerce"],
+          ["Name", s.name],
+          ["Email", s.email],
+        ],
+      },
+      {
+        title: "Store",
+        rows: [
+          ["Store URL", s.storeUrl],
+          ["Platform", s.platform],
+          ["Monthly ad spend", s.adSpend],
+          ["Biggest problem", s.problem || "Not given"],
+        ],
+      },
+    ];
+  }
   if (s.kind === "partner") {
     return [
       {
@@ -124,7 +149,7 @@ export function formatEmail(s: Submission, receivedAt: string) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body style="margin:0;background:#f4f1ea;padding:24px;font-family:-apple-system,Segoe UI,Arial,sans-serif;color:#0f1a2a">
 <table role="presentation" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;border:1px solid #dcd4c5" cellpadding="0" cellspacing="0">
 <tr><td style="padding:24px 28px 8px">
-<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#464ceb">${s.kind === "contact" ? "Contact form" : s.kind === "partner" ? "Partner form" : "Intake form"} · ${esc(when)} Central</p>
+<p style="margin:0;font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#464ceb">${s.kind === "contact" ? "Contact form" : s.kind === "partner" ? "Partner form" : s.kind === "ecommerce" ? "E-commerce · Store Audit" : "Intake form"} · ${esc(when)} Central</p>
 <h1 style="margin:8px 0 0;font-size:20px;line-height:1.3">${esc(subjectFor(s))}</h1>
 </td></tr>
 ${sections
@@ -179,7 +204,8 @@ async function postToCrm(s: Submission, receivedAt: string) {
   const res = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({ receivedAt, ...s }),
+    // lead_type on every lead so the CRM can split e-commerce from local work
+    body: JSON.stringify({ receivedAt, lead_type: leadType(s), ...s }),
     signal: AbortSignal.timeout(8000),
   });
   if (!res.ok) return { ok: false as const, error: `CRM ${res.status}: ${(await res.text()).slice(0, 300)}` };

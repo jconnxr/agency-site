@@ -23,6 +23,7 @@ function latinFont(family, weight) {
 const cards = [
   ["og-image.html", "og-image.png"],
   ["og-partners.html", "og-partners.png"],
+  ["og-ecommerce.html", "og-ecommerce.png"],
 ];
 const chrome = process.env.CHROME || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const tmp = mkdtempSync(join(tmpdir(), "og-"));

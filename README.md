@@ -32,6 +32,12 @@ The landing page for referral partners and their QR codes. Program facts (seats,
 - To greet a partner's clients by name, add the slug to `partnerNames` in `src/lib/partners.ts`. Unlisted slugs show "a partner", never the raw slug.
 - Bank and credit union employees are locked to the client-discount option (no fee) in the seat picker, calculator and form.
 
+## E-commerce Growth (`/ecommerce`)
+
+The second lane, for online brands (most traffic from X). It's linked from a slim last tile in the homepage "What you get" grid and the footer, and on purpose it isn't in the header nav or the hero. Page facts and the FAQ live in `src/lib/ecommerce.ts`. Prices live in `ecommerce` in `src/lib/site.ts`, all `null` until approved, so the page says "Pricing after your free audit".
+
+The Store Audit form posts to `/api/intake` with `kind: "ecommerce"` and `lead_type: "ecommerce"`, plus the visitor's `?ref=` and UTMs. The CRM webhook gets `lead_type` on every lead (`local`, `partner` or `ecommerce`), and the email subject starts "New e-commerce Store Audit request".
+
 ### Make a partner QR code
 
 ```bash

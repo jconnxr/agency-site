@@ -261,6 +261,11 @@ export function Footer({
                   Partners
                 </a>
               </li>
+              <li>
+                <a href="/ecommerce/" className="hover:text-white">
+                  E-commerce
+                </a>
+              </li>
             </ul>
           </nav>
           <div>

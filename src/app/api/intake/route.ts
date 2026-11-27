@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { HONEYPOT, MIN_FILL_MS, contactSchema, intakeSchema, partnerSchema } from "@/lib/intake";
+import { HONEYPOT, MIN_FILL_MS, contactSchema, intakeSchema, partnerSchema, ecommerceSchema } from "@/lib/intake";
 import { deliver, type Lead } from "@/lib/server/deliver";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 
-// Intake modal, contact form and /partners form submissions.
+// Intake modal, contact form, /partners and /ecommerce form submissions.
 // 1. Rate limit per IP, then drop obvious bots (honeypot, filled in too fast).
 // 2. Validate with the same schema the browser uses.
 // 3. Log the full submission (always), then email it via Resend and POST it to
@@ -34,7 +34,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const schema = body.kind === "contact" ? contactSchema : body.kind === "partner" ? partnerSchema : intakeSchema;
+  const schema =
+    body.kind === "contact"
+      ? contactSchema
+      : body.kind === "partner"
+        ? partnerSchema
+        : body.kind === "ecommerce"
+          ? ecommerceSchema
+          : intakeSchema;
   const result = schema.safeParse(body);
   if (!result.success) {
     return NextResponse.json(

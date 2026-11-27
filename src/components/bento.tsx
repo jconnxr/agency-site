@@ -11,7 +11,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { Check, MapPin, MessageSquare, Navigation, Phone, Star } from "lucide-react";
+import { ArrowRight, Check, MapPin, MessageSquare, Navigation, Phone, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Panel, RevealHeading, Rise, SpotlightCard, Stagger, eyebrow, useReduced } from "./fx";
 
@@ -61,6 +61,22 @@ export function Showcase() {
             chip={<Chip className="right-3 -top-3 rotate-[3deg] md:-right-2"><MessageSquare className="size-3.5 text-brand-glow" /> Auto-reply</Chip>} />
           <Tile s={services.ads} className="md:col-span-2 lg:col-span-4" ui={<LeadsChart />} />
           <Tile s={services.shoot} className="md:col-span-6 lg:col-span-12" ui={<PhotoStrip />} wide />
+          {/* The second lane, kept quiet: one slim row last, so the local grid above doesn't change */}
+          <Rise as="li" className="relative min-w-0 md:col-span-6 lg:col-span-12">
+            <SpotlightCard as="article" className="p-5 md:px-6 md:py-5">
+              <a href="/ecommerce/" className="group flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+                <span className="min-w-0">
+                  <span className={cn(eyebrow, "block text-brand-glow")}>For online brands</span>
+                  <span className="mt-1.5 block font-wide text-[1.2rem] font-extrabold text-white md:text-[1.3rem]">E-commerce Growth</span>
+                  <span className="mt-1 block text-[0.98rem] text-white/60">Ads, creative and email automation for online brands</span>
+                </span>
+                <span className="inline-flex min-h-11 shrink-0 items-center gap-1.5 font-semibold text-white underline decoration-white/25 underline-offset-[5px] transition-colors group-hover:decoration-brand-glow">
+                  See E-commerce Growth
+                  <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </SpotlightCard>
+          </Rise>
         </Stagger>
       </div>
     </Panel>

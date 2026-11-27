@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { partnerTypeIds } from "./partners";
 import { cleanRef } from "./ref";
+import { adSpends, platforms } from "./ecommerce";
 
 export const intakeServices = [
   "Website",
@@ -175,11 +176,33 @@ export const partnerSchema = z.object({
   ...spam,
 });
 
-export const submissionSchema = z.union([contactSchema, intakeSchema, partnerSchema]);
+// The free Store Audit request on /ecommerce. lead_type keeps these apart from
+// local leads in the email subject and the CRM.
+export const ecommerceSchema = z.object({
+  kind: z.literal("ecommerce"),
+  lead_type: z.literal("ecommerce"),
+  source: z.literal("ecommerce-page"),
+  name: z.string().trim().min(2, "Enter your name.").max(80),
+  storeUrl: z
+    .string()
+    .trim()
+    .min(1, "Enter your store's web address.")
+    .max(200)
+    .refine((v) => /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(v), "Enter a web address, like yourstore.com"),
+  email: z.string().trim().email("Enter an email we can reply to.").max(160),
+  platform: z.enum(platforms, { message: "Pick your platform." }),
+  adSpend: z.enum(adSpends, { message: "Pick a range." }),
+  problem: z.string().trim().max(1000, "Keep it under 1,000 characters.").optional().default(""),
+  ...attribution,
+  ...spam,
+});
+
+export const submissionSchema = z.union([contactSchema, intakeSchema, partnerSchema, ecommerceSchema]);
 
 export type IntakeInput = z.input<typeof intakeSchema>;
 export type Intake = z.output<typeof intakeSchema>;
 export type ContactInput = z.input<typeof contactSchema>;
 export type Contact = z.output<typeof contactSchema>;
 export type PartnerInput = z.input<typeof partnerSchema>;
+export type EcommerceInput = z.input<typeof ecommerceSchema>;
 export type Submission = z.output<typeof submissionSchema>;

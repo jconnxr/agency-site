@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import { site } from "@/lib/site";
+import { RefCapture } from "@/components/ref-capture";
 import "./globals.css";
 
 // One type system: Archivo (variable width) for headlines and body, IBM Plex Mono
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable} ${instrument.variable}`}>
       <body>
+        <RefCapture />
         {children}
       </body>
     </html>

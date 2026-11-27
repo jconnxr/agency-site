@@ -4,6 +4,7 @@
 // no rankings promised, no stats. The chat mock is labelled "Example".
 import { Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { prices, usd } from "@/lib/site";
 import { IntakeTrigger } from "@/components/intake";
 import { FadeUp, Panel, RevealHeading, Rise, SpotlightCard, Stagger, eyebrow } from "./fx";
 
@@ -41,7 +42,7 @@ export function AiSearch() {
             what they find is right: your services, your service area, your phone number and your hours.
           </p>
           <p className="mt-4 text-[0.98rem] text-white/50">
-            Included in Get Found: Google + AI, or as a one-time AI Visibility Setup for $450.
+            Included in Get Found: Google + AI, or as a one-time AI Visibility Setup for {usd(prices.aiVisibilitySetup)}.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
             <IntakeTrigger source="AI search: Ask about it">

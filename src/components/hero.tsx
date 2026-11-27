@@ -11,7 +11,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import { CalendarCheck, Check, FileText, MapPin, Star } from "lucide-react";
-import { site } from "@/lib/site";
+import { prices, site, usd } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { useReduced } from "./fx";
 import { IntakeTrigger } from "./intake";
@@ -88,7 +88,7 @@ export function Hero() {
 /* ------------------------------------------------------------------ */
 
 const stats = [
-  { k: "Websites from", v: "$750", pos: "left-[-2rem] top-[9%] sm:left-[-7.5rem] lg:left-[-7rem] xl:left-[-9rem]", depth: 26 },
+  { k: "Websites from", v: usd(prices.launchEssentials), pos: "left-[-2rem] top-[9%] sm:left-[-7.5rem] lg:left-[-7rem] xl:left-[-9rem]", depth: 26 },
   { k: "Live in", v: "14 days", pos: "right-[-2rem] top-[-3%] sm:right-[-8rem] lg:right-[-6rem] xl:right-[-9.5rem]", depth: 14 },
   { k: "You own", v: "everything", pos: "left-[-1.8rem] bottom-[-7%] sm:bottom-[6%] sm:left-[-6.5rem] lg:left-[-6rem] xl:left-[-8rem]", depth: 34 },
 ];

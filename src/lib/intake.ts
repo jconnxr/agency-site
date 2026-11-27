@@ -2,6 +2,8 @@
 // pre-checks, and the schemas shared by the browser (per-step validation) and
 // POST /api/intake.
 import { z } from "zod";
+import { partnerTypeIds } from "./partners";
+import { cleanRef } from "./ref";
 
 export const intakeServices = [
   "Website",
@@ -28,7 +30,7 @@ export const budgetsFor: Record<Engagement, readonly string[]> = {
 // What each package or CTA pre-checks in step 1. Anything not listed opens with nothing checked.
 export const packageServices: Record<string, IntakeService[]> = {
   "Launch Essentials": ["Website", "Google Business Profile"],
-  "Launch Pro": ["Website", "Google Business Profile", "Online Booking", "Social Media"],
+  "Launch Pro": ["Website", "Google Business Profile", "Online Booking", "Social Media", "Photo & Drone"],
   "Get Found: Google + AI": ["Google Business Profile"],
   "Get Leads": ["Ads", "Social Media"],
   "Full Department": ["Ads", "Social Media", "Photo & Drone"],
@@ -97,6 +99,23 @@ const spam = {
   elapsedMs: z.number().nonnegative().optional(),
 };
 
+// Partner attribution (src/lib/ref.ts), added to every form on send.
+// Cleaned rather than rejected: a bad tag must never cost us the lead.
+const utmValue = z.string().transform((v) => v.trim().slice(0, 100)).optional();
+const attribution = {
+  ref: z.string().max(200).transform(cleanRef).optional().default(""),
+  utm: z
+    .object({
+      utm_source: utmValue,
+      utm_medium: utmValue,
+      utm_campaign: utmValue,
+      utm_term: utmValue,
+      utm_content: utmValue,
+    })
+    .optional()
+    .default({}),
+};
+
 export const intakeSchema = z
   .object({
     kind: z.literal("intake").default("intake"),
@@ -106,6 +125,7 @@ export const intakeSchema = z
     ...stepShapes[3],
     // Which button opened the modal (e.g. "Launch Pro", "Hero: Book a call")
     source: z.string().trim().max(80).optional().default(""),
+    ...attribution,
     ...spam,
   })
   .superRefine(refineBudget);
@@ -113,6 +133,7 @@ export const intakeSchema = z
 // The short form next to the Calendly embed
 export const contactInterests = [
   "Not sure yet",
+  "Free Launch Plan (opening soon)",
   "Free Online Presence Check",
   "A website",
   "Google Business Profile setup or cleanup",
@@ -134,13 +155,31 @@ export const contactSchema = z.object({
   phone: z.string().trim().max(40).optional().default(""),
   interest: z.enum(contactInterests),
   message: z.string().trim().max(1000, "Keep it under 1,000 characters.").optional().default(""),
+  ...attribution,
   ...spam,
 });
 
-export const submissionSchema = z.union([contactSchema, intakeSchema]);
+// The apply / book-a-coffee form on /partners
+export const partnerSchema = z.object({
+  kind: z.literal("partner"),
+  source: z.literal("partners-page"),
+  name: z.string().trim().min(2, "Enter your name.").max(80),
+  firm: z.string().trim().min(2, "Enter your firm or company.").max(120),
+  partnerType: z.enum(partnerTypeIds, { message: "Pick what you do." }),
+  bankEmployee: z.boolean().optional().default(false),
+  email: z.string().trim().email("Enter an email we can reply to.").max(160),
+  phone,
+  clientsPerMonth: z.number().int().min(0).max(20),
+  coffee: z.string().trim().max(200, "Keep it short.").optional().default(""),
+  ...attribution,
+  ...spam,
+});
+
+export const submissionSchema = z.union([contactSchema, intakeSchema, partnerSchema]);
 
 export type IntakeInput = z.input<typeof intakeSchema>;
 export type Intake = z.output<typeof intakeSchema>;
 export type ContactInput = z.input<typeof contactSchema>;
 export type Contact = z.output<typeof contactSchema>;
+export type PartnerInput = z.input<typeof partnerSchema>;
 export type Submission = z.output<typeof submissionSchema>;

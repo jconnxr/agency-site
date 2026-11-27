@@ -11,6 +11,7 @@ import { Backdrop, Marquee } from "@/components/fx";
 import { MotionRoot } from "@/components/motion-root";
 import { AiSearch } from "@/components/ai-search";
 import { StructuredData } from "@/components/structured-data";
+import { PartnerCallout } from "@/components/partner-callout";
 
 const marquee = ["Websites", "Google Business Profile", "AI Search", "Online Booking", "Reviews", "Social", "Ads", "Drone Shoots"];
 
@@ -38,6 +39,7 @@ export default function Home() {
         <Packages />
         <HowItWorks />
         <LaunchTimeline />
+        <PartnerCallout />
         <Promises />
         <Book />
         <Faq />

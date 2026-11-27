@@ -9,10 +9,20 @@ import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site";
+import { attributionFields, calendlyTracking } from "@/lib/ref";
 import { contactInterests as interests, contactSchema } from "@/lib/intake";
 import { FadeUp, Panel, RevealHeading } from "@/components/fx";
 
+const calendlyBase = `${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=464ceb`;
+
 export function Book() {
+  // Partner ref + UTMs ride along to Calendly. Set before Calendly's script loads
+  // (lazyOnload waits for the page to finish), so the widget reads the full URL.
+  const [calendlyUrl, setCalendlyUrl] = useState(calendlyBase);
+  useEffect(() => {
+    const q = calendlyTracking().toString();
+    if (q) setCalendlyUrl(`${calendlyBase}&${q}`);
+  }, []);
   return (
     <Panel id="book" surface="glow" className="scroll-mt-24" inner="px-4 py-20 md:px-12 md:py-28">
       <div className="mx-auto max-w-6xl">
@@ -28,7 +38,7 @@ export function Book() {
             {/* Calendly inline widget: scheduling happens right on the page */}
             <div
               className="calendly-inline-widget h-[700px] min-w-[320px]"
-              data-url={`${site.calendlyUrl}?hide_gdpr_banner=1&primary_color=464ceb`}
+              data-url={calendlyUrl}
             />
             <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="lazyOnload" />
             <p className="border-t border-line px-5 py-3 text-sm text-muted">
@@ -62,8 +72,16 @@ function ContactForm() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { interest: "Not sure yet" } });
+
+  // Business owners sent from /partners ("Get your free Launch Plan") arrive with ?interest=launch-plan
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get("interest") === "launch-plan") {
+      setValue("interest", "Free Launch Plan (opening soon)");
+    }
+  }, [setValue]);
 
   async function onSubmit(values: FormValues) {
     setStatus("idle");
@@ -75,6 +93,7 @@ function ContactForm() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           ...values,
+          ...attributionFields(),
           kind: "contact",
           source: "contact-form",
           company_url: trap,
@@ -178,10 +197,11 @@ function ContactForm() {
   );
 }
 
-const inputCls =
-  "h-12 w-full rounded-xl border border-white/12 bg-white/[0.05] px-4 text-white placeholder:text-white/40 focus:border-brand-glow focus:outline-none [&>option]:text-ink";
+// Shared with the /partners form
+export const inputCls =
+  "h-12 w-full rounded-xl border border-white/12 bg-white/[0.05] px-4 text-white placeholder:text-white/40 focus:border-brand-glow focus:outline-none aria-[invalid=true]:border-error-glow [&>option]:text-ink";
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+export function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="grid gap-2 text-[0.95rem] font-medium text-white/85">
       {label}

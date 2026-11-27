@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { site } from "@/lib/site";
 import { tradeById } from "@/lib/trades";
 import { loadBiz, source } from "./track";
+import { calendlyTracking } from "@/lib/ref";
 
 export function CalendlyEmbed() {
   const box = useRef<HTMLDivElement>(null);
@@ -19,12 +20,9 @@ export function CalendlyEmbed() {
       ([e]) => {
         if (!e.isIntersecting) return;
         io.disconnect();
-        const q = new URLSearchParams({
-          hide_gdpr_banner: "1",
-          primary_color: "464ceb",
-          utm_source: source(),
-          utm_medium: "card-page",
-        });
+        const q = new URLSearchParams({ hide_gdpr_banner: "1", primary_color: "464ceb" });
+        // The card's own tags unless the visitor arrived with UTMs; a partner ref rides along.
+        calendlyTracking({ utm_source: source(), utm_medium: "card-page" }).forEach((v, k) => q.set(k, v));
         const biz = loadBiz();
         if (biz?.name.trim()) q.set("a1", `Business: ${biz.name.trim()} (${tradeById(biz.trade).label}). Scanned our card.`);
         setUrl(`${site.calendlyUrl}?${q}`);

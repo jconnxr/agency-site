@@ -6,9 +6,9 @@ export const site = {
   shortName: "Agency",
   city: "Oklahoma City",
   serviceArea: ["Oklahoma City", "Midwest City", "Edmond", "Moore", "Norman", "Yukon", "Mustang", "Del City"],
-  // Leave empty until the real business email exists; every email link on
-  // the page hides itself while this is empty.
-  email: "",
+  // Shown in the footer, FAQ, contact form errors, /partners, the vCard and
+  // JSON-LD. Every email link hides itself if this is ever emptied.
+  email: "hello@axiommediagroupokc.com",
   // Business phone in +1XXXXXXXXXX form. Leave empty until there's a number:
   // every Call / Text link hides itself while this is empty.
   phone: "+14059850806",
@@ -47,12 +47,41 @@ export const founding = {
   body: "The first 10 clients lock their rate for 12 months and get the Get Leads setup fee waived, no 6-month agreement needed. In exchange, you give us a testimonial and a short case study.",
 };
 
+// Prices: the single source of truth. Package cards, the bundle, FAQ answers, the
+// hero chip, /partners and the partner calculator all read these, and every
+// derived number (payments, bundle savings) is computed, so a price change is
+// one edit here.
+export const prices = {
+  launchEssentials: 750,
+  launchPro: 2100,
+  /** Launch Pro can be split into this many equal payments */
+  launchProPayments: 3,
+  /** Launch Pro with a Get Found: Google + AI commitment of bundleMonths */
+  launchProBundle: 1800,
+  bundleMonths: 6,
+  getFound: 497,
+  siteCare: 99,
+  aiVisibilitySetup: 450,
+};
+
+/** 2100 -> "$2,100" */
+export const usd = (n: number) => `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+
+/** "3 payments of $700": Launch Pro split evenly */
+export const launchProPlan = `${prices.launchProPayments} payments of ${usd(prices.launchPro / prices.launchProPayments)}`;
+/** What the bundle saves on Launch Pro: $2,100 - $1,800 = $300 */
+export const bundleSavings = prices.launchPro - prices.launchProBundle;
+/** "3 payments of $600": the bundle price split the same way */
+export const bundlePlan = `${prices.launchProPayments} payments of ${usd(prices.launchProBundle / prices.launchProPayments)}`;
+
 export type Option = {
   name: string;
   price: string;
   priceNote: string;
   liveBy?: string;
   includes: string[];
+  /** Short version for compact cards (/partners) */
+  highlights?: string[];
 };
 
 // One-time projects
@@ -63,9 +92,10 @@ export const launch = {
   options: [
     {
       name: "Launch Essentials",
-      price: "$750",
+      price: usd(prices.launchEssentials),
       priceNote: "one-time",
       liveBy: "Live in 14 days",
+      highlights: ["One-page site", "Google Business Profile set up and verified", "Your domain plus professional email"],
       includes: [
         "One-page site with click-to-call and a contact form",
         "Google Business Profile set up and verified",
@@ -76,23 +106,26 @@ export const launch = {
     },
     {
       name: "Launch Pro",
-      price: "$1,800",
-      priceNote: "one-time, or 3 payments of $600",
+      price: usd(prices.launchPro),
+      priceNote: `one-time, or ${launchProPlan}`,
       liveBy: "Live in 30 days",
+      highlights: ["Up to 5 pages", "Online booking", "Pro photo shoot", "Review card for the counter or truck"],
       includes: [
         "Up to 5 pages, built around your services",
         "Google Business Profile set up, verified and optimized with photos and services",
         "Your domain plus professional email",
         "Online booking and a simple customer list (CRM)",
+        "Pro photo shoot for your site, Google profile and socials",
         "Facebook and Instagram set up to match your brand",
         "Logo cleanup and a simple brand kit",
         "Review link plus a printed QR card for the counter or truck",
-        "AI Visibility Setup included ($450 value)",
+        `AI Visibility Setup included (${usd(prices.aiVisibilitySetup)} value)`,
       ],
     },
   ] satisfies Option[],
-  note: "Both include 3 months of Site Care free: hosting, updates and small edits. After that it's $99/mo, or included in Get Found: Google + AI.",
-  bundle: "Sign 6 months of Get Found: Google + AI and Launch Pro drops to $1,500.",
+  note: `Both include 3 months of Site Care free: hosting, updates and small edits. After that it's ${usd(prices.siteCare)}/mo, or included in Get Found: Google + AI.`,
+  bundle: `Sign ${prices.bundleMonths} months of Get Found: Google + AI (${usd(prices.getFound)}/mo) and Launch Pro drops to ${usd(prices.launchProBundle)}, normally ${usd(prices.launchPro)}. You save ${usd(bundleSavings)}.`,
+  bundleSplit: `Or split Launch Pro into ${bundlePlan}.`,
 };
 
 export const automate = {
@@ -139,6 +172,8 @@ export type Plan = {
   priceNote: string;
   base?: string;
   includes: string[];
+  /** Short version for compact cards (/partners) */
+  highlights?: string[];
   terms: string;
 };
 
@@ -147,8 +182,9 @@ export const plans: Plan[] = [
     name: "Get Found: Google + AI",
     problem: "We're online, but nobody sees us on Google or ChatGPT.",
     bestFor: "6 months to 3 years in business",
-    price: "$497",
+    price: usd(prices.getFound),
     priceNote: "/mo",
+    highlights: ["Review requests and replies", "Local SEO and listings", "AI search visibility", "Monthly results report"],
     includes: [
       "Google Business Profile managed: weekly posts, new photos, replies to every review",
       "Automatic review requests by text after each job",
@@ -205,7 +241,7 @@ export const addons: { name: string; price: string; detail?: string }[] = [
   { name: "Social posting only (3 a week, 2 platforms)", price: "$750/mo" },
   {
     name: "AI Visibility Setup",
-    price: "$450 one-time",
+    price: `${usd(prices.aiVisibilitySetup)} one-time`,
     detail: "Listings cleanup, Bing and Apple, FAQ content for your site, before-and-after AI report",
   },
   { name: "Monthly AI check and report (with Site Care)", price: "$149/mo" },
@@ -219,11 +255,11 @@ export const addons: { name: string; price: string; detail?: string }[] = [
 export const faqs = [
   {
     q: "I just opened. Is this too much for me?",
-    a: "No. Most new businesses start with Launch: a site, a Google profile and email, for a fixed price and a fixed date. Launch Pro can be split into 3 payments of $600. You can stop there, or add a monthly plan once the phone is ringing.",
+    a: `No. Most new businesses start with Launch: a site, a Google profile and email, for a fixed price and a fixed date. Launch Pro can be split into ${launchProPlan}. You can stop there, or add a monthly plan once the phone is ringing.`,
   },
   {
     q: "What happens after Launch?",
-    a: "Your first 3 months of Site Care (hosting, updates, small edits) are free. After that it's $99 a month, or you move to Get Found: Google + AI, which includes Site Care.",
+    a: `Your first 3 months of Site Care (hosting, updates, small edits) are free. After that it's ${usd(prices.siteCare)} a month, or you move to Get Found: Google + AI, which includes Site Care.`,
   },
   {
     q: "What's the free Online Presence Check?",
